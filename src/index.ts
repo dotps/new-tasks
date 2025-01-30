@@ -1,1 +1,4 @@
-console.log("Init")
+import {App} from './App'
+
+const app = new App()
+app.start(3000)
