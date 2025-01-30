@@ -1,4 +1,5 @@
-import {App} from './App'
+import {App} from "./App"
+import {Config} from "./Config"
 
 const app = new App()
-app.start(3000)
+app.start(Config.appPort)

@@ -1,4 +1,4 @@
-import express, {Application} from 'express'
+import express, {Application} from "express"
 import {UserRouter} from "./Routes/UserRouter"
 import {IRouter} from "./Routes/IRouter"
 

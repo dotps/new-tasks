@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express'
+import { Router, Request, Response } from "express"
 import {IRouter} from "./IRouter"
 
 export class UserRouter implements IRouter {
