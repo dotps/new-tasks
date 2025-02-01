@@ -19,7 +19,7 @@ export class UserRouter implements IRouter {
     }
 
     private initRoutes(): void {
-        this.router.get('/', this.userController.getUsers)
-        this.router.post('/', this.userController.createUser)
+        this.router.get('/', this.userController.getUsers.bind(this.userController));
+        this.router.post('/', this.userController.createUser.bind(this.userController));
     }
 }

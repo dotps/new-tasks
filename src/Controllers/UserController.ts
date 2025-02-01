@@ -6,9 +6,11 @@ import {ORM, UserData} from "../Models/Types"
 export class UserController implements IUserController {
 
     private user: User
+
     constructor(orm: ORM) {
         this.user = new User(orm)
     }
+
     async createUser(req: Request, res: Response): Promise<void> {
         const { name, email } = req.body
         console.log(name, email)
