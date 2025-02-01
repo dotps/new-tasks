@@ -1,11 +1,17 @@
 import {Router, Request, Response} from "express"
 import {IRouter} from "./IRouter"
+import {UserController} from "../Controllers/UserController"
+import {PrismaClient} from "@prisma/client"
+import {ORM} from "../Models/Types"
 
 export class UserRouter implements IRouter {
     private readonly router: Router
+    private readonly userController: UserController
 
-    constructor() {
+    constructor(orm: ORM) {
         this.router = Router()
+        this.userController = new UserController(orm)
+
         this.initRoutes()
     }
 
@@ -14,16 +20,7 @@ export class UserRouter implements IRouter {
     }
 
     private initRoutes(): void {
-        this.router.get('/', this.getUsers)
-        this.router.post('/', this.createUser)
-    }
-
-    private getUsers(req: Request, res: Response): void {
-        res.send("getUsers")
-    }
-
-    private createUser(req: Request, res: Response): void {
-        const data = req.body
-        res.send(data)
+        // this.router.get('/', this.userController.getUsers)
+        this.router.post('/', this.userController.createUser)
     }
 }

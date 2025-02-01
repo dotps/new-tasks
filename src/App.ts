@@ -1,20 +1,18 @@
 import express, {Application} from "express"
 import {UserRouter} from "./Routes/UserRouter"
 import {IRouter} from "./Routes/IRouter"
-import {IORM} from "./IORM"
-import { PrismaClient } from "@prisma/client"
+import {PrismaClient} from "@prisma/client"
+import {ORM} from "./Models/Types"
 
 export class App {
     private app: Application
     private userRouter: IRouter
-    private orm: IORM
 
-        // TODO: внедрить prisma
     constructor() {
         this.app = express()
         this.app.use(express.json())
-        this.orm = new PrismaClient()
-        this.userRouter = new UserRouter()
+        const orm:ORM = new PrismaClient()
+        this.userRouter = new UserRouter(orm)
         this.initRoutes()
     }
 
