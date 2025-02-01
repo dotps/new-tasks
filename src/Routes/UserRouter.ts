@@ -1,7 +1,6 @@
-import {Router, Request, Response} from "express"
+import {Router} from "express"
 import {IRouter} from "./IRouter"
 import {UserController} from "../Controllers/UserController"
-import {PrismaClient} from "@prisma/client"
 import {ORM} from "../Models/Types"
 
 export class UserRouter implements IRouter {
@@ -20,7 +19,7 @@ export class UserRouter implements IRouter {
     }
 
     private initRoutes(): void {
-        // this.router.get('/', this.userController.getUsers)
+        this.router.get('/', this.userController.getUsers)
         this.router.post('/', this.userController.createUser)
     }
 }

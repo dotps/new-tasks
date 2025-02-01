@@ -5,6 +5,11 @@ export type {
     UserData
 }
 
+export type AuthData = {
+    id: number,
+    token: string
+}
+
 export type ORM = PrismaClient & {
     customMethod?: () => void
 }
