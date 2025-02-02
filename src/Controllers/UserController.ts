@@ -17,7 +17,7 @@ export class UserController implements IUserController {
     async createUser(req: Request, res: Response): Promise<void> {
         const user = new User(req.body)
 
-        // TODO: почему то нет доступа к user.data
+        // TODO: 2 user поправить нейминг
 
         try {
             const user: UserData = await this.userService.createUser(user.data)

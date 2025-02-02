@@ -7,7 +7,10 @@ export class UserService {
         this.orm = orm
     }
 
-    async createUser(name: string, email: string): Promise<UserData>  {
+    async createUser(userData: UserData): Promise<UserData>  {
+        const name = userData.name
+        const email = userData.email
+
         return this.orm.user.create({
             data: {name, email}
         })
