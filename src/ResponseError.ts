@@ -1,16 +1,17 @@
 export class ResponseError {
-    private message: string
-    private statusCode: number
-    private context: any
+    private readonly message: string
+    private readonly statusCode: number
+    private readonly error: any
+    private readonly timestamp: string
 
-    constructor(message: string, statusCode: number, context?: any) {
+    constructor(message: string, statusCode: number, error?: any) {
         this.message = message
         this.statusCode = statusCode
-        this.context = context
+        this.error = error
+        this.timestamp = new Date().toISOString()
     }
 
-    getStatusCode() {
+    getStatusCode(): number {
         return this.statusCode
     }
-
 }

@@ -33,7 +33,7 @@ export class UserController implements IUserController {
             res.status(ResponseCode.SUCCESS_CREATED).json(response)
         }
         catch (errorContext) {
-            const error = new ResponseError(this.constructor.name, ResponseCode.SERVER_ERROR, errorContext)
+            const error = new ResponseError("Ошибка при создании пользователя.", ResponseCode.SERVER_ERROR, errorContext)
             res.status(error.getStatusCode()).json(error)
         }
     }
