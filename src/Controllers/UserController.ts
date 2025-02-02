@@ -3,6 +3,7 @@ import {Request, Response} from "express"
 import {IUserController} from "./IUserController"
 import {AuthData, ORM, UserData} from "../Models/Types"
 import {ResponseCode} from "../ResponseCode"
+import {ResponseError} from "../ResponseError"
 
 export class UserController implements IUserController {
 
@@ -16,20 +17,24 @@ export class UserController implements IUserController {
         const { name, email } = req.body
 
         try {
-            const user: UserData | null = await this.user.createUser(name, email)
-            if (user && user.id) {
-                const response: AuthData = {
-                    id: user.id,
-                    token: user.id.toString()
-                }
-                res.status(ResponseCode.SUCCESS_CREATED).json(response)
-            } else {
-                res.status(ResponseCode.ERROR_BAD_REQUEST).json({ error: "Пользователь не создан." })
+            const user: UserData = await this.user.createUser(name, email)
+
+            if (!user?.id) {
+                const error = new ResponseError("Пользователь не создан.", ResponseCode.SERVER_ERROR)
+                res.status(error.getStatusCode()).json(error)
+                return
             }
+
+            const response: AuthData = {
+                id: user.id,
+                token: user.id.toString()
+            }
+
+            res.status(ResponseCode.SUCCESS_CREATED).json(response)
         }
-        catch (e) {
-            console.log(e)
-            res.status(ResponseCode.SERVER_ERROR).json({ error: e })
+        catch (errorContext) {
+            const error = new ResponseError(this.constructor.name, ResponseCode.SERVER_ERROR, errorContext)
+            res.status(error.getStatusCode()).json(error)
         }
     }
 

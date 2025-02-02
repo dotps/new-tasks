@@ -7,16 +7,10 @@ export class User {
         this.orm = orm
     }
 
-    async createUser(name: string, email: string): Promise<UserData | null>  {
-        // try {
-            return await this.orm.user.create({
-                data: {name, email}
-            })
-        // }
-        // catch (e) {
-        //     console.log(e)
-        //     return null
-        // }
+    async createUser(name: string, email: string): Promise<UserData>  {
+        return this.orm.user.create({
+            data: {name, email}
+        })
     }
 }
 
