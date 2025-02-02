@@ -1,7 +1,8 @@
 import {User} from "../Models/User"
 import {Request, Response} from "express"
 import {IUserController} from "./IUserController"
-import {ORM, UserData} from "../Models/Types"
+import {AuthData, ORM, UserData} from "../Models/Types"
+import {ResponseCode} from "../ResponseCode"
 
 export class UserController implements IUserController {
 
@@ -13,10 +14,23 @@ export class UserController implements IUserController {
 
     async createUser(req: Request, res: Response): Promise<void> {
         const { name, email } = req.body
-        console.log(name, email)
 
-        const user: UserData = await this.user.createUser(name, email)
-        res.json(user)
+        try {
+            const user: UserData | null = await this.user.createUser(name, email)
+            if (user && user.id) {
+                const response: AuthData = {
+                    id: user.id,
+                    token: user.id.toString()
+                }
+                res.status(ResponseCode.SUCCESS_CREATED).json(response)
+            } else {
+                res.status(ResponseCode.ERROR_BAD_REQUEST).json({ error: "Пользователь не создан." })
+            }
+        }
+        catch (e) {
+            console.log(e)
+            res.status(ResponseCode.SERVER_ERROR).json({ error: e })
+        }
     }
 
     async getUsers(req: Request, res: Response): Promise<void> {
