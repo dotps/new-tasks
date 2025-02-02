@@ -17,20 +17,18 @@ export class UserController implements IUserController {
     async createUser(req: Request, res: Response): Promise<void> {
         const user = new User(req.body)
 
-        // TODO: 2 user поправить нейминг
-
         try {
-            const user: UserData = await this.userService.createUser(user.data)
+            const userData: UserData = await this.userService.createUser(user.data)
 
-            if (!user?.id) {
+            if (!userData?.id) {
                 const error = new ResponseError("Пользователь не создан.", ResponseCode.SERVER_ERROR)
                 res.status(error.getStatusCode()).json(error)
                 return
             }
 
             const response: AuthData = {
-                id: user.id,
-                token: Token.generate(user.id)
+                id: userData.id,
+                token: Token.generate(userData.id)
             }
 
             res.status(ResponseCode.SUCCESS_CREATED).json(response)
