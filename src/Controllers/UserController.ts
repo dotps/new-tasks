@@ -4,6 +4,7 @@ import {IUserController} from "./IUserController"
 import {AuthData, ORM, UserData} from "../Models/Types"
 import {ResponseCode} from "../ResponseCode"
 import {ResponseError} from "../ResponseError"
+import {User} from "../Models/User"
 
 export class UserController implements IUserController {
 
@@ -14,12 +15,12 @@ export class UserController implements IUserController {
     }
 
     async createUser(req: Request, res: Response): Promise<void> {
-        const { name, email } = req.body
+        const user = new User(req.body)
 
-        // TODO: валидация входящих данных
+        // TODO: почему то нет доступа к user.data
 
         try {
-            const user: UserData = await this.userService.createUser(name, email)
+            const user: UserData = await this.userService.createUser(user.data)
 
             if (!user?.id) {
                 const error = new ResponseError("Пользователь не создан.", ResponseCode.SERVER_ERROR)

@@ -1,4 +1,4 @@
-import {AuthData, ORM, UserData} from "./Types"
+import {ORM, UserData} from "./Types"
 
 export class UserService {
     private orm: ORM
