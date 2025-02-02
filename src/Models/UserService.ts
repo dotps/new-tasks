@@ -1,6 +1,6 @@
 import {AuthData, ORM, UserData} from "./Types"
 
-export class User {
+export class UserService {
     private orm: ORM
 
     constructor(orm: ORM) {

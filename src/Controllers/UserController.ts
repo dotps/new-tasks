@@ -1,4 +1,4 @@
-import {User} from "../Models/User"
+import {UserService} from "../Models/UserService"
 import {Request, Response} from "express"
 import {IUserController} from "./IUserController"
 import {AuthData, ORM, UserData} from "../Models/Types"
@@ -7,17 +7,19 @@ import {ResponseError} from "../ResponseError"
 
 export class UserController implements IUserController {
 
-    private user: User
+    private userService: UserService
 
     constructor(orm: ORM) {
-        this.user = new User(orm)
+        this.userService = new UserService(orm)
     }
 
     async createUser(req: Request, res: Response): Promise<void> {
         const { name, email } = req.body
 
+        // TODO: валидация входящих данных
+
         try {
-            const user: UserData = await this.user.createUser(name, email)
+            const user: UserData = await this.userService.createUser(name, email)
 
             if (!user?.id) {
                 const error = new ResponseError("Пользователь не создан.", ResponseCode.SERVER_ERROR)
@@ -27,7 +29,7 @@ export class UserController implements IUserController {
 
             const response: AuthData = {
                 id: user.id,
-                token: user.id.toString()
+                token: Token.generate(user.id)
             }
 
             res.status(ResponseCode.SUCCESS_CREATED).json(response)
