@@ -6,6 +6,7 @@ import {ResponseCode} from "../ResponseCode"
 import {ResponseError} from "../ResponseError"
 import {User} from "../Models/User"
 import {AuthData} from "../Data/AuthData"
+import {ResponseSuccess} from "../ResponseSuccess"
 
 export class UserController implements IUserController {
 
@@ -21,7 +22,6 @@ export class UserController implements IUserController {
 
         if (!user.isValidData()) {
             return ResponseError.send(res, "Пользователь не создан. Входные данные не валидны.", ResponseCode.ERROR_BAD_REQUEST)
-            // return this.sendErrorResponse(res, "Пользователь не создан. Входные данные не валидны.", ResponseCode.ERROR_BAD_REQUEST)
         }
 
         try {
@@ -32,11 +32,9 @@ export class UserController implements IUserController {
             }
 
             const response = new AuthData(createdUser)
-            res.status(ResponseCode.SUCCESS_CREATED).json(response)
+            ResponseSuccess.send(res, response, ResponseCode.SUCCESS_CREATED)
         }
         catch (errorContext) {
-            // TODO: переделать в класс ResponseApi.sendSuccess / sendError
-
             return ResponseError.send(res, "Ошибка при создании пользователя.", ResponseCode.SERVER_ERROR, errorContext)
         }
     }
