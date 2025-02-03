@@ -18,17 +18,13 @@ export class UserController implements IUserController {
 
     async createUser(req: Request, res: Response): Promise<void> {
 
-        console.log("createUser")
-
         const user = new User(req.body)
-
         if (!user.isValidData()) {
             return ResponseError.send(res, "Пользователь не создан. Входные данные не валидны.", ResponseCode.ERROR_BAD_REQUEST)
         }
 
         try {
             const createdUser = await this.userService.createUser(user.data)
-
             if (!createdUser.data.id) {
                 return ResponseError.send(res, "Пользователь не создан.", ResponseCode.SERVER_ERROR)
             }
