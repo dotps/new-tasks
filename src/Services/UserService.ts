@@ -1,5 +1,5 @@
 import {ORM, UserData} from "../Data/Types"
-import {User} from "./User"
+import {User} from "../Models/User"
 
 export class UserService {
     private orm: ORM

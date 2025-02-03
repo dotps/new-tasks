@@ -1,7 +1,7 @@
-import {UserService} from "../Models/UserService"
+import {UserService} from "../Services/UserService"
 import {Request, Response} from "express"
 import {IUserController} from "./IUserController"
-import {ORM, UserData} from "../Data/Types"
+import {ORM} from "../Data/Types"
 import {ResponseCode} from "../ResponseCode"
 import {ResponseError} from "../ResponseError"
 import {User} from "../Models/User"
@@ -17,6 +17,8 @@ export class UserController implements IUserController {
     }
 
     async createUser(req: Request, res: Response): Promise<void> {
+
+        console.log("createUser")
 
         const user = new User(req.body)
 
