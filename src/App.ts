@@ -2,7 +2,7 @@ import express, {Application} from "express"
 import {UserRouter} from "./Routes/UserRouter"
 import {IRouter} from "./Routes/IRouter"
 import {PrismaClient} from "@prisma/client"
-import {ORM} from "./Models/Types"
+import {ORM} from "./Data/Types"
 
 export class App {
     private app: Application

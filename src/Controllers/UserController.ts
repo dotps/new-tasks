@@ -1,10 +1,11 @@
 import {UserService} from "../Models/UserService"
 import {Request, Response} from "express"
 import {IUserController} from "./IUserController"
-import {AuthData, ORM, UserData} from "../Models/Types"
+import {ORM, UserData} from "../Data/Types"
 import {ResponseCode} from "../ResponseCode"
 import {ResponseError} from "../ResponseError"
 import {User} from "../Models/User"
+import {AuthData} from "../Data/AuthData"
 
 export class UserController implements IUserController {
 
@@ -15,31 +16,32 @@ export class UserController implements IUserController {
     }
 
     async createUser(req: Request, res: Response): Promise<void> {
+
         const user = new User(req.body)
 
+        if (!user.isValidData()) {
+            return ResponseError.send(res, "Пользователь не создан. Входные данные не валидны.", ResponseCode.ERROR_BAD_REQUEST)
+            // return this.sendErrorResponse(res, "Пользователь не создан. Входные данные не валидны.", ResponseCode.ERROR_BAD_REQUEST)
+        }
+
         try {
-            const userData: UserData = await this.userService.createUser(user.data)
+            const createdUser = await this.userService.createUser(user.data)
 
-            if (!userData?.id) {
-                const error = new ResponseError("Пользователь не создан.", ResponseCode.SERVER_ERROR)
-                res.status(error.getStatusCode()).json(error)
-                return
+            if (!createdUser.data.id) {
+                return ResponseError.send(res, "Пользователь не создан.", ResponseCode.SERVER_ERROR)
             }
 
-            const response: AuthData = {
-                id: userData.id,
-                token: Token.generate(userData.id)
-            }
-
+            const response = new AuthData(createdUser)
             res.status(ResponseCode.SUCCESS_CREATED).json(response)
+
         }
         catch (errorContext) {
-            const error = new ResponseError("Ошибка при создании пользователя.", ResponseCode.SERVER_ERROR, errorContext)
-            res.status(error.getStatusCode()).json(error)
+            return ResponseError.send(res, "Ошибка при создании пользователя.", ResponseCode.SERVER_ERROR, errorContext)
         }
     }
 
     async getUsers(req: Request, res: Response): Promise<void> {
         console.log("getUsers")
     }
+
 }

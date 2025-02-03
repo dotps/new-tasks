@@ -1,4 +1,5 @@
-import {ORM, UserData} from "./Types"
+import {ORM, UserData} from "../Data/Types"
+import {User} from "./User"
 
 export class UserService {
     private orm: ORM
@@ -7,13 +8,15 @@ export class UserService {
         this.orm = orm
     }
 
-    async createUser(userData: UserData): Promise<UserData>  {
+    async createUser(userData: UserData): Promise<User>  {
         const name = userData.name
         const email = userData.email
 
-        return this.orm.user.create({
+        userData = await this.orm.user.create({
             data: {name, email}
         })
+
+        return new User(userData)
     }
 }
 

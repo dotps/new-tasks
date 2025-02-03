@@ -1,7 +1,7 @@
 import {Router} from "express"
 import {IRouter} from "./IRouter"
 import {UserController} from "../Controllers/UserController"
-import {ORM} from "../Models/Types"
+import {ORM} from "../Data/Types"
 
 export class UserRouter implements IRouter {
     private readonly router: Router

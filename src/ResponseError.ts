@@ -1,3 +1,6 @@
+import {Response} from "express"
+import {ResponseCode} from "./ResponseCode"
+
 export class ResponseError {
     private readonly message: string
     private readonly statusCode: number
@@ -11,7 +14,8 @@ export class ResponseError {
         this.timestamp = new Date().toISOString()
     }
 
-    getStatusCode(): number {
-        return this.statusCode
+    static send(res: Response, message: string, statusCode: ResponseCode, errorContext?: any): void {
+        const error = new ResponseError(message, statusCode, errorContext)
+        res.status(statusCode).json(error)
     }
 }
