@@ -33,9 +33,10 @@ export class UserController implements IUserController {
 
             const response = new AuthData(createdUser)
             res.status(ResponseCode.SUCCESS_CREATED).json(response)
-
         }
         catch (errorContext) {
+            // TODO: переделать в класс ResponseApi.sendSuccess / sendError
+
             return ResponseError.send(res, "Ошибка при создании пользователя.", ResponseCode.SERVER_ERROR, errorContext)
         }
     }
