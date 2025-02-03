@@ -14,7 +14,16 @@ datasource db {
 }
 
 model User {
-  id    Int    @id @default(autoincrement())
-  name  String
-  email String
+  id       Int       @id @default(autoincrement())
+  name     String
+  email    String
+  projects Project[]
+}
+
+model Project {
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String?
+  userId      Int
+  user        User    @relation(fields: [userId], references: [id])
 }
