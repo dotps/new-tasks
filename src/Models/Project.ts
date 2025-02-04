@@ -12,14 +12,11 @@ export class Project {
 
     constructor(data: any) {
         this.projectData = {
+            id: Number(data?.id) || 0,
             userId: Number(data?.userId) || 0,
-            title: data?.title?.toString().trim() || "",
+            name: data?.name?.toString().trim() || "",
             description: data?.description?.toString().trim() || ""
         }
-    }
-
-    private set data(value: ProjectData) {
-        this.projectData = value
     }
 
     isValidData(): boolean {
