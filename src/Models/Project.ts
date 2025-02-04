@@ -9,7 +9,8 @@ export class Project {
             id: Number(data?.id) || 0,
             userId: Number(data?.userId) || 0,
             title: data?.title?.toString().trim() || "",
-            description: data?.description?.toString().trim() || ""
+            description: data?.description?.toString().trim() || "",
+            createdAt: data?.createdAt || new Date()
         }
     }
 

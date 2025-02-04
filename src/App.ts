@@ -1,4 +1,4 @@
-import express, {Application} from "express"
+import express, {Application, NextFunction, Request, Response} from "express"
 import {ApiRouter} from "./Routes/ApiRouter"
 import {IRouter} from "./Routes/IRouter"
 import {PrismaClient} from "@prisma/client"
@@ -27,7 +27,7 @@ export class App {
     private initRoutes(): void {
         this.app.use('/api', this.apiRouter.getRouter())
 
-        this.app.use((req, res, next) => {
+        this.app.use((req:  Request, res: Response) => {
             ResponseError.send(res, "Маршрут не найден", ResponseCode.ERROR_NOT_FOUND)
         })
     }

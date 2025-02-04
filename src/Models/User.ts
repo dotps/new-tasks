@@ -9,7 +9,8 @@ export class User {
         this.userData = {
             id: Number(data?.id) || 0,
             name: data?.name?.toString().trim() || "",
-            email: data?.email?.toString().trim() || ""
+            email: data?.email?.toString().trim() || "",
+            createdAt: data?.createdAt || new Date()
         }
     }
 

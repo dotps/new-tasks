@@ -23,6 +23,7 @@ export class TaskController implements ITaskController {
     async createProject(req: Request, res: Response): Promise<void> {
 
         const project = new Project(req.body)
+        console.log(project)
         const validationErrors: string[] = []
 
         if (!project.isValidData(validationErrors)) {
