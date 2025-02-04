@@ -9,6 +9,7 @@ import {AuthData} from "../Data/AuthData"
 import {ResponseSuccess} from "../ResponseSuccess"
 import {ITaskController} from "./ITaskController"
 import {TaskService} from "../Services/TaskService"
+import {Project} from "../Models/Project"
 
 export class TaskController implements ITaskController {
 
@@ -22,7 +23,17 @@ export class TaskController implements ITaskController {
 
         console.log("createProject")
 
-        // const user = new User(req.body)
+        const project = new Project(req.body)
+        const validationErrors: string[] = []
+
+        if (!project.isValidData(validationErrors)) {
+            return ResponseError.send(res, "Проект не создан. Входные данные не валидны. " + validationErrors.join(" "), ResponseCode.ERROR_BAD_REQUEST)
+        }
+
+        // Пользователь отправляет запрос для создания проекта.
+        // В теле запроса: название проекта и краткое описание (опционально).
+        // Проект сохраняется в базе данных с привязкой к пользователю.
+
         //
         // if (!user.isValidData()) {
         //     return ResponseError.send(res, "Пользователь не создан. Входные данные не валидны.", ResponseCode.ERROR_BAD_REQUEST)

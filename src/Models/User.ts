@@ -21,13 +21,25 @@ export class User {
         return Token.generate(this.data.id)
     }
 
-    isValidData(): boolean {
-        return this.data.name !== "" && this.isValidEmail(this.data.email);
+    isValidData(errors: string[]): boolean {
+        let isValid = true
+
+        if (!this.data.name) {
+            isValid = false
+            errors.push("Имя пользователя обязательно.")
+        }
+
+        if (!this.isValidEmail(this.data.email)) {
+            isValid = false
+            errors.push("Неверный e-mail.")
+        }
+
+        return isValid
     }
 
     private isValidEmail(email: string): boolean {
         if (!email) return false
-        const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return pattern.test(email);
+        const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        return pattern.test(email)
     }
 }

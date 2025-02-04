@@ -5,16 +5,19 @@ import {ORM} from "../Data/Types"
 import {TaskController} from "../Controllers/TaskController"
 import {IUserController} from "../Controllers/IUserController"
 import {ITaskController} from "../Controllers/ITaskController"
+import {AuthMiddleware} from "../Middlewares/AuthMiddleware"
 
 export class ApiRouter implements IRouter {
     private readonly router: Router
     private readonly userController: IUserController
     private readonly taskController: ITaskController
+    private readonly authMiddleware: AuthMiddleware
 
     constructor(orm: ORM) {
         this.router = Router()
         this.userController = new UserController(orm)
         this.taskController = new TaskController(orm)
+        this.authMiddleware = new AuthMiddleware()
 
         this.initRoutes()
     }
@@ -27,7 +30,7 @@ export class ApiRouter implements IRouter {
         this.router.get('/users', this.userController.getUsers.bind(this.userController))
         this.router.post('/users', this.userController.createUser.bind(this.userController))
 
-        this.router.post('/projects', this.taskController.createProject.bind(this.taskController))
-        this.router.post('/tasks', this.taskController.createTask.bind(this.taskController))
+        this.router.post('/projects', this.authMiddleware.handle, this.taskController.createProject.bind(this.taskController))
+        this.router.post('/tasks', this.authMiddleware.handle, this.taskController.createTask.bind(this.taskController))
     }
 }

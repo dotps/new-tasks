@@ -19,8 +19,9 @@ export class UserController implements IUserController {
     async createUser(req: Request, res: Response): Promise<void> {
 
         const user = new User(req.body)
-        if (!user.isValidData()) {
-            return ResponseError.send(res, "Пользователь не создан. Входные данные не валидны.", ResponseCode.ERROR_BAD_REQUEST)
+        const validationErrors: string[] = []
+        if (!user.isValidData(validationErrors)) {
+            return ResponseError.send(res, "Пользователь не создан. Входные данные не валидны. " + validationErrors.join(" "), ResponseCode.ERROR_BAD_REQUEST)
         }
 
         try {
