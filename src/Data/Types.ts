@@ -1,7 +1,8 @@
-import {PrismaClient, User as UserData} from "@prisma/client"
+import {PrismaClient, User as UserData, Project as ProjectData} from "@prisma/client"
 
 export type {
-    UserData
+    UserData,
+    ProjectData
 }
 
 export type ORM = PrismaClient & {

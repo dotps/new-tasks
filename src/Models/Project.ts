@@ -1,5 +1,4 @@
-import {UserData} from "../Data/Types"
-import {Token} from "../Token"
+import {ProjectData} from "../Data/Types"
 
 export class Project {
 
@@ -13,14 +12,14 @@ export class Project {
 
     constructor(data: any) {
         this.projectData = {
-            userId: Number(data?.user_id) || 0,
+            userId: Number(data?.userId) || 0,
             title: data?.title?.toString().trim() || "",
             description: data?.description?.toString().trim() || ""
         }
     }
 
-    get data(): ProjectData {
-        return this.projectData
+    private set data(value: ProjectData) {
+        this.projectData = value
     }
 
     isValidData(): boolean {
