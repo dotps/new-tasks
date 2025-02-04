@@ -1,26 +1,27 @@
-import {ORM, UserData} from "../Data/Types"
-import {User} from "../Models/User"
+import {ORM, ProjectData} from "../Data/Types"
+import {Project} from "../Models/Project"
+import {ITaskService} from "./ITaskService"
+import {ObjectHelper} from "../Utils/ObjectHelper"
 
-export class TaskService {
+export class TaskService implements ITaskService {
     private orm: ORM
 
     constructor(orm: ORM) {
         this.orm = orm
     }
 
-    async createProject(userData: UserData): Promise<null>  {
-        // const name = userData.name
-        // const email = userData.email
-        //
-        // userData = await this.orm.user.create({
-        //     data: {name, email}
-        // })
+    async createProject(data: ProjectData): Promise<Project> {
 
-        // return new User(userData)
-        return null
+        const projectData  = ObjectHelper.excludeField(data, "id")
+
+        data = await this.orm.project.create({
+            data: projectData
+        })
+
+        return new Project(data)
     }
 
-    async createTask(userData: UserData): Promise<null>  {
+    async createTask(data: ProjectData): Promise<null>  {
         return null
     }
 }

@@ -7,10 +7,11 @@ import {ResponseError} from "../ResponseError"
 import {User} from "../Models/User"
 import {AuthData} from "../Data/AuthData"
 import {ResponseSuccess} from "../ResponseSuccess"
+import {IUserService} from "../Services/IUserService"
 
 export class UserController implements IUserController {
 
-    private userService: UserService
+    private userService: IUserService
 
     constructor(orm: ORM) {
         this.userService = new UserService(orm)

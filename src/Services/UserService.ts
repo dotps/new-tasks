@@ -1,22 +1,24 @@
 import {ORM, UserData} from "../Data/Types"
 import {User} from "../Models/User"
+import {IUserService} from "./IUserService"
+import {ObjectHelper} from "../Utils/ObjectHelper"
 
-export class UserService {
+export class UserService implements IUserService {
     private orm: ORM
 
     constructor(orm: ORM) {
         this.orm = orm
     }
 
-    async createUser(userData: UserData): Promise<User>  {
-        const name = userData.name
-        const email = userData.email
+    async createUser(data: UserData): Promise<User> {
 
-        userData = await this.orm.user.create({
-            data: {name, email}
+        const userData = ObjectHelper.excludeField(data, "id")
+
+        data = await this.orm.user.create({
+            data: userData
         })
 
-        return new User(userData)
+        return new User(data)
     }
 }
 

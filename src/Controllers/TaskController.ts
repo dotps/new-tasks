@@ -10,18 +10,17 @@ import {ResponseSuccess} from "../ResponseSuccess"
 import {ITaskController} from "./ITaskController"
 import {TaskService} from "../Services/TaskService"
 import {Project} from "../Models/Project"
+import {ITaskService} from "../Services/ITaskService"
 
 export class TaskController implements ITaskController {
 
-    private taskService: TaskService
+    private taskService: ITaskService
 
     constructor(orm: ORM) {
         this.taskService = new TaskService(orm)
     }
 
     async createProject(req: Request, res: Response): Promise<void> {
-
-        console.log("createProject")
 
         const project = new Project(req.body)
         const validationErrors: string[] = []
@@ -30,28 +29,18 @@ export class TaskController implements ITaskController {
             return ResponseError.send(res, "Проект не создан. Входные данные не валидны. " + validationErrors.join(" "), ResponseCode.ERROR_BAD_REQUEST)
         }
 
-        // Пользователь отправляет запрос для создания проекта.
-        // В теле запроса: название проекта и краткое описание (опционально).
-        // Проект сохраняется в базе данных с привязкой к пользователю.
+        try {
+            const createdProject = await this.taskService.createProject(project.data)
 
-        //
-        // if (!user.isValidData()) {
-        //     return ResponseError.send(res, "Пользователь не создан. Входные данные не валидны.", ResponseCode.ERROR_BAD_REQUEST)
-        // }
-        //
-        // try {
-        //     const createdUser = await this.userService.createUser(user.data)
-        //
-        //     if (!createdUser.data.id) {
-        //         return ResponseError.send(res, "Пользователь не создан.", ResponseCode.SERVER_ERROR)
-        //     }
-        //
-        //     const response = new AuthData(createdUser)
-        //     ResponseSuccess.send(res, response, ResponseCode.SUCCESS_CREATED)
-        // }
-        // catch (errorContext) {
-        //     return ResponseError.send(res, "Ошибка при создании пользователя.", ResponseCode.SERVER_ERROR, errorContext)
-        // }
+            if (!createdProject.data.id) {
+                return ResponseError.send(res, "Проект не создан.", ResponseCode.SERVER_ERROR)
+            }
+
+            ResponseSuccess.send(res, createdProject.data, ResponseCode.SUCCESS_CREATED)
+        }
+        catch (errorContext) {
+            return ResponseError.send(res, "Ошибка при создании проекта.", ResponseCode.SERVER_ERROR, errorContext)
+        }
     }
 
     async createTask(req: Request, res: Response): Promise<void> {
