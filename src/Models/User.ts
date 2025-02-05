@@ -1,4 +1,4 @@
-import {UserData} from "../Data/Types"
+import {ProjectData, UserData} from "../Data/Types"
 import {Token} from "../Token"
 
 export class User {
@@ -14,8 +14,8 @@ export class User {
         }
     }
 
-    get data(): UserData {
-        return this.userData
+    toData(): UserData {
+        return Object.assign({}, this) as UserData
     }
 
     getToken(): string {

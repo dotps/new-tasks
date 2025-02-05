@@ -18,6 +18,8 @@ export class App {
         this.initRoutes()
     }
 
+    // TODO: обработка ошибок bodyparser - не валидный json
+
     public start(port: number): void {
         this.app.listen(port, () => {
             console.log(`Сервер запущен, порт: ${port}`)

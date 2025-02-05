@@ -31,13 +31,13 @@ export class TaskController implements ITaskController {
         }
 
         try {
-            const createdProject = await this.taskService.createProject(project.data)
+            const createdProject = await this.taskService.createProject(project)
 
-            if (!createdProject.data.id) {
+            if (!createdProject.id) {
                 return ResponseError.send(res, "Проект не создан.", ResponseCode.SERVER_ERROR)
             }
 
-            ResponseSuccess.send(res, createdProject.data, ResponseCode.SUCCESS_CREATED)
+            ResponseSuccess.send(res, createdProject, ResponseCode.SUCCESS_CREATED)
         }
         catch (errorContext) {
             return ResponseError.send(res, "Ошибка при создании проекта.", ResponseCode.SERVER_ERROR, errorContext)

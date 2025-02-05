@@ -10,15 +10,12 @@ export class TaskService implements ITaskService {
         this.orm = orm
     }
 
-    async createProject(data: ProjectData): Promise<Project> {
-
-        const projectData  = ObjectHelper.excludeField(data, "id")
-
-        data = await this.orm.project.create({
-            data: projectData
+    async createProject(data: Project): Promise<Project> {
+        const createdData: ProjectData = await this.orm.project.create({
+            data: data.toData()
         })
 
-        return new Project(data)
+        return new Project(createdData)
     }
 
     async createTask(data: ProjectData): Promise<null>  {

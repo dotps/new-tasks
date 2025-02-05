@@ -8,7 +8,7 @@ export class AuthMiddleware {
 
         const auth = req.headers.authorization
         if (!auth) {
-            return ResponseError.send(res, "Нет токена авторизации.", ResponseCode.ERROR_UNAUTHORIZED)
+            return ResponseError.send(res, "Токен авторизации отклонен.", ResponseCode.ERROR_UNAUTHORIZED)
         }
 
         next()

@@ -2,36 +2,37 @@ import {ProjectData} from "../Data/Types"
 
 export class Project {
 
-    private readonly projectData: ProjectData
+    id?: number
+    userId?: number
+    title: string
+    description: string
+    createdAt: Date
 
-    constructor(data: any) {
-        this.projectData = {
-            id: Number(data?.id) || 0,
-            userId: Number(data?.userId) || 0,
-            title: data?.title?.toString().trim() || "",
-            description: data?.description?.toString().trim() || "",
-            createdAt: data?.createdAt || new Date()
-        }
+    constructor(data: Partial<ProjectData>) {
+        if (data?.id) this.id = Number(data?.id)
+        if (data?.userId) this.userId = Number(data?.userId)
+        this.title = data?.title?.toString().trim() || ""
+        this.description = data?.description?.toString().trim() || ""
+        this.createdAt = data?.createdAt || new Date()
     }
 
-    get data(): ProjectData {
-        return this.projectData
+    toData(): ProjectData {
+        return Object.assign({}, this) as ProjectData
     }
 
     isValidData(errors: string[]): boolean {
         let isValid = true
 
-        if (!this.data.title) {
+        if (!this.title) {
             isValid = false
             errors.push("Заголовок обязателен.")
         }
 
-        if (!this.data.userId) {
+        if (!this.userId) {
             isValid = false
             errors.push("Не привязан пользователь.")
         }
 
         return isValid
     }
-
 }
