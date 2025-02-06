@@ -26,11 +26,10 @@ export class UserController implements IUserController {
         }
 
         try {
-            const createdUser = await this.userService.createUser(user.data)
-            if (!createdUser.data.id) {
+            const createdUser = await this.userService.createUser(user)
+            if (!createdUser?.id) {
                 return ResponseError.send(res, "Пользователь не создан.", ResponseCode.SERVER_ERROR)
             }
-
             const response = new AuthData(createdUser)
             ResponseSuccess.send(res, response, ResponseCode.SUCCESS_CREATED)
         }

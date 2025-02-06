@@ -23,7 +23,6 @@ export class TaskController implements ITaskController {
     async createProject(req: Request, res: Response): Promise<void> {
 
         const project = new Project(req.body)
-        console.log(project)
         const validationErrors: string[] = []
 
         if (!project.isValidData(validationErrors)) {
@@ -33,7 +32,7 @@ export class TaskController implements ITaskController {
         try {
             const createdProject = await this.taskService.createProject(project)
 
-            if (!createdProject.id) {
+            if (!createdProject?.id) {
                 return ResponseError.send(res, "Проект не создан.", ResponseCode.SERVER_ERROR)
             }
 

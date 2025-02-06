@@ -1,11 +1,11 @@
 import {User} from "../Models/User"
 
 export class AuthData {
-    id: number
+    id?: number
     token: string
 
     constructor(user: User) {
-        this.id = user.data.id
+        this.id = user.id
         this.token = user.getToken()
     }
 }

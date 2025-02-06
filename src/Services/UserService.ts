@@ -1,7 +1,6 @@
 import {ORM, UserData} from "../Data/Types"
 import {User} from "../Models/User"
 import {IUserService} from "./IUserService"
-import {ObjectHelper} from "../Utils/ObjectHelper"
 
 export class UserService implements IUserService {
     private orm: ORM
@@ -10,15 +9,12 @@ export class UserService implements IUserService {
         this.orm = orm
     }
 
-    async createUser(data: UserData): Promise<User> {
-
-        const userData = ObjectHelper.excludeField(data, "id")
-
-        data = await this.orm.user.create({
-            data: userData
+    async createUser(user: User): Promise<User> {
+        const userData: UserData = await this.orm.user.create({
+            data: user.toData()
         })
 
-        return new User(data)
+        return new User(userData)
     }
 }
 
