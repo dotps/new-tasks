@@ -9,12 +9,12 @@ export class UserService implements IUserService {
         this.orm = orm
     }
 
-    async createUser(user: User): Promise<User> {
-        const userData: UserData = await this.orm.user.create({
-            data: user.toData()
+    async createUser(userData: UserData): Promise<User> {
+        const createdData: UserData = await this.orm.user.create({
+            data: userData
         })
 
-        return new User(userData)
+        return new User(createdData)
     }
 }
 

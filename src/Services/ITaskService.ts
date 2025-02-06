@@ -1,7 +1,8 @@
-import {ProjectData} from "../Data/Types"
+import {ProjectData, TaskData} from "../Data/Types"
 import {Project} from "../Models/Project"
+import {Task} from "../Models/Task"
 
 export interface ITaskService {
-    createProject(data: Project): Promise<Project>
-    createTask(data: ProjectData): Promise<null>
+    createProject(data: ProjectData): Promise<Project>
+    createTask(data: TaskData): Promise<Task>
 }

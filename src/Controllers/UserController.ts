@@ -26,7 +26,7 @@ export class UserController implements IUserController {
         }
 
         try {
-            const createdUser = await this.userService.createUser(user)
+            const createdUser = await this.userService.createUser(user.toData())
             if (!createdUser?.id) {
                 return ResponseError.send(res, "Пользователь не создан.", ResponseCode.SERVER_ERROR)
             }

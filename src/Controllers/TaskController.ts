@@ -11,6 +11,7 @@ import {ITaskController} from "./ITaskController"
 import {TaskService} from "../Services/TaskService"
 import {Project} from "../Models/Project"
 import {ITaskService} from "../Services/ITaskService"
+import {Task} from "../Models/Task"
 
 export class TaskController implements ITaskController {
 
@@ -30,7 +31,7 @@ export class TaskController implements ITaskController {
         }
 
         try {
-            const createdProject = await this.taskService.createProject(project)
+            const createdProject = await this.taskService.createProject(project.toData())
 
             if (!createdProject?.id) {
                 return ResponseError.send(res, "Проект не создан.", ResponseCode.SERVER_ERROR)
@@ -44,7 +45,25 @@ export class TaskController implements ITaskController {
     }
 
     async createTask(req: Request, res: Response): Promise<void> {
-        throw new Error("Method not implemented.")
+        const task = new Task(req.body)
+        const validationErrors: string[] = []
+
+        if (!task.isValidData(validationErrors)) {
+            return ResponseError.send(res, "Задача не создана. Входные данные не валидны. " + validationErrors.join(" "), ResponseCode.ERROR_BAD_REQUEST)
+        }
+
+        try {
+            const createdTask = await this.taskService.createTask(task.toData())
+
+            if (!createdTask?.id) {
+                return ResponseError.send(res, "Задача не создана.", ResponseCode.SERVER_ERROR)
+            }
+
+            ResponseSuccess.send(res, createdTask, ResponseCode.SUCCESS_CREATED)
+        }
+        catch (errorContext) {
+            return ResponseError.send(res, "Ошибка при создании задачи.", ResponseCode.SERVER_ERROR, errorContext)
+        }
     }
 
 }

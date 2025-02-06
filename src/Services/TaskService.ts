@@ -1,6 +1,7 @@
-import {ORM, ProjectData} from "../Data/Types"
+import {ORM, ProjectData, TaskData} from "../Data/Types"
 import {Project} from "../Models/Project"
 import {ITaskService} from "./ITaskService"
+import {Task} from "../Models/Task"
 
 export class TaskService implements ITaskService {
     private orm: ORM
@@ -9,16 +10,18 @@ export class TaskService implements ITaskService {
         this.orm = orm
     }
 
-    async createProject(project: Project): Promise<Project> {
+    async createProject(data: ProjectData): Promise<Project> {
         const createdData: ProjectData = await this.orm.project.create({
-            data: project.toData()
+            data: data
         })
-
         return new Project(createdData)
     }
 
-    async createTask(data: ProjectData): Promise<null>  {
-        return null
+    async createTask(data: TaskData): Promise<Task>  {
+        const createdData: TaskData = await this.orm.task.create({
+            data: data
+        })
+        return new Task(createdData)
     }
 }
 
