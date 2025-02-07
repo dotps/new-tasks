@@ -45,6 +45,7 @@ export class TaskController implements ITaskController {
     }
 
     async createTask(req: Request, res: Response): Promise<void> {
+
         const task = new Task(req.body)
         const validationErrors: string[] = []
 

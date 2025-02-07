@@ -12,7 +12,7 @@ export class User {
         if (data?.id) this.id = Number(data?.id)
         this.name = data?.name?.toString().trim() || ""
         this.email = data?.email?.toString().trim() || ""
-        this.createdAt = data?.createdAt || new Date()
+        this.createdAt = data?.createdAt ? new Date(data.createdAt) : new Date()
     }
 
     toData(): UserData {

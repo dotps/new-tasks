@@ -14,8 +14,8 @@ export class Task {
         if (data?.projectId) this.projectId = Number(data?.projectId)
         this.title = data?.title?.toString().trim() || ""
         this.description = data?.description?.toString().trim() || ""
-        this.dueAt = data?.dueAt || new Date()
-        this.createdAt = data?.createdAt || new Date()
+        this.dueAt = data?.dueAt ? new Date(data.dueAt) : new Date()
+        this.createdAt = data?.createdAt ? new Date(data.createdAt) : new Date()
     }
 
     toData(): TaskData {

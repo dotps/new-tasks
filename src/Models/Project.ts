@@ -13,7 +13,7 @@ export class Project {
         if (data?.userId) this.userId = Number(data?.userId)
         this.title = data?.title?.toString().trim() || ""
         this.description = data?.description?.toString().trim() || ""
-        this.createdAt = data?.createdAt || new Date()
+        this.createdAt = data?.createdAt ? new Date(data.createdAt) : new Date()
     }
 
     toData(): ProjectData {

@@ -11,17 +11,17 @@ export class TaskService implements ITaskService {
     }
 
     async createProject(data: ProjectData): Promise<Project> {
-        const createdData: ProjectData = await this.orm.project.create({
+        const ormData: ProjectData = await this.orm.project.create({
             data: data
         })
-        return new Project(createdData)
+        return new Project(ormData)
     }
 
     async createTask(data: TaskData): Promise<Task>  {
-        const createdData: TaskData = await this.orm.task.create({
+        const ormData: TaskData = await this.orm.task.create({
             data: data
         })
-        return new Task(createdData)
+        return new Task(ormData)
     }
-}
 
+}
