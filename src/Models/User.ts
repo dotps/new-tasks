@@ -1,7 +1,9 @@
+import { Task, Project } from "@prisma/client"
 import {UserData} from "../Data/Types"
 import {Token} from "../Token"
+import {IModel} from "./IModel"
 
-export class User {
+export class User implements IModel {
 
     id?: number
     name: string

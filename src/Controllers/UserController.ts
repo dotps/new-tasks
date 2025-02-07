@@ -1,41 +1,22 @@
 import {UserService} from "../Services/UserService"
 import {Request, Response} from "express"
 import {IUserController} from "./IUserController"
-import {ORM} from "../Data/Types"
-import {ResponseCode} from "../ResponseCode"
-import {ResponseError} from "../ResponseError"
+import {ORM, UserData} from "../Data/Types"
 import {User} from "../Models/User"
-import {AuthData} from "../Data/AuthData"
-import {ResponseSuccess} from "../ResponseSuccess"
 import {IUserService} from "../Services/IUserService"
+import {Entity} from "../Entity"
 
 export class UserController implements IUserController {
 
-    private userService: IUserService
+    private readonly userService: IUserService
 
     constructor(orm: ORM) {
         this.userService = new UserService(orm)
     }
 
     async createUser(req: Request, res: Response): Promise<void> {
-
         const user = new User(req.body)
-        const validationErrors: string[] = []
-        if (!user.isValidData(validationErrors)) {
-            return ResponseError.send(res, "Пользователь не создан. Входные данные не валидны. " + validationErrors.join(" "), ResponseCode.ERROR_BAD_REQUEST)
-        }
-
-        try {
-            const createdUser = await this.userService.createUser(user.toData())
-            if (!createdUser?.id) {
-                return ResponseError.send(res, "Пользователь не создан.", ResponseCode.SERVER_ERROR)
-            }
-            const response = new AuthData(createdUser)
-            ResponseSuccess.send(res, response, ResponseCode.SUCCESS_CREATED)
-        }
-        catch (errorContext) {
-            return ResponseError.send(res, "Ошибка при создании пользователя.", ResponseCode.SERVER_ERROR, errorContext)
-        }
+        await Entity.create<User, UserData>(res, user, this.userService.createUser.bind(this.userService), "Пользователь")
     }
 
     async getUsers(req: Request, res: Response): Promise<void> {

@@ -13,7 +13,6 @@ export class UserService implements IUserService {
         const createdData: UserData = await this.orm.user.create({
             data: userData
         })
-
         return new User(createdData)
     }
 }
