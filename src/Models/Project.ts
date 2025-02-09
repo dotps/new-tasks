@@ -1,6 +1,8 @@
 import {ProjectData} from "../Data/Types"
+import {IModel} from "./IModel"
+import {ModelProps} from "./User"
 
-export class Project {
+export class Project implements IModel {
 
     id?: number
     userId?: number
@@ -16,6 +18,16 @@ export class Project {
         this.createdAt = data?.createdAt ? new Date(data.createdAt) : new Date()
     }
 
+    get props(): ModelProps {
+        return {
+            name: "Проект",
+            errorMessages: {
+                titleIsRequired: "Заголовок обязателен.",
+                userNotChainToProject: "Не привязан пользователь.",
+            },
+        }
+    }
+
     toData(): ProjectData {
         return Object.assign({}, this) as ProjectData
     }
@@ -25,12 +37,12 @@ export class Project {
 
         if (!this.title) {
             isValid = false
-            errors.push("Заголовок обязателен.")
+            errors.push(this.props.errorMessages?.titleIsRequired)
         }
 
         if (!this.userId) {
             isValid = false
-            errors.push("Не привязан пользователь.")
+            errors.push(this.props.errorMessages.userNotChainToProject)
         }
 
         return isValid

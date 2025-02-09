@@ -23,6 +23,7 @@ export class Entity {
             }
             ResponseSuccess.send(res, createdEntity, ResponseCode.SUCCESS_CREATED)
         } catch (errorContext) {
+            console.log(errorContext)
             return ResponseError.send(res, `${entityName} - серверная ошибка при создании.`, ResponseCode.SERVER_ERROR, errorContext)
         }
     }

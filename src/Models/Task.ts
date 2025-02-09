@@ -1,6 +1,8 @@
 import {TaskData} from "../Data/Types"
+import {IModel} from "./IModel"
+import {ModelProps} from "./User"
 
-export class Task {
+export class Task implements IModel {
 
     id?: number
     projectId?: number
@@ -18,6 +20,17 @@ export class Task {
         this.createdAt = data?.createdAt ? new Date(data.createdAt) : new Date()
     }
 
+    get props(): ModelProps {
+        return {
+            name: "Задача",
+            errorMessages: {
+                titleIsRequired: "Заголовок обязателен.",
+                taskNotChainToProject: "Задача не привязана к проекту.",
+                dueIsWrong: "Указан некорректный срок выполнения.",
+            },
+        }
+    }
+
     toData(): TaskData {
         return Object.assign({}, this) as TaskData
     }
@@ -27,17 +40,17 @@ export class Task {
 
         if (!this.title) {
             isValid = false
-            errors.push("Заголовок обязателен.")
+            errors.push(this.props.errorMessages?.titleIsRequired)
         }
 
         if (!this.projectId) {
             isValid = false
-            errors.push("Задача не привязана к проекту.")
+            errors.push(this.props.errorMessages?.taskNotChainToProject)
         }
 
         if (!this.dueAt || this.dueAt <= this.createdAt) {
             isValid = false
-            errors.push("Указан некорректный срок выполнения.")
+            errors.push(this.props.errorMessages?.dueIsWrong)
         }
 
         return isValid
