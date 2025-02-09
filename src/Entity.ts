@@ -9,8 +9,9 @@ interface EntityWithId {
 }
 
 export class Entity {
-    static async create<TModel extends IModel, TData extends EntityWithId>(res: Response, entity: TModel, createMethod: Function, entityName: string): Promise<void> {
+    static async create<TModel extends IModel, TData extends EntityWithId>(res: Response, entity: TModel, createMethod: Function): Promise<void> {
         const validationErrors: string[] = []
+        const entityName: string = entity.props.name
 
         if (!entity.isValidData(validationErrors)) {
             return ResponseError.send(res, `Сущность "${entityName}" не создана. Входные данные не валидны. ${validationErrors.join(" ")}`, ResponseCode.ERROR_BAD_REQUEST)
@@ -24,7 +25,7 @@ export class Entity {
             ResponseSuccess.send(res, createdEntity, ResponseCode.SUCCESS_CREATED)
         } catch (errorContext) {
             console.log(errorContext)
-            return ResponseError.send(res, `${entityName} - серверная ошибка при создании.`, ResponseCode.SERVER_ERROR, errorContext)
+            return ResponseError.send(res, `Серверная ошибка при создании сущности "${entityName}".`, ResponseCode.SERVER_ERROR, errorContext)
         }
     }
 }
