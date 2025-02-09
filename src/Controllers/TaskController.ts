@@ -23,4 +23,13 @@ export class TaskController implements ITaskController {
         const task = new Task(req.body)
         await Entity.create<Task, TaskData>(res, task, this.taskService.createTask.bind(this.taskService))
     }
+
+    async updateTask(req: Request, res: Response): Promise<void> {
+        const task = new Task(req.body)
+        console.log(task)
+        // TODO: продолжить
+        // this.taskService.createTask
+        // await Entity.create<Task, TaskData>(res, task, this.taskService.createTask.bind(this.taskService))
+    }
+
 }

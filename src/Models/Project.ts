@@ -11,8 +11,8 @@ export class Project implements IModel {
     createdAt: Date
 
     constructor(data: Partial<ProjectData>) {
-        if (data?.id) this.id = Number(data?.id)
-        if (data?.userId) this.userId = Number(data?.userId)
+        if (data?.id) this.id = Number(data.id)
+        if (data?.userId) this.userId = Number(data.userId)
         this.title = data?.title?.toString().trim() || ""
         this.description = data?.description?.toString().trim() || ""
         this.createdAt = data?.createdAt ? new Date(data.createdAt) : new Date()

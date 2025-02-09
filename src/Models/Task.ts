@@ -8,16 +8,16 @@ export class Task implements IModel {
     projectId?: number
     title: string
     description: string
-    dueAt: Date
-    createdAt: Date
+    dueAt?: Date
+    createdAt?: Date
 
     constructor(data: Partial<TaskData>) {
-        if (data?.id) this.id = Number(data?.id)
-        if (data?.projectId) this.projectId = Number(data?.projectId)
+        if (data?.id) this.id = Number(data.id)
+        if (data?.projectId) this.projectId = Number(data.projectId)
         this.title = data?.title?.toString().trim() || ""
         this.description = data?.description?.toString().trim() || ""
-        this.dueAt = data?.dueAt ? new Date(data.dueAt) : new Date()
-        this.createdAt = data?.createdAt ? new Date(data.createdAt) : new Date()
+        if (data?.dueAt) this.dueAt = data.dueAt
+        if (data?.createdAt) this.createdAt = new Date(data.createdAt)
     }
 
     get props(): ModelProps {
@@ -48,11 +48,19 @@ export class Task implements IModel {
             errors.push(this.props.errorMessages?.taskNotChainToProject)
         }
 
-        if (!this.dueAt || this.dueAt <= this.createdAt) {
+        // TODO: тут надо переделать, дата создания не известна, тут надо проверить на валидность соответствия даты
+        if (!this.isValidDue()) {
             isValid = false
             errors.push(this.props.errorMessages?.dueIsWrong)
         }
 
         return isValid
     }
+
+    private isValidDue(): boolean | undefined {
+        return this.dueAt && this.createdAt && this.dueAt > this.createdAt
+    }
+    // private isNotValidDue(): boolean {
+    //     return (this.createdAt && this.dueAt <= this.createdAt)
+    // }
 }

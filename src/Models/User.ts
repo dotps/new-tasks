@@ -19,7 +19,7 @@ export class User implements IModel {
     createdAt: Date
 
     constructor(data: Partial<UserData>) {
-        if (data?.id) this.id = Number(data?.id)
+        if (data?.id) this.id = Number(data.id)
         this.name = data?.name?.toString().trim() || ""
         this.email = data?.email?.toString().trim() || ""
         this.createdAt = data?.createdAt ? new Date(data.createdAt) : new Date()
