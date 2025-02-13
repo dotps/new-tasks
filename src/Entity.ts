@@ -12,7 +12,7 @@ export class Entity {
 
     static async create<TModel extends IModel, TData extends EntityWithId>(res: Response, entity: TModel, createMethod: Function): Promise<void> {
         const validationErrors: string[] = []
-        const entityName: string = entity.props.name
+        const entityName: string = entity.getName()
 
         if (!entity.isValidCreateData(validationErrors)) {
             return ResponseError.send(res, `Сущность "${entityName}" не создана. Входные данные не валидны. ${validationErrors.join(" ")}`, ResponseCode.ERROR_BAD_REQUEST)
@@ -32,7 +32,7 @@ export class Entity {
 
     static async update<TModel extends IModel, TData extends EntityWithId>(res: Response, entity: TModel, updateMethod: Function): Promise<void> {
         const validationErrors: string[] = []
-        const entityName: string = entity.props.name
+        const entityName: string = entity.getName()
 
         if (!entity.isValidUpdateData(validationErrors)) {
             return ResponseError.send(res, `Сущность "${entityName}" не обновлена. Входные данные не валидны. ${validationErrors.join(" ")}`, ResponseCode.ERROR_BAD_REQUEST)
