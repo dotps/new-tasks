@@ -34,21 +34,13 @@ export class Entity {
         const validationErrors: string[] = []
         const entityName: string = entity.props.name
 
-        console.log(entity)
-        console.log(entity.toData())
-
         if (!entity.isValidUpdateData(validationErrors)) {
             return ResponseError.send(res, `Сущность "${entityName}" не обновлена. Входные данные не валидны. ${validationErrors.join(" ")}`, ResponseCode.ERROR_BAD_REQUEST)
         }
 
         try {
             const updatedEntity: TData = await updateMethod(entity.toData())
-            console.log(updatedEntity)
-            return
-            if (!updatedEntity?.id) {
-                return ResponseError.send(res, `Сущность "${entityName}" не создана.`, ResponseCode.SERVER_ERROR)
-            }
-            ResponseSuccess.send(res, updatedEntity, ResponseCode.SUCCESS_CREATED)
+            ResponseSuccess.send(res, updatedEntity, ResponseCode.SUCCESS)
         } catch (errorContext) {
             console.log(errorContext)
             return ResponseError.send(res, `Серверная ошибка при обновлении сущности "${entityName}".`, ResponseCode.SERVER_ERROR, errorContext)

@@ -65,4 +65,8 @@ export class User implements IModel {
         const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         return pattern.test(email)
     }
+
+    isValidUpdateData(errors: string[]): boolean {
+        return true
+    }
 }

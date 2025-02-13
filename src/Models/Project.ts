@@ -47,4 +47,8 @@ export class Project implements IModel {
 
         return isValid
     }
+
+    isValidUpdateData(errors: string[]): boolean {
+        return true
+    }
 }

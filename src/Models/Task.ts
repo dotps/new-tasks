@@ -9,28 +9,29 @@ export class Task implements IModel {
     projectId?: number
     title?: string
     description?: string
-    dueAt?: Date
+    dueAt?: Date | null
     createdAt?: Date
 
     constructor(data: Partial<TaskData>) {
-        if (data?.id) this.id = Number(data.id)
-        if (data?.projectId) this.projectId = Number(data.projectId)
-        if (data?.title) this.title = data?.title?.toString().trim()
-        if (data?.description) this.description = data?.description?.toString().trim()
-        if (data?.dueAt) {
-            this.dueAt = DateHelper.isValidStringDate(data.dueAt.toString()) ? new Date(data.dueAt) : new Date(NaN)
-        }
-        if (data?.createdAt) this.createdAt = new Date(data.createdAt)
+
+        const { id, projectId, title, description, dueAt, createdAt } = data
+
+        this.id = (id !== undefined) ? Number(id) : undefined
+        this.projectId = (projectId !== undefined) ? Number(projectId) : undefined
+        this.title = (title !== undefined) ? title.toString().trim() : undefined
+        this.description = (description !== undefined) ? description?.toString().trim() : undefined
+        this.dueAt = (dueAt !== undefined && DateHelper.isValidDate(dueAt)) ? new Date(dueAt) : undefined
+        this.createdAt = createdAt ? new Date(createdAt) : undefined
     }
 
     get props(): ModelProps {
         return {
             name: "Задача",
             errorMessages: {
-                idIsRequired: "Id обязателен.",
-                titleIsRequired: "Заголовок обязателен.",
+                idRequired: "Id обязателен.",
+                titleRequired: "Заголовок обязателен.",
                 taskNotChainToProject: "Задача не привязана к проекту.",
-                dueIsWrong: "Указан некорректный срок выполнения.",
+                dueWrong: "Указан некорректный срок выполнения.",
             },
         }
     }
@@ -44,49 +45,39 @@ export class Task implements IModel {
 
         if (!this.title) {
             isValid = false
-            errors.push(this.props.errorMessages?.titleIsRequired)
+            errors.push(this.props.errorMessages?.titleRequired)
         }
 
-        // TODO: это под вопросом, т.к. при обновлении проекта может и не быть или задачу можно привязать к другому проекту
-        // скорее всего валидацию нужно перенести в TaskService
-        if (!this.projectId) {
+        // TODO: скорее всего валидацию нужно перенести в TaskService
+        if (this.projectId !== undefined && !this.projectId) {
             isValid = false
             errors.push(this.props.errorMessages?.taskNotChainToProject)
         }
 
-        if (!this.isValidDue()) {
+        if (this.dueAt !== undefined && !this.isValidDue()) {
             isValid = false
-            errors.push(this.props.errorMessages?.dueIsWrong)
+            errors.push(this.props.errorMessages?.dueWrong)
         }
 
         return isValid
     }
 
-    // isValidUpdateData<TaskData>(data: TaskData, errors: string[]): boolean {
     isValidUpdateData(errors: string[]): boolean {
         let isValid = true
 
         if (this.id === undefined) {
             isValid = false
-            errors.push(this.props.errorMessages?.idIsRequired)
+            errors.push(this.props.errorMessages?.idRequired)
         }
-        // TODO: доделать валидацию
 
+        if (this.projectId !== undefined && !this.projectId) {
+            isValid = false
+            errors.push(this.props.errorMessages?.taskNotChainToProject)
+        }
 
-        // if (data.projectId !== undefined && !data.projectId) {
+        // if (this.dueAt !== undefined && !this.isValidDue()) {
         //     isValid = false
-        //     errors.push(this.props.errorMessages?.taskNotChainToProject)
-        // }
-        //
-        // if (data.dueAt !== undefined) {
-        //     const dueDate = new Date(data.dueAt)
-        //     if (isNaN(dueDate.getTime())) {
-        //         isValid = false
-        //         errors.push(this.props.errorMessages?.dueIsWrong)
-        //     } else if (this.createdAt && dueDate < this.createdAt) {
-        //         isValid = false
-        //         errors.push(this.props.errorMessages?.dueIsWrong)
-        //     }
+        //     errors.push(this.props.errorMessages?.dueWrong)
         // }
 
         return isValid
@@ -95,7 +86,7 @@ export class Task implements IModel {
     private isValidDue(): boolean {
         if (!this.dueAt || isNaN(this.dueAt.getTime())) return false
         if (this.dueAt < new Date()) return false
-        if (this.createdAt && this.dueAt <= this.createdAt) return false
+        if (this.createdAt !== undefined && this.dueAt <= this.createdAt) return false
         return true
     }
 }

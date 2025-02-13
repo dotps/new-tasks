@@ -6,6 +6,7 @@ import { Project } from "../Models/Project";
 import { Task } from "../Models/Task";
 import { ITaskService } from "../Services/ITaskService";
 import {Entity} from "../Entity"
+import {ObjectHelper} from "../Utils/ObjectHelper"
 
 export class TaskController implements ITaskController {
     private readonly taskService: ITaskService
@@ -25,7 +26,9 @@ export class TaskController implements ITaskController {
     }
 
     async updateTask(req: Request, res: Response): Promise<void> {
-        const task = new Task(req.body)
+        const taskData = { ...req.body, id: Number(req.params.id) || undefined }
+        // console.log(taskData)
+        const task = new Task(taskData)
         await Entity.update<Task, TaskData>(res, task, this.taskService.updateTask.bind(this.taskService))
     }
 
