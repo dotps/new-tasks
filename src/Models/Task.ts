@@ -1,6 +1,6 @@
 import {TaskData} from "../Data/Types"
 import {IModel} from "./IModel"
-import {ErrorMessages, ModelProps} from "./User"
+import {ErrorMessages} from "./ErrorMessages"
 
 export class Task implements IModel {
 
@@ -10,7 +10,7 @@ export class Task implements IModel {
     private readonly description?: string
     private readonly dueAt?: Date
 
-    private name: string = "Задача"
+    private modelName: string = "Задача"
     private errorMessages: ErrorMessages = {
         idRequired: "Id обязателен.",
         titleRequired: "Заголовок обязателен.",
@@ -26,8 +26,8 @@ export class Task implements IModel {
         this.dueAt = data?.dueAt ? new Date(data.dueAt) : undefined
     }
 
-    getName(): string {
-        return this.name
+    getModelName(): string {
+        return this.modelName
     }
 
     toCreateData(): Partial<TaskData> {
@@ -41,11 +41,8 @@ export class Task implements IModel {
 
     toUpdateData(): Partial<TaskData> {
         return {
+            ...this.toCreateData(),
             id: this.id,
-            projectId: this.projectId,
-            title: this.title,
-            description: this.description,
-            dueAt: this.dueAt,
         }
     }
 

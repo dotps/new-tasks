@@ -1,42 +1,42 @@
 import {UserData} from "../Data/Types"
 import {Token} from "../Token"
 import {IModel} from "./IModel"
-
-export type ModelProps = {
-    name: string
-    errorMessages: ErrorMessages
-}
-
-export type ErrorMessages = {
-    [key: string]: string
-}
+import {ErrorMessages} from "./ErrorMessages"
 
 export class User implements IModel {
 
     id?: number
-    name: string
-    email: string
-    createdAt: Date
+    name?: string
+    email?: string
 
-    constructor(data: Partial<UserData>) {
-        if (data?.id) this.id = Number(data.id)
-        this.name = data?.name?.toString().trim() || ""
-        this.email = data?.email?.toString().trim() || ""
-        this.createdAt = data?.createdAt ? new Date(data.createdAt) : new Date()
+    private modelName: string = "Пользователь"
+    private errorMessages: ErrorMessages = {
+        nameIsRequired: "Имя пользователя обязательно.",
+        emailIsWrong: "Неверный e-mail.",
     }
 
-    get props(): ModelProps {
+    constructor(data: Partial<UserData>) {
+        this.id = Number(data?.id) || undefined
+        this.name = data?.name?.toString().trim() || undefined
+        this.email = data?.email?.toString().trim() || undefined
+    }
+
+    getModelName(): string {
+        return this.modelName
+    }
+
+    toCreateData(): Partial<UserData> {
         return {
-            name: "Пользователь",
-            errorMessages: {
-                nameIsRequired: "Имя пользователя обязательно.",
-                emailIsWrong: "Неверный e-mail.",
-            },
+            name: this.name,
+            email: this.email,
         }
     }
 
-    toData(): UserData {
-        return Object.assign({}, this) as UserData
+    toUpdateData(): Partial<UserData> {
+        return {
+            ...this.toCreateData(),
+            id: this.id,
+        }
     }
 
     getToken(): string {
@@ -49,18 +49,18 @@ export class User implements IModel {
 
         if (!this.name) {
             isValid = false
-            errors.push(this.props.errorMessages?.nameIsRequired)
+            errors.push(this.errorMessages?.nameIsRequired)
         }
 
         if (!this.isValidEmail(this.email)) {
             isValid = false
-            errors.push(this.props.errorMessages?.emailIsWrong)
+            errors.push(this.errorMessages?.emailIsWrong)
         }
 
         return isValid
     }
 
-    private isValidEmail(email: string): boolean {
+    private isValidEmail(email: string | undefined): boolean {
         if (!email) return false
         const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         return pattern.test(email)

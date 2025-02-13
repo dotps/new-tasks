@@ -1,35 +1,44 @@
-import {ProjectData} from "../Data/Types"
+import {ProjectData, UserData} from "../Data/Types"
 import {IModel} from "./IModel"
-import {ModelProps} from "./User"
+import {ErrorMessages} from "./ErrorMessages"
 
 export class Project implements IModel {
 
-    id?: number
-    userId?: number
-    title: string
-    description: string
-    createdAt: Date
+    private readonly id?: number
+    private readonly userId?: number
+    private readonly title?: string
+    private readonly description?: string
 
-    constructor(data: Partial<ProjectData>) {
-        if (data?.id) this.id = Number(data.id)
-        if (data?.userId) this.userId = Number(data.userId)
-        this.title = data?.title?.toString().trim() || ""
-        this.description = data?.description?.toString().trim() || ""
-        this.createdAt = data?.createdAt ? new Date(data.createdAt) : new Date()
+    private modelName: string = "Пользователь"
+    private errorMessages: ErrorMessages = {
+        titleIsRequired: "Заголовок обязателен.",
+        userNotChainToProject: "Не привязан пользователь.",
     }
 
-    get props(): ModelProps {
+    constructor(data: Partial<ProjectData>) {
+        this.id = Number(data?.id) || undefined
+        this.userId = Number(data?.userId) || undefined
+        this.title = data?.title?.toString().trim() || undefined
+        this.description = data?.description?.toString().trim() || undefined
+    }
+
+    getModelName(): string {
+        return this.modelName
+    }
+
+    toCreateData(): Partial<ProjectData> {
         return {
-            name: "Проект",
-            errorMessages: {
-                titleIsRequired: "Заголовок обязателен.",
-                userNotChainToProject: "Не привязан пользователь.",
-            },
+            title: this.title,
+            description: this.description,
+            userId: this.userId,
         }
     }
 
-    toData(): ProjectData {
-        return Object.assign({}, this) as ProjectData
+    toUpdateData(): Partial<ProjectData> {
+        return {
+            ...this.toCreateData(),
+            id: this.id,
+        }
     }
 
     isValidCreateData(errors: string[]): boolean {
@@ -37,12 +46,12 @@ export class Project implements IModel {
 
         if (!this.title) {
             isValid = false
-            errors.push(this.props.errorMessages?.titleIsRequired)
+            errors.push(this.errorMessages?.titleIsRequired)
         }
 
         if (!this.userId) {
             isValid = false
-            errors.push(this.props.errorMessages.userNotChainToProject)
+            errors.push(this.errorMessages.userNotChainToProject)
         }
 
         return isValid
