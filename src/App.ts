@@ -5,6 +5,7 @@ import {PrismaClient} from "@prisma/client"
 import {ORM} from "./Data/Types"
 import {ResponseError} from "./ResponseError"
 import {ResponseCode} from "./ResponseCode"
+import {RequestBodyMiddleware} from "./Middlewares/RequestBodyMiddleware"
 
 export class App {
     private app: Application
@@ -13,12 +14,14 @@ export class App {
     constructor() {
         this.app = express()
         this.app.use(express.json())
+
+        const requestBodyMiddleware = new RequestBodyMiddleware()
+        this.app.use(requestBodyMiddleware.handleJson)
+
         const orm:ORM = new PrismaClient()
         this.apiRouter = new ApiRouter(orm)
         this.initRoutes()
     }
-
-    // TODO: обработка ошибок bodyparser - не валидный json
 
     public start(port: number): void {
         this.app.listen(port, () => {
@@ -28,7 +31,6 @@ export class App {
 
     private initRoutes(): void {
         this.app.use('/api', this.apiRouter.getRouter())
-
         this.app.use((req:  Request, res: Response) => {
             ResponseError.send(res, "Маршрут не найден", ResponseCode.ERROR_NOT_FOUND)
         })

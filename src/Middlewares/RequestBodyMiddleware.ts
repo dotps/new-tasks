@@ -1,0 +1,13 @@
+import {Request, Response, NextFunction} from "express"
+import {ResponseError} from "../ResponseError"
+import {ResponseCode} from "../ResponseCode"
+
+export class RequestBodyMiddleware {
+
+    public handleJson(err: Error, req: Request, res: Response, next: NextFunction): void {
+        if ('body' in err) {
+            return ResponseError.send(res, "Невалидный JSON.", ResponseCode.ERROR_BAD_REQUEST)
+        }
+        next()
+    }
+}
