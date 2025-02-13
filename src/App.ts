@@ -31,9 +31,7 @@ export class App {
 
     private initRoutes(): void {
         this.app.use('/api', this.apiRouter.getRouter())
-        this.app.use((req:  Request, res: Response) => {
-            ResponseError.send(res, "Маршрут не найден", ResponseCode.ERROR_NOT_FOUND)
-        })
+        this.app.use(this.apiRouter.handleRoute)
     }
 }
 
