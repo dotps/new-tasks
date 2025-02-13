@@ -44,7 +44,7 @@ export class User implements IModel {
         return Token.generate(this.id)
     }
 
-    isValidData(errors: string[]): boolean {
+    isValidCreateData(errors: string[]): boolean {
         let isValid = true
 
         if (!this.name) {

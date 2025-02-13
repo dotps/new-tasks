@@ -5,23 +5,20 @@ import {DateHelper} from "../Utils/DateHelper"
 
 export class Task implements IModel {
 
-    id?: number
-    projectId?: number
-    title?: string
-    description?: string
-    dueAt?: Date | null
-    createdAt?: Date
+    private id?: number
+    private projectId?: number
+    private title?: string
+    private description?: string
+    private dueAt?: Date
 
     constructor(data: Partial<TaskData>) {
 
-        const { id, projectId, title, description, dueAt, createdAt } = data
+        this.id = Number(data?.id) || undefined
+        this.projectId = Number(data?.projectId) || undefined
+        this.title = data?.title?.toString().trim() || undefined
+        this.description = data?.description?.toString().trim() || undefined
+        this.dueAt = data?.dueAt ? new Date(data.dueAt) : undefined
 
-        this.id = (id !== undefined) ? Number(id) : undefined
-        this.projectId = (projectId !== undefined) ? Number(projectId) : undefined
-        this.title = (title !== undefined) ? title.toString().trim() : undefined
-        this.description = (description !== undefined) ? description?.toString().trim() : undefined
-        this.dueAt = (dueAt !== undefined && DateHelper.isValidDate(dueAt)) ? new Date(dueAt) : undefined
-        this.createdAt = createdAt ? new Date(createdAt) : undefined
     }
 
     get props(): ModelProps {
@@ -37,10 +34,30 @@ export class Task implements IModel {
     }
 
     toData(): TaskData {
-        return Object.assign({}, this) as TaskData
+        // return Object.assign({}, this) as TaskData
+        return {} as TaskData
     }
 
-    isValidData(errors: string[]): boolean {
+    toCreateData(): Partial<TaskData> {
+        return {
+            projectId: this.projectId,
+            title: this.title,
+            description: this.description,
+            dueAt: this.dueAt,
+        }
+    }
+
+    toUpdateData(): Partial<TaskData> {
+        return {
+            id: this.id,
+            projectId: this.projectId,
+            title: this.title,
+            description: this.description,
+            dueAt: this.dueAt,
+        }
+    }
+
+    isValidCreateData(errors: string[]): boolean {
         let isValid = true
 
         if (!this.title) {
@@ -48,13 +65,12 @@ export class Task implements IModel {
             errors.push(this.props.errorMessages?.titleRequired)
         }
 
-        // TODO: скорее всего валидацию нужно перенести в TaskService
-        if (this.projectId !== undefined && !this.projectId) {
+        if (!this.projectId) {
             isValid = false
             errors.push(this.props.errorMessages?.taskNotChainToProject)
         }
 
-        if (this.dueAt !== undefined && !this.isValidDue()) {
+        if (!this.isValidDue()) {
             isValid = false
             errors.push(this.props.errorMessages?.dueWrong)
         }
@@ -70,23 +86,16 @@ export class Task implements IModel {
             errors.push(this.props.errorMessages?.idRequired)
         }
 
-        if (this.projectId !== undefined && !this.projectId) {
+        if (this.dueAt !== undefined && !this.isValidDue()) {
             isValid = false
-            errors.push(this.props.errorMessages?.taskNotChainToProject)
+            errors.push(this.props.errorMessages?.dueWrong)
         }
-
-        // if (this.dueAt !== undefined && !this.isValidDue()) {
-        //     isValid = false
-        //     errors.push(this.props.errorMessages?.dueWrong)
-        // }
 
         return isValid
     }
 
     private isValidDue(): boolean {
         if (!this.dueAt || isNaN(this.dueAt.getTime())) return false
-        if (this.dueAt < new Date()) return false
-        if (this.createdAt !== undefined && this.dueAt <= this.createdAt) return false
-        return true
+        return this.dueAt > new Date()
     }
 }

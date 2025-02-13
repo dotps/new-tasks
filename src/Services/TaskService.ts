@@ -17,21 +17,19 @@ export class TaskService implements ITaskService {
         return new Project(ormData)
     }
 
-    async createTask(data: TaskData): Promise<Task>  {
-        const ormData: TaskData = await this.orm.task.create({
+    async createTask(data: TaskData): Promise<TaskData>  {
+        return this.orm.task.create({
             data: data
         })
-        return new Task(ormData)
     }
 
-    async updateTask(data: TaskData): Promise<Task>  {
-        const ormData: TaskData = await this.orm.task.update({
+    async updateTask(data: TaskData): Promise<TaskData>  {
+        return this.orm.task.update({
             where: {
                 id: data.id
             },
             data: data
         })
-        return new Task(ormData)
     }
 
 }

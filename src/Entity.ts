@@ -14,12 +14,12 @@ export class Entity {
         const validationErrors: string[] = []
         const entityName: string = entity.props.name
 
-        if (!entity.isValidData(validationErrors)) {
+        if (!entity.isValidCreateData(validationErrors)) {
             return ResponseError.send(res, `Сущность "${entityName}" не создана. Входные данные не валидны. ${validationErrors.join(" ")}`, ResponseCode.ERROR_BAD_REQUEST)
         }
 
         try {
-            const createdEntity: TData = await createMethod(entity.toData())
+            const createdEntity: TData = await createMethod(entity.toCreateData())
             if (!createdEntity?.id) {
                 return ResponseError.send(res, `Сущность "${entityName}" не создана.`, ResponseCode.SERVER_ERROR)
             }
@@ -39,7 +39,8 @@ export class Entity {
         }
 
         try {
-            const updatedEntity: TData = await updateMethod(entity.toData())
+            console.log("toUpdateData", entity.toUpdateData())
+            const updatedEntity: TData = await updateMethod(entity.toUpdateData())
             ResponseSuccess.send(res, updatedEntity, ResponseCode.SUCCESS)
         } catch (errorContext) {
             console.log(errorContext)

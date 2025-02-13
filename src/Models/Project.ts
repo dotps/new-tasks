@@ -32,7 +32,7 @@ export class Project implements IModel {
         return Object.assign({}, this) as ProjectData
     }
 
-    isValidData(errors: string[]): boolean {
+    isValidCreateData(errors: string[]): boolean {
         let isValid = true
 
         if (!this.title) {

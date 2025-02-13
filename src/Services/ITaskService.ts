@@ -4,6 +4,6 @@ import {Task} from "../Models/Task"
 
 export interface ITaskService {
     createProject(data: ProjectData): Promise<Project>
-    createTask(data: TaskData): Promise<Task>
-    updateTask(data: TaskData): Promise<Task>
+    createTask(data: TaskData): Promise<TaskData>
+    updateTask(data: TaskData): Promise<TaskData>
 }
