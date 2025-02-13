@@ -15,6 +15,8 @@ export class Project implements IModel {
         userNotChainToProject: "Не привязан пользователь.",
     }
 
+    // TODO: протестировать Project User Task
+
     constructor(data: Partial<ProjectData>) {
         this.id = Number(data?.id) || undefined
         this.userId = Number(data?.userId) || undefined
