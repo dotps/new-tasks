@@ -1,7 +1,7 @@
 import {Response} from "express"
 import {ResponseCode} from "./ResponseCode"
 
-import {ApiError} from "./ApiError"
+import {ValidationError} from "./ValidationError"
 
 export class ResponseError {
 
@@ -19,7 +19,7 @@ export class ResponseError {
 
     static send(res: Response, error?: any): void {
 
-        if (error instanceof ApiError) {
+        if (error instanceof ValidationError) {
             this.sendError(res, error.message, error.responseCode, error)
         }
         else if (error instanceof Error) {

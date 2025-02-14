@@ -1,5 +1,4 @@
 import {ProjectData, TaskData, UserData} from "../Data/Types"
-import {ErrorMessages} from "./ErrorMessages"
 
 export interface IModel {
     isValidCreateData(validationErrors: string[]): boolean

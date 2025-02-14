@@ -1,14 +1,15 @@
 import { Request, Response } from "express";
 import { ITaskController } from "./ITaskController";
-import {ORM, ProjectData, TaskData} from "../Data/Types";
+import {ORM, ProjectData, TaskData, UserData} from "../Data/Types";
 import { TaskService } from "../Services/TaskService";
 import { Project } from "../Models/Project";
 import { Task } from "../Models/Task";
 import { ITaskService } from "../Services/ITaskService";
-import {Entity} from "../Entity"
 import {ResponseSuccess} from "../ResponseSuccess"
 import {ResponseCode} from "../ResponseCode"
 import {ResponseError} from "../ResponseError"
+import {CreateEntityCommand} from "../Commands/CreateEntityCommand"
+import {UpdateEntityCommand} from "../Commands/UpdateEntityCommand"
 
 export class TaskController implements ITaskController {
     private readonly taskService: ITaskService
@@ -21,7 +22,8 @@ export class TaskController implements ITaskController {
         const project = new Project(req.body)
 
         try {
-            const entityData: ProjectData = await Entity.create<Project, ProjectData>(res, project, this.taskService.createProject.bind(this.taskService))
+            const createCommand = new CreateEntityCommand<Project, ProjectData>(project, this.taskService.createProject.bind(this.taskService))
+            const entityData: ProjectData = await createCommand.execute()
             ResponseSuccess.send(res, entityData, ResponseCode.SUCCESS_CREATED)
         }
         catch (error) {
@@ -33,7 +35,8 @@ export class TaskController implements ITaskController {
         const task = new Task(req.body)
 
         try {
-            const entityData: TaskData = await Entity.create<Task, TaskData>(res, task, this.taskService.createTask.bind(this.taskService))
+            const createCommand = new CreateEntityCommand<Task, TaskData>(task, this.taskService.createProject.bind(this.taskService))
+            const entityData: TaskData = await createCommand.execute()
             ResponseSuccess.send(res, entityData, ResponseCode.SUCCESS_CREATED)
         }
         catch (error) {
@@ -49,7 +52,8 @@ export class TaskController implements ITaskController {
         const task = new Task(taskData)
 
         try {
-            const entityData: TaskData = await Entity.update<Task, TaskData>(res, task, this.taskService.updateTask.bind(this.taskService))
+            const updateCommand = new UpdateEntityCommand<Task, TaskData>(task, this.taskService.createProject.bind(this.taskService))
+            const entityData: TaskData = await updateCommand.execute()
             ResponseSuccess.send(res, entityData, ResponseCode.SUCCESS)
         }
         catch (error) {

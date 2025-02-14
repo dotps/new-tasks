@@ -1,6 +1,6 @@
 import {ResponseCode} from "./ResponseCode"
 
-export class ApiError extends Error {
+export class ValidationError extends Error {
 
     responseCode: ResponseCode
     error?: unknown
