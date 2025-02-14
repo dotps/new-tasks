@@ -1,11 +1,10 @@
 import {IModel} from "./Models/IModel"
-import {Response} from "express"
 import {ResponseCode} from "./ResponseCode"
 import {ApiError} from "./ApiError"
 
 export class Entity {
 
-    static async create<TModel extends IModel, TData>(res: Response, entity: TModel, createMethod: Function): Promise<TData> {
+    static async create<TModel extends IModel, TData>(entity: TModel, createMethod: Function): Promise<TData> {
 
         const validationErrors: string[] = []
         const entityName: string = entity.getModelName()
@@ -29,7 +28,7 @@ export class Entity {
         }
     }
 
-    static async update<TModel extends IModel, TData>(res: Response, entity: TModel, updateMethod: Function): Promise<TData> {
+    static async update<TModel extends IModel, TData>(entity: TModel, updateMethod: Function): Promise<TData> {
 
         const validationErrors: string[] = []
         const entityName: string = entity.getModelName()
