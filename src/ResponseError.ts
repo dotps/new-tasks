@@ -4,6 +4,7 @@ import {ResponseCode} from "./ResponseCode"
 import {ApiError} from "./ApiError"
 
 export class ResponseError {
+
     private readonly message: string
     private readonly statusCode: number
     private readonly error: any
@@ -16,23 +17,23 @@ export class ResponseError {
         this.timestamp = new Date().toISOString()
     }
 
-    private static sendError(res: Response, message: string, statusCode: ResponseCode, errorContext?: any): void {
-        const error = new ResponseError(message, statusCode, errorContext)
-        res.status(statusCode).json(error)
-    }
+    static send(res: Response, error?: any): void {
 
-    static send(res: Response, errorContext: any): void {
-
-        if (errorContext instanceof ApiError) {
-            this.sendError(res, errorContext.message, errorContext.responseCode, errorContext)
+        if (error instanceof ApiError) {
+            this.sendError(res, error.message, error.responseCode, error)
         }
-        else if (errorContext instanceof Error) {
-            this.sendError(res, errorContext.message, ResponseCode.SERVER_ERROR, errorContext)
+        else if (error instanceof Error) {
+            this.sendError(res, error.message, ResponseCode.SERVER_ERROR, error)
         }
         else {
-            this.sendError(res, "Неизвестная ошибка.", ResponseCode.SERVER_ERROR, errorContext)
+            this.sendError(res, "Неизвестная ошибка.", ResponseCode.SERVER_ERROR, error)
         }
 
-        console.log(errorContext)
+        console.log(error)
+    }
+
+    static sendError(res: Response, message: string, statusCode: ResponseCode, errorContext?: any): void {
+        const error = new ResponseError(message, statusCode, errorContext)
+        res.status(statusCode).json(error)
     }
 }
