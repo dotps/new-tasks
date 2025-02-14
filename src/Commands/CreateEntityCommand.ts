@@ -25,6 +25,8 @@ export class CreateEntityCommand<TModel extends IModel, TData> implements IEntit
             )
         }
 
+        // TODO: можно ли отказаться от toCreateData() toUpdateData()
+
         return this.method(this.entity.toCreateData())
     }
 }

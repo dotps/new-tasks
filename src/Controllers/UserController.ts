@@ -29,6 +29,7 @@ export class UserController implements IUserController {
             const authData = new AuthData(createdUser)
             ResponseSuccess.send(res, authData, ResponseCode.SUCCESS_CREATED)
 
+            // TODO: сделать ветку и реализовать через await this.userService.createUser(user.toCreateData())
             // const entityData: UserData = await this.userService.createUser(user.toCreateData())
             // const createdUser = new User(entityData)
             // const authData = new AuthData(createdUser)
