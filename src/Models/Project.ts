@@ -9,13 +9,11 @@ export class Project implements IModel {
     private readonly title?: string
     private readonly description?: string
 
-    private modelName: string = "Пользователь"
+    private modelName: string = "Проект"
     private errorMessages: ErrorMessages = {
         titleIsRequired: "Заголовок обязателен.",
         userNotChainToProject: "Не привязан пользователь.",
     }
-
-    // TODO: протестировать Project User Task
 
     constructor(data: Partial<ProjectData>) {
         this.id = Number(data?.id) || undefined

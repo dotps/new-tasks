@@ -1,12 +1,15 @@
 import { Request, Response } from "express";
 import { ITaskController } from "./ITaskController";
-import { ORM, ProjectData, TaskData } from "../Data/Types";
+import {ORM, ProjectData, TaskData} from "../Data/Types";
 import { TaskService } from "../Services/TaskService";
 import { Project } from "../Models/Project";
 import { Task } from "../Models/Task";
 import { ITaskService } from "../Services/ITaskService";
 import {Entity} from "../Entity"
-import {ObjectHelper} from "../Utils/ObjectHelper"
+import {ResponseSuccess} from "../ResponseSuccess"
+import {ResponseCode} from "../ResponseCode"
+import {ResponseError} from "../ResponseError"
+import {ApiError} from "../ApiError"
 
 export class TaskController implements ITaskController {
     private readonly taskService: ITaskService
@@ -17,12 +20,24 @@ export class TaskController implements ITaskController {
 
     async createProject(req: Request, res: Response): Promise<void> {
         const project = new Project(req.body)
-        await Entity.create<Project, ProjectData>(res, project, this.taskService.createProject.bind(this.taskService))
+        try {
+            const entityData: ProjectData = await Entity.create<Project, ProjectData>(res, project, this.taskService.createProject.bind(this.taskService))
+            ResponseSuccess.send(res, entityData, ResponseCode.SUCCESS_CREATED)
+        }
+        catch (error) {
+            ResponseError.send(res, error)
+        }
     }
 
     async createTask(req: Request, res: Response): Promise<void> {
         const task = new Task(req.body)
-        await Entity.create<Task, TaskData>(res, task, this.taskService.createTask.bind(this.taskService))
+        try {
+            const entityData: TaskData | null = await Entity.create<Task, TaskData>(res, task, this.taskService.createTask.bind(this.taskService))
+            ResponseSuccess.send(res, entityData, ResponseCode.SUCCESS_CREATED)
+        }
+        catch (error) {
+            ResponseError.send(res, error)
+        }
     }
 
     async updateTask(req: Request, res: Response): Promise<void> {
