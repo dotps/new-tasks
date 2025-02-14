@@ -9,7 +9,6 @@ import {ResponseSuccess} from "../ResponseSuccess"
 import {ResponseCode} from "../ResponseCode"
 import {AuthData} from "../Data/AuthData"
 import {ResponseError} from "../ResponseError"
-import {ApiError} from "../ApiError"
 
 export class UserController implements IUserController {
 

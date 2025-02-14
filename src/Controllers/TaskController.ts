@@ -9,7 +9,6 @@ import {Entity} from "../Entity"
 import {ResponseSuccess} from "../ResponseSuccess"
 import {ResponseCode} from "../ResponseCode"
 import {ResponseError} from "../ResponseError"
-import {ApiError} from "../ApiError"
 
 export class TaskController implements ITaskController {
     private readonly taskService: ITaskService
@@ -20,6 +19,7 @@ export class TaskController implements ITaskController {
 
     async createProject(req: Request, res: Response): Promise<void> {
         const project = new Project(req.body)
+
         try {
             const entityData: ProjectData = await Entity.create<Project, ProjectData>(res, project, this.taskService.createProject.bind(this.taskService))
             ResponseSuccess.send(res, entityData, ResponseCode.SUCCESS_CREATED)
@@ -31,8 +31,9 @@ export class TaskController implements ITaskController {
 
     async createTask(req: Request, res: Response): Promise<void> {
         const task = new Task(req.body)
+
         try {
-            const entityData: TaskData | null = await Entity.create<Task, TaskData>(res, task, this.taskService.createTask.bind(this.taskService))
+            const entityData: TaskData = await Entity.create<Task, TaskData>(res, task, this.taskService.createTask.bind(this.taskService))
             ResponseSuccess.send(res, entityData, ResponseCode.SUCCESS_CREATED)
         }
         catch (error) {
@@ -43,10 +44,17 @@ export class TaskController implements ITaskController {
     async updateTask(req: Request, res: Response): Promise<void> {
         const taskData = {
             ...req.body,
-            id: Number(req.params.id) || 0
+            id: Number(req.params.id) || undefined
         }
         const task = new Task(taskData)
-        await Entity.update<Task, TaskData>(res, task, this.taskService.updateTask.bind(this.taskService))
+
+        try {
+            const entityData: TaskData = await Entity.update<Task, TaskData>(res, task, this.taskService.updateTask.bind(this.taskService))
+            ResponseSuccess.send(res, entityData, ResponseCode.SUCCESS)
+        }
+        catch (error) {
+            ResponseError.send(res, error)
+        }
     }
 
 }

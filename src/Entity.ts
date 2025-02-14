@@ -1,13 +1,12 @@
 import {IModel} from "./Models/IModel"
 import {Response} from "express"
-import {ResponseError} from "./ResponseError"
 import {ResponseCode} from "./ResponseCode"
-import {ResponseSuccess} from "./ResponseSuccess"
 import {ApiError} from "./ApiError"
 
 export class Entity {
 
     static async create<TModel extends IModel, TData>(res: Response, entity: TModel, createMethod: Function): Promise<TData> {
+
         const validationErrors: string[] = []
         const entityName: string = entity.getModelName()
 
@@ -20,7 +19,8 @@ export class Entity {
 
         try {
             return await createMethod(entity.toCreateData())
-        } catch (error) {
+        }
+        catch (error) {
             throw new ApiError(
                 `Серверная ошибка при создании сущности "${entityName}".`,
                 ResponseCode.SERVER_ERROR,
@@ -29,19 +29,27 @@ export class Entity {
         }
     }
 
-    static async update<TModel extends IModel, TData>(res: Response, entity: TModel, updateMethod: Function): Promise<void> {
+    static async update<TModel extends IModel, TData>(res: Response, entity: TModel, updateMethod: Function): Promise<TData> {
+
         const validationErrors: string[] = []
         const entityName: string = entity.getModelName()
 
         if (!entity.isValidUpdateData(validationErrors)) {
-            return ResponseError.send(res, `Сущность "${entityName}" не обновлена. Входные данные не валидны. ${validationErrors.join(" ")}`, ResponseCode.ERROR_BAD_REQUEST)
+            throw new ApiError(
+                `Сущность "${entityName}" не обновлена. Входные данные не валидны. ${validationErrors.join(" ")}`,
+                ResponseCode.ERROR_BAD_REQUEST
+            )
         }
 
         try {
-            const updatedEntity: TData = await updateMethod(entity.toUpdateData())
-            ResponseSuccess.send(res, updatedEntity, ResponseCode.SUCCESS)
-        } catch (errorContext) {
-            return ResponseError.send(res, `Серверная ошибка при обновлении сущности "${entityName}".`, ResponseCode.SERVER_ERROR, errorContext)
+            return await updateMethod(entity.toUpdateData())
+        }
+        catch (error) {
+            throw new ApiError(
+                `Серверная ошибка при обновлении сущности "${entityName}".`,
+                ResponseCode.SERVER_ERROR,
+                error
+            )
         }
     }
 }

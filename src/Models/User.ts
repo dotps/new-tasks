@@ -25,6 +25,9 @@ export class User implements IModel {
         return this.modelName
     }
 
+    // TODO: попробовать реализовать через фабрику
+    //  ResponseFactory.getCreate<UserData>(data)
+    //  ResponseFactory.getUpdate<UserData>(data)
     toCreateData(): Partial<UserData> {
         return {
             name: this.name,
