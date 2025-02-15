@@ -5,9 +5,9 @@ import {ErrorMessages} from "./ErrorMessages"
 
 export class User implements IModel {
 
-    id?: number
-    name?: string
-    email?: string
+    private readonly id?: number
+    private readonly name?: string
+    private readonly email?: string
 
     private modelName: string = "Пользователь"
     private errorMessages: ErrorMessages = {

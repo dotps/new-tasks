@@ -23,8 +23,8 @@ export class TaskController implements ITaskController {
 
         try {
             const createCommand = new CreateEntityCommand<Project, ProjectData>(project, this.taskService.createProject.bind(this.taskService))
-            const entityData: ProjectData = await createCommand.execute()
-            ResponseSuccess.send(res, entityData, ResponseCode.SUCCESS_CREATED)
+            const projectData: ProjectData = await createCommand.execute()
+            ResponseSuccess.send(res, projectData, ResponseCode.SUCCESS_CREATED)
         }
         catch (error) {
             ResponseError.send(res, error)
@@ -36,8 +36,8 @@ export class TaskController implements ITaskController {
 
         try {
             const createCommand = new CreateEntityCommand<Task, TaskData>(task, this.taskService.createProject.bind(this.taskService))
-            const entityData: TaskData = await createCommand.execute()
-            ResponseSuccess.send(res, entityData, ResponseCode.SUCCESS_CREATED)
+            const taskData: TaskData = await createCommand.execute()
+            ResponseSuccess.send(res, taskData, ResponseCode.SUCCESS_CREATED)
         }
         catch (error) {
             ResponseError.send(res, error)

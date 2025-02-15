@@ -22,23 +22,11 @@ export class UserController implements IUserController {
         const user = new User(req.body)
 
         try {
-
             const createCommand = new CreateEntityCommand<User, UserData>(user, this.userService.createUser.bind(this.userService))
-            const entityData: UserData = await createCommand.execute()
-            const createdUser = new User(entityData)
+            const userData: UserData = await createCommand.execute()
+            const createdUser = new User(userData)
             const authData = new AuthData(createdUser)
             ResponseSuccess.send(res, authData, ResponseCode.SUCCESS_CREATED)
-
-            // TODO: сделать ветку и реализовать через await this.userService.createUser(user.toCreateData())
-            // const entityData: UserData = await this.userService.createUser(user.toCreateData())
-            // const createdUser = new User(entityData)
-            // const authData = new AuthData(createdUser)
-            // ResponseSuccess.send(res, authData, ResponseCode.SUCCESS_CREATED)
-
-            // const entityData: UserData = await Entity.create<User, UserData>(res, user, this.userService.createUser.bind(this.userService))
-            // const createdUser = new User(entityData)
-            // const authData = new AuthData(createdUser)
-            // ResponseSuccess.send(res, authData, ResponseCode.SUCCESS_CREATED)
         }
         catch (error) {
             ResponseError.send(res, error)
