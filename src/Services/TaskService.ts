@@ -1,19 +1,36 @@
-import {TaskData} from "../Data/Types"
+import {ORM, TaskData} from "../Data/Types"
 import {ITaskService} from "./ITaskService"
-import {ITaskRepository} from "../Repositories/ITaskRepository"
+import {OrmError} from "../OrmError"
 
 export class TaskService implements ITaskService {
-    private repository: ITaskRepository
+    private orm: ORM
 
-    constructor(repository: ITaskRepository) {
-        this.repository = repository
+    constructor(orm: ORM) {
+        this.orm = orm
     }
 
-    async createTask(data: TaskData): Promise<TaskData>  {
-        return await this.repository.create(data)
+    async create(data: TaskData): Promise<TaskData> {
+        try {
+            return this.orm.task.create({
+                data: data
+            })
+        }
+        catch (error) {
+            throw new OrmError(error)
+        }
     }
 
-    async updateTask(data: TaskData): Promise<TaskData>  {
-        return await this.repository.update(data)
+    async update(data: TaskData): Promise<TaskData> {
+        try {
+            return this.orm.task.update({
+                where: {
+                    id: data.id
+                },
+                data: data
+            })
+        }
+        catch (error) {
+            throw new OrmError(error)
+        }
     }
 }

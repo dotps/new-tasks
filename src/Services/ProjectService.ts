@@ -1,15 +1,37 @@
-import {ProjectData} from "../Data/Types"
+import {ORM, ProjectData} from "../Data/Types"
 import {IProjectService} from "./IProjectService"
-import {IProjectRepository} from "../Repositories/IProjectRepository"
+import {OrmError} from "../OrmError"
+import {ResponseCode} from "../ResponseCode"
 
 export class ProjectService implements IProjectService {
-    private repository: IProjectRepository
+    private orm: ORM
 
-    constructor(repository: IProjectRepository) {
-        this.repository = repository
+    constructor(orm: ORM) {
+        this.orm = orm
     }
 
-    async createProject(data: ProjectData): Promise<ProjectData> {
-        return await this.repository.create(data)
+    async create(data: ProjectData): Promise<ProjectData> {
+        try {
+            return await this.orm.project.create({
+                data: data
+            })
+        }
+        catch (error) {
+            throw new OrmError(error)
+        }
+    }
+
+    async update(data: ProjectData): Promise<ProjectData> {
+        try {
+            return this.orm.project.update({
+                where: {
+                    id: data.id
+                },
+                data: data
+            })
+        }
+        catch (error) {
+            throw new OrmError(error)
+        }
     }
 }

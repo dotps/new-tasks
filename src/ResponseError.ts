@@ -2,6 +2,7 @@ import {Response} from "express"
 import {ResponseCode} from "./ResponseCode"
 
 import {ValidationError} from "./ValidationError"
+import {OrmError} from "./OrmError"
 
 export class ResponseError {
 
@@ -20,6 +21,9 @@ export class ResponseError {
     static send(res: Response, error?: any): void {
 
         if (error instanceof ValidationError) {
+            this.sendError(res, error.message, error.responseCode, error)
+        }
+        else if (error instanceof OrmError) {
             this.sendError(res, error.message, error.responseCode, error)
         }
         else if (error instanceof Error) {

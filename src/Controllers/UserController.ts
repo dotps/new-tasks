@@ -21,7 +21,7 @@ export class UserController implements IUserController {
         const user = new User(req.body)
 
         try {
-            const createCommand = new CreateEntityCommand<User, UserData>(user, this.userService.createUser.bind(this.userService))
+            const createCommand = new CreateEntityCommand<User, UserData>(user, this.userService.create.bind(this.userService))
             const userData: UserData = await createCommand.execute()
             const createdUser = new User(userData)
             const authData = new AuthData(createdUser)

@@ -1,5 +1,6 @@
 import {UserData} from "../Data/Types"
 
 export interface IUserService {
-    createUser(userData: UserData): Promise<UserData>
+    create(data: UserData): Promise<UserData>
+    update(data: UserData): Promise<UserData>
 }

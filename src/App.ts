@@ -4,14 +4,11 @@ import {IRouter} from "./Routes/IRouter"
 import {PrismaClient} from "@prisma/client"
 import {ORM} from "./Data/Types"
 import {RequestBodyMiddleware} from "./Middlewares/RequestBodyMiddleware"
-import {UserRepository} from "./Repositories/UserRepository"
 import {UserService} from "./Services/UserService"
 import {UserController} from "./Controllers/UserController"
 import {TaskController} from "./Controllers/TaskController"
 import {AuthMiddleware} from "./Middlewares/AuthMiddleware"
-import {TaskRepository} from "./Repositories/TaskRepository"
 import {TaskService} from "./Services/TaskService"
-import {ProjectRepository} from "./Repositories/ProjectRepository"
 import {ProjectService} from "./Services/ProjectService"
 import {ProjectController} from "./Controllers/ProjectController"
 
@@ -29,16 +26,13 @@ export class App {
 
         const orm:ORM = new PrismaClient()
 
-        const userRepository = new UserRepository(orm)
-        const userService = new UserService(userRepository)
+        const userService = new UserService(orm)
         const userController = new UserController(userService)
 
-        const projectRepository = new ProjectRepository(orm)
-        const projectService = new ProjectService(projectRepository)
+        const projectService = new ProjectService(orm)
         const projectController = new ProjectController(projectService)
 
-        const taskRepository = new TaskRepository(orm)
-        const taskService = new TaskService(taskRepository)
+        const taskService = new TaskService(orm)
         const taskController = new TaskController(taskService)
 
         this.apiRouter = new ApiRouter(userController, taskController, projectController, authMiddleware)

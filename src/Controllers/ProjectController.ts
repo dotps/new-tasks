@@ -19,11 +19,13 @@ export class ProjectController implements IProjectController {
         const project = new Project(req.body)
 
         try {
-            const createCommand = new CreateEntityCommand<Project, ProjectData>(project, this.projectService.createProject.bind(this.projectService))
+            const createCommand = new CreateEntityCommand<Project, ProjectData>(project, this.projectService.create.bind(this.projectService))
             const projectData: ProjectData = await createCommand.execute()
             ResponseSuccess.send(res, projectData, ResponseCode.SUCCESS_CREATED)
         }
         catch (error) {
+            console.log("++++++++++++++++")
+            console.log(error)
             ResponseError.send(res, error)
         }
     }

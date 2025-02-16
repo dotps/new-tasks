@@ -20,7 +20,7 @@ export class TaskController implements ITaskController {
         const task = new Task(req.body)
 
         try {
-            const createCommand = new CreateEntityCommand<Task, TaskData>(task, this.taskService.createTask.bind(this.taskService))
+            const createCommand = new CreateEntityCommand<Task, TaskData>(task, this.taskService.create.bind(this.taskService))
             const taskData: TaskData = await createCommand.execute()
             ResponseSuccess.send(res, taskData, ResponseCode.SUCCESS_CREATED)
         }
@@ -37,7 +37,7 @@ export class TaskController implements ITaskController {
         const task = new Task(taskData)
 
         try {
-            const updateCommand = new UpdateEntityCommand<Task, TaskData>(task, this.taskService.createTask.bind(this.taskService))
+            const updateCommand = new UpdateEntityCommand<Task, TaskData>(task, this.taskService.update.bind(this.taskService))
             const entityData: TaskData = await updateCommand.execute()
             ResponseSuccess.send(res, entityData, ResponseCode.SUCCESS)
         }

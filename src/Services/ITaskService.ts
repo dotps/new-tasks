@@ -1,6 +1,6 @@
 import {TaskData} from "../Data/Types"
 
 export interface ITaskService {
-    createTask(data: TaskData): Promise<TaskData>
-    updateTask(data: TaskData): Promise<TaskData>
+    create(data: TaskData): Promise<TaskData>
+    update(data: TaskData): Promise<TaskData>
 }
