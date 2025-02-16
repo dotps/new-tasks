@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {ProjectData} from "../Data/Types";
+import {ProjectData, TaskData, UserData} from "../Data/Types";
 import {Project} from "../Models/Project";
 import {ResponseSuccess} from "../ResponseSuccess"
 import {ResponseCode} from "../ResponseCode"
@@ -7,6 +7,10 @@ import {ResponseError} from "../ResponseError"
 import {CreateEntityCommand} from "../Commands/CreateEntityCommand"
 import {IProjectController} from "./IProjectController"
 import {IProjectService} from "../Services/IProjectService"
+import {Task} from "../Models/Task"
+import {UpdateEntityCommand} from "../Commands/UpdateEntityCommand"
+import {AuthData} from "../Data/AuthData"
+import {User} from "../Models/User"
 
 export class ProjectController implements IProjectController {
     private readonly projectService: IProjectService
@@ -24,9 +28,29 @@ export class ProjectController implements IProjectController {
             ResponseSuccess.send(res, projectData, ResponseCode.SUCCESS_CREATED)
         }
         catch (error) {
-            console.log("++++++++++++++++")
             console.log(error)
             ResponseError.send(res, error)
         }
+    }
+
+    async getAll(req: Request, res: Response): Promise<void> {
+
+        // Теперь у вас есть токен, и вы можете использовать его для дальнейшей обработки
+        // console.log(token);
+
+        // console.log(req.headers.authorization.)
+        const userId = Number(req.headers.authorization) || undefined
+        console.log(userId)
+        const user = new User({id: userId})
+        // const a = AuthData()
+        console.log(user)
+
+        // const taskData = {
+        //     ...req.body,
+        //     id: Number(req.params.id) || undefined
+        // }
+        // const task = new Task(taskData)
+
+
     }
 }

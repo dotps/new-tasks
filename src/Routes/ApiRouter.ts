@@ -32,6 +32,7 @@ export class ApiRouter implements IRouter {
         this.router.get('/users', this.userController.getUsers.bind(this.userController))
         this.router.post('/users', this.userController.createUser.bind(this.userController))
 
+        this.router.get('/projects', this.authMiddleware.handle, this.projectController.getAll.bind(this.projectController))
         this.router.post('/projects', this.authMiddleware.handle, this.projectController.createProject.bind(this.projectController))
 
         this.router.post('/tasks', this.authMiddleware.handle, this.taskController.createTask.bind(this.taskController))
