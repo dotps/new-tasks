@@ -23,7 +23,7 @@ export class ProjectService implements IProjectService {
 
     async update(data: ProjectData): Promise<ProjectData> {
         try {
-            return this.orm.project.update({
+            return await this.orm.project.update({
                 where: {
                     id: data.id
                 },

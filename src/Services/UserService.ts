@@ -12,7 +12,7 @@ export class UserService implements IUserService {
 
     async create(data: UserData): Promise<UserData> {
         try {
-            return this.orm.user.create({
+            return await this.orm.user.create({
                 data: data
             })
         }
@@ -23,7 +23,7 @@ export class UserService implements IUserService {
 
     async update(data: UserData): Promise<UserData> {
         try {
-            return this.orm.user.update({
+            return await this.orm.user.update({
                 where: {
                     id: data.id
                 },
