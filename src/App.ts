@@ -12,6 +12,8 @@ import {AuthMiddleware} from "./Middlewares/AuthMiddleware"
 import {TaskRepository} from "./Repositories/TaskRepository"
 import {TaskService} from "./Services/TaskService"
 import {ProjectRepository} from "./Repositories/ProjectRepository"
+import {ProjectService} from "./Services/ProjectService"
+import {ProjectController} from "./Controllers/ProjectController"
 
 export class App {
     private app: Application
@@ -31,12 +33,15 @@ export class App {
         const userService = new UserService(userRepository)
         const userController = new UserController(userService)
 
-        const taskRepository = new TaskRepository(orm)
         const projectRepository = new ProjectRepository(orm)
-        const taskService = new TaskService(taskRepository, projectRepository)
+        const projectService = new ProjectService(projectRepository)
+        const projectController = new ProjectController(projectService)
+
+        const taskRepository = new TaskRepository(orm)
+        const taskService = new TaskService(taskRepository)
         const taskController = new TaskController(taskService)
 
-        this.apiRouter = new ApiRouter(userController, taskController, authMiddleware)
+        this.apiRouter = new ApiRouter(userController, taskController, projectController, authMiddleware)
         this.initRoutes()
     }
 

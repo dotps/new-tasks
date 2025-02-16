@@ -1,17 +1,16 @@
 import {UserData} from "../Data/Types"
 import {IUserService} from "./IUserService"
-import {IRepository} from "../Repositories/IRepository"
+import {IUserRepository} from "../Repositories/IUserRepository"
 
 export class UserService implements IUserService {
-    private repository: IRepository
+    private repository: IUserRepository
 
-    constructor(repository: IRepository) {
+    constructor(repository: IUserRepository) {
         this.repository = repository
     }
 
     async createUser(data: UserData): Promise<UserData> {
-        // return await this.repository.create(data) as UserData
-        return await this.repository.create2<UserData>(data)
+        return await this.repository.create(data)
     }
 }
 

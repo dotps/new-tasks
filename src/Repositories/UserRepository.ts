@@ -1,7 +1,7 @@
-import {IRepository} from "./IRepository"
 import {ORM, UserData} from "../Data/Types"
+import {IUserRepository} from "./IUserRepository"
 
-export class UserRepository implements IRepository {
+export class UserRepository implements IUserRepository {
     private orm: ORM
 
     constructor(orm: ORM) {

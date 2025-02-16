@@ -1,7 +1,7 @@
 import {ORM, TaskData} from "../Data/Types"
-import {IRepository} from "./IRepository"
+import {ITaskRepository} from "./ITaskRepository"
 
-export class TaskRepository implements IRepository {
+export class TaskRepository implements ITaskRepository {
     private orm: ORM
 
     constructor(orm: ORM) {

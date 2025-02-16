@@ -1,6 +1,7 @@
 import {ORM, ProjectData} from "../Data/Types"
+import {IProjectRepository} from "./IProjectRepository"
 
-export class ProjectRepository {
+export class ProjectRepository implements IProjectRepository {
     private orm: ORM
 
     constructor(orm: ORM) {
