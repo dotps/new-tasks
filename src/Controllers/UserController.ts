@@ -1,7 +1,6 @@
-import {UserService} from "../Services/UserService"
 import {Request, Response} from "express"
 import {IUserController} from "./IUserController"
-import {ORM, UserData} from "../Data/Types"
+import {UserData} from "../Data/Types"
 import {User} from "../Models/User"
 import {IUserService} from "../Services/IUserService"
 import {ResponseSuccess} from "../ResponseSuccess"
@@ -9,7 +8,6 @@ import {ResponseCode} from "../ResponseCode"
 import {AuthData} from "../Data/AuthData"
 import {ResponseError} from "../ResponseError"
 import {CreateEntityCommand} from "../Commands/CreateEntityCommand"
-import {UserRepository} from "../Repositories/UserRepository"
 
 export class UserController implements IUserController {
 

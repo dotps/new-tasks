@@ -1,10 +1,8 @@
-import { Request, Response } from "express";
-import { ITaskController } from "./ITaskController";
-import {ORM, ProjectData, TaskData, UserData} from "../Data/Types";
-import { TaskService } from "../Services/TaskService";
-import { Project } from "../Models/Project";
-import { Task } from "../Models/Task";
-import { ITaskService } from "../Services/ITaskService";
+import {Request, Response} from "express";
+import {ITaskController} from "./ITaskController";
+import {TaskData} from "../Data/Types";
+import {Task} from "../Models/Task";
+import {ITaskService} from "../Services/ITaskService";
 import {ResponseSuccess} from "../ResponseSuccess"
 import {ResponseCode} from "../ResponseCode"
 import {ResponseError} from "../ResponseError"
@@ -18,24 +16,11 @@ export class TaskController implements ITaskController {
         this.taskService = taskService
     }
 
-    async createProject(req: Request, res: Response): Promise<void> {
-        const project = new Project(req.body)
-
-        try {
-            const createCommand = new CreateEntityCommand<Project, ProjectData>(project, this.taskService.createProject.bind(this.taskService))
-            const projectData: ProjectData = await createCommand.execute()
-            ResponseSuccess.send(res, projectData, ResponseCode.SUCCESS_CREATED)
-        }
-        catch (error) {
-            ResponseError.send(res, error)
-        }
-    }
-
     async createTask(req: Request, res: Response): Promise<void> {
         const task = new Task(req.body)
 
         try {
-            const createCommand = new CreateEntityCommand<Task, TaskData>(task, this.taskService.createProject.bind(this.taskService))
+            const createCommand = new CreateEntityCommand<Task, TaskData>(task, this.taskService.createTask.bind(this.taskService))
             const taskData: TaskData = await createCommand.execute()
             ResponseSuccess.send(res, taskData, ResponseCode.SUCCESS_CREATED)
         }
@@ -52,7 +37,7 @@ export class TaskController implements ITaskController {
         const task = new Task(taskData)
 
         try {
-            const updateCommand = new UpdateEntityCommand<Task, TaskData>(task, this.taskService.createProject.bind(this.taskService))
+            const updateCommand = new UpdateEntityCommand<Task, TaskData>(task, this.taskService.createTask.bind(this.taskService))
             const entityData: TaskData = await updateCommand.execute()
             ResponseSuccess.send(res, entityData, ResponseCode.SUCCESS)
         }
