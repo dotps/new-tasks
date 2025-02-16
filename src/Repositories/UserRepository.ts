@@ -1,5 +1,5 @@
 import {IRepository} from "./IRepository"
-import {ORM, UserData} from "./Data/Types"
+import {ORM, UserData} from "../Data/Types"
 
 export class UserRepository implements IRepository {
     private orm: ORM
@@ -8,13 +8,13 @@ export class UserRepository implements IRepository {
         this.orm = orm
     }
 
-    create(data: UserData): Promise<UserData> {
+    async create(data: UserData): Promise<UserData> {
         return this.orm.user.create({
             data: data
         })
     }
 
-    update(data: UserData): Promise<UserData> {
+    async update(data: UserData): Promise<UserData> {
         return this.orm.user.update({
             where: {
                 id: data.id

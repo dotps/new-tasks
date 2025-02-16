@@ -14,8 +14,8 @@ import {UpdateEntityCommand} from "../Commands/UpdateEntityCommand"
 export class TaskController implements ITaskController {
     private readonly taskService: ITaskService
 
-    constructor(orm: ORM) {
-        this.taskService = new TaskService(orm)
+    constructor(taskService: ITaskService) {
+        this.taskService = taskService
     }
 
     async createProject(req: Request, res: Response): Promise<void> {

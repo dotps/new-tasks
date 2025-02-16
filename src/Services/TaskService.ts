@@ -1,34 +1,25 @@
-import {ORM, ProjectData, TaskData} from "../Data/Types"
-import {Project} from "../Models/Project"
+import {ProjectData, TaskData} from "../Data/Types"
 import {ITaskService} from "./ITaskService"
-import {Task} from "../Models/Task"
+import {IRepository} from "../Repositories/IRepository"
 
 export class TaskService implements ITaskService {
-    private orm: ORM
+    private taskRepository: IRepository
+    private projectRepository: IRepository
 
-    constructor(orm: ORM) {
-        this.orm = orm
+    constructor(taskRepository: IRepository, projectRepository: IRepository) {
+        this.projectRepository = projectRepository
+        this.taskRepository = taskRepository
     }
 
     async createProject(data: ProjectData): Promise<ProjectData> {
-        return this.orm.project.create({
-            data: data
-        })
+        return await this.projectRepository.create(data) as ProjectData
     }
 
     async createTask(data: TaskData): Promise<TaskData>  {
-        return this.orm.task.create({
-            data: data
-        })
+        return await this.taskRepository.create(data) as TaskData
     }
 
     async updateTask(data: TaskData): Promise<TaskData>  {
-        return this.orm.task.update({
-            where: {
-                id: data.id
-            },
-            data: data
-        })
+        return await this.taskRepository.update(data) as TaskData
     }
-
 }

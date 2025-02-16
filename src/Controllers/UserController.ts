@@ -9,7 +9,7 @@ import {ResponseCode} from "../ResponseCode"
 import {AuthData} from "../Data/AuthData"
 import {ResponseError} from "../ResponseError"
 import {CreateEntityCommand} from "../Commands/CreateEntityCommand"
-import {UserRepository} from "../UserRepository"
+import {UserRepository} from "../Repositories/UserRepository"
 
 export class UserController implements IUserController {
 

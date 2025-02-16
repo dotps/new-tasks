@@ -1,16 +1,17 @@
-import express, {Application, NextFunction, Request, Response} from "express"
+import express, {Application} from "express"
 import {ApiRouter} from "./Routes/ApiRouter"
 import {IRouter} from "./Routes/IRouter"
 import {PrismaClient} from "@prisma/client"
 import {ORM} from "./Data/Types"
-import {ResponseError} from "./ResponseError"
-import {ResponseCode} from "./ResponseCode"
 import {RequestBodyMiddleware} from "./Middlewares/RequestBodyMiddleware"
-import {UserRepository} from "./UserRepository"
+import {UserRepository} from "./Repositories/UserRepository"
 import {UserService} from "./Services/UserService"
 import {UserController} from "./Controllers/UserController"
 import {TaskController} from "./Controllers/TaskController"
 import {AuthMiddleware} from "./Middlewares/AuthMiddleware"
+import {TaskRepository} from "./Repositories/TaskRepository"
+import {TaskService} from "./Services/TaskService"
+import {ProjectRepository} from "./Repositories/ProjectRepository"
 
 export class App {
     private app: Application
@@ -31,7 +32,8 @@ export class App {
         const userController = new UserController(userService)
 
         const taskRepository = new TaskRepository(orm)
-        const taskService = new TaskService(taskRepository)
+        const projectRepository = new ProjectRepository(orm)
+        const taskService = new TaskService(taskRepository, projectRepository)
         const taskController = new TaskController(taskService)
 
         this.apiRouter = new ApiRouter(userController, taskController, authMiddleware)
