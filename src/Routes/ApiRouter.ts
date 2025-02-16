@@ -1,8 +1,5 @@
-import {NextFunction, Request, Response, Router} from "express"
+import {Request, Response, Router} from "express"
 import {IRouter} from "./IRouter"
-import {UserController} from "../Controllers/UserController"
-import {ORM} from "../Data/Types"
-import {TaskController} from "../Controllers/TaskController"
 import {IUserController} from "../Controllers/IUserController"
 import {ITaskController} from "../Controllers/ITaskController"
 import {AuthMiddleware} from "../Middlewares/AuthMiddleware"
@@ -15,12 +12,12 @@ export class ApiRouter implements IRouter {
     private readonly taskController: ITaskController
     private readonly authMiddleware: AuthMiddleware
 
-    constructor(orm: ORM) {
-        this.router = Router()
-        this.userController = new UserController(orm)
-        this.taskController = new TaskController(orm)
-        this.authMiddleware = new AuthMiddleware()
+    constructor(userController: IUserController, taskController: ITaskController, authMiddleware: AuthMiddleware) {
+        this.userController = userController
+        this.taskController = taskController
+        this.authMiddleware = authMiddleware
 
+        this.router = Router()
         this.initRoutes()
     }
 
@@ -41,4 +38,5 @@ export class ApiRouter implements IRouter {
     public handleRoute(req: Request, res: Response): void {
         return ResponseError.sendError(res, "Маршрут не найден", ResponseCode.ERROR_NOT_FOUND)
     }
+
 }

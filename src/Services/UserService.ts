@@ -1,31 +1,16 @@
-import {ORM, UserData} from "../Data/Types"
+import {UserData} from "../Data/Types"
 import {IUserService} from "./IUserService"
-import {User} from "../Models/User"
-import {ValidationError} from "../ValidationError"
-import {ResponseCode} from "../ResponseCode"
+import {IRepository} from "../IRepository"
 
 export class UserService implements IUserService {
-    private orm: ORM
+    private repository: IRepository
 
-    constructor(orm: ORM) {
-        this.orm = orm
+    constructor(repository: IRepository) {
+        this.repository = repository
     }
 
     async createUser(userData: UserData): Promise<UserData> {
-
-        // const user = new User(userData)
-        // const validationErrors: string[] = []
-        //
-        // if (!user.isValidCreateData(validationErrors)) {
-        //     throw new ApiError(
-        //         `Сущность "Пользователь" не создана. Входные данные не валидны. ${validationErrors.join(" ")}`,
-        //         ResponseCode.ERROR_BAD_REQUEST
-        //     )
-        // }
-
-        return this.orm.user.create({
-            data: userData
-        })
+        return await this.repository.create(userData) as UserData
     }
 }
 

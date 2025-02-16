@@ -9,13 +9,14 @@ import {ResponseCode} from "../ResponseCode"
 import {AuthData} from "../Data/AuthData"
 import {ResponseError} from "../ResponseError"
 import {CreateEntityCommand} from "../Commands/CreateEntityCommand"
+import {UserRepository} from "../UserRepository"
 
 export class UserController implements IUserController {
 
     private readonly userService: IUserService
 
-    constructor(orm: ORM) {
-        this.userService = new UserService(orm)
+    constructor(userService: IUserService) {
+        this.userService = userService
     }
 
     async createUser(req: Request, res: Response): Promise<void> {

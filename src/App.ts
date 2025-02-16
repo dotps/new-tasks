@@ -6,6 +6,11 @@ import {ORM} from "./Data/Types"
 import {ResponseError} from "./ResponseError"
 import {ResponseCode} from "./ResponseCode"
 import {RequestBodyMiddleware} from "./Middlewares/RequestBodyMiddleware"
+import {UserRepository} from "./UserRepository"
+import {UserService} from "./Services/UserService"
+import {UserController} from "./Controllers/UserController"
+import {TaskController} from "./Controllers/TaskController"
+import {AuthMiddleware} from "./Middlewares/AuthMiddleware"
 
 export class App {
     private app: Application
@@ -15,11 +20,21 @@ export class App {
         this.app = express()
         this.app.use(express.json())
 
+        const authMiddleware = new AuthMiddleware()
         const requestBodyMiddleware = new RequestBodyMiddleware()
         this.app.use(requestBodyMiddleware.handleJson)
 
         const orm:ORM = new PrismaClient()
-        this.apiRouter = new ApiRouter(orm)
+
+        const userRepository = new UserRepository(orm)
+        const userService = new UserService(userRepository)
+        const userController = new UserController(userService)
+
+        const taskRepository = new TaskRepository(orm)
+        const taskService = new TaskService(taskRepository)
+        const taskController = new TaskController(taskService)
+
+        this.apiRouter = new ApiRouter(userController, taskController, authMiddleware)
         this.initRoutes()
     }
 
