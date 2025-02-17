@@ -7,12 +7,15 @@ import {ResponseSuccess} from "../ResponseSuccess"
 import {ResponseCode} from "../ResponseCode"
 import {ResponseError} from "../ResponseError"
 import {UserValidator} from "../Validation/UserValidator"
+import {CurrentUser} from "../CurrentUser"
 
 export class UserController implements IUserController {
 
     private readonly userService: IUserService
+    private readonly currentUser: CurrentUser
 
-    constructor(userService: IUserService) {
+    constructor(userService: IUserService, currentUser: CurrentUser) {
+        this.currentUser = currentUser
         this.userService = userService
     }
 
@@ -22,7 +25,7 @@ export class UserController implements IUserController {
         try {
             const validator = new UserValidator(user)
             if (!validator.isValidCreateData()) return
-            const userData: UserData = await this.userService.create(user.toCreateData() as UserData)
+            const userData: UserData = await this.userService.create(user.toCreateData())
             const createdUser = new User(userData)
             ResponseSuccess.send(res, createdUser.toAuthData(), ResponseCode.SUCCESS_CREATED)
         }

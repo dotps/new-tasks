@@ -1,7 +1,6 @@
 import {ORM, ProjectData} from "../Data/Types"
 import {IProjectService} from "./IProjectService"
 import {OrmError} from "../OrmError"
-import {ResponseCode} from "../ResponseCode"
 
 export class ProjectService implements IProjectService {
     private orm: ORM
@@ -10,10 +9,10 @@ export class ProjectService implements IProjectService {
         this.orm = orm
     }
 
-    async create(data: ProjectData): Promise<ProjectData> {
+    async create(data: Partial<ProjectData>): Promise<ProjectData> {
         try {
             return await this.orm.project.create({
-                data: data
+                data: data as ProjectData
             })
         }
         catch (error) {
@@ -21,13 +20,13 @@ export class ProjectService implements IProjectService {
         }
     }
 
-    async update(data: ProjectData): Promise<ProjectData> {
+    async update(data: Partial<ProjectData>): Promise<ProjectData> {
         try {
             return await this.orm.project.update({
                 where: {
                     id: data.id
                 },
-                data: data
+                data: data as ProjectData
             })
         }
         catch (error) {

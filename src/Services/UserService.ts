@@ -1,6 +1,8 @@
 import {ORM, UserData} from "../Data/Types"
 import {IUserService} from "./IUserService"
 import {OrmError} from "../OrmError"
+import {ResponseError} from "../ResponseError"
+import {ResponseCode} from "../ResponseCode"
 
 export class UserService implements IUserService {
 
@@ -10,10 +12,10 @@ export class UserService implements IUserService {
         this.orm = orm
     }
 
-    async create(data: UserData): Promise<UserData> {
+    async create(data: Partial<UserData>): Promise<UserData> {
         try {
             return await this.orm.user.create({
-                data: data
+                data: data as UserData
             })
         }
         catch (error) {
@@ -21,13 +23,26 @@ export class UserService implements IUserService {
         }
     }
 
-    async update(data: UserData): Promise<UserData> {
+    async update(data: Partial<UserData>): Promise<UserData> {
         try {
             return await this.orm.user.update({
                 where: {
                     id: data.id
                 },
-                data: data
+                data: data as UserData
+            })
+        }
+        catch (error) {
+            throw new OrmError(error)
+        }
+    }
+
+    async getById(id: number): Promise<UserData | null> {
+        try {
+            return await this.orm.user.findUnique({
+                where: {
+                    id: id
+                }
             })
         }
         catch (error) {

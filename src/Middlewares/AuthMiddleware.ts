@@ -1,31 +1,45 @@
 import {NextFunction, Request, Response} from "express"
 import {ResponseError} from "../ResponseError"
 import {ResponseCode} from "../ResponseCode"
+import {User} from "../Models/User"
+import {UserData} from "../Data/Types"
+import {IUserService} from "../Services/IUserService"
+import {CurrentUser} from "../CurrentUser"
 
 export class AuthMiddleware {
+    private userService: IUserService
+    private currentUser: CurrentUser
 
-    public handle(req: Request, res: Response, next: NextFunction): void {
+    constructor(userService: IUserService, currentUser: CurrentUser) {
+        this.currentUser = currentUser
+        this.userService = userService
+    }
+
+    async handle(req: Request, res: Response, next: NextFunction): Promise<void> {
+
         const authHeader = req.headers.authorization;
-
         if (!authHeader) {
             return ResponseError.sendError(res, "Токен авторизации отклонен.", ResponseCode.ERROR_UNAUTHORIZED)
         }
 
         const [bearer, token] = authHeader.split(" ")
-
         if (bearer !== 'Bearer' || !token) {
             return ResponseError.sendError(res, "Неверный формат токена.", ResponseCode.ERROR_UNAUTHORIZED)
         }
 
         const userId = AuthMiddleware.decodeToken(token)
-
         if (!userId) {
             return ResponseError.sendError(res, "Неверный токен.", ResponseCode.ERROR_UNAUTHORIZED);
         }
 
-        // TODO: какой вариант лучше res.locals или расширить req
-        res.locals.userId = userId
-        req.userId = userId
+        const userData: Partial<UserData> | null = await this.userService.getById(userId)
+        if (!userData) {
+            return ResponseError.sendError(res, "Авторизация не возможна. Пользователь не найден.", ResponseCode.ERROR_UNAUTHORIZED)
+        }
+
+        this.currentUser.set(new User(userData))
+        // console.log(this.requestUser.get())
+        // res.locals.user = new User(userData)
 
         next()
     }

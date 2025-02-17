@@ -21,22 +21,52 @@ export class ApiRouter implements IRouter {
         this.authMiddleware = authMiddleware
 
         this.router = Router()
-        this.initRoutes()
+
+        this.initUserRoutes()
+        this.initProjectRoutes()
+        this.initTaskRoutes()
     }
 
     public getRouter(): Router {
         return this.router
     }
 
-    private initRoutes(): void {
-        this.router.get('/users', this.userController.getUsers.bind(this.userController))
-        this.router.post('/users', this.userController.createUser.bind(this.userController))
+    private initUserRoutes(): void {
+        this.router.get(
+            '/users',
+            this.userController.getUsers.bind(this.userController)
+        )
 
-        this.router.get('/projects', this.authMiddleware.handle, this.projectController.getAll.bind(this.projectController))
-        this.router.post('/projects', this.authMiddleware.handle, this.projectController.createProject.bind(this.projectController))
+        this.router.post(
+            '/users',
+            this.userController.createUser.bind(this.userController)
+        )
+    }
 
-        this.router.post('/tasks', this.authMiddleware.handle, this.taskController.createTask.bind(this.taskController))
-        this.router.put('/tasks/:id', this.authMiddleware.handle, this.taskController.updateTask.bind(this.taskController))
+    private initProjectRoutes(): void {
+        this.router.get(
+            '/projects',
+            this.authMiddleware.handle.bind(this.authMiddleware),
+            this.projectController.getAll.bind(this.projectController)
+        )
+        this.router.post(
+            '/projects',
+            this.authMiddleware.handle.bind(this.authMiddleware),
+            this.projectController.createProject.bind(this.projectController)
+        )
+    }
+
+    private initTaskRoutes(): void {
+        this.router.post(
+            '/tasks',
+            this.authMiddleware.handle.bind(this.authMiddleware),
+            this.taskController.createTask.bind(this.taskController)
+        )
+        this.router.put(
+            '/tasks/:id',
+            this.authMiddleware.handle.bind(this.authMiddleware),
+            this.taskController.updateTask.bind(this.taskController)
+        )
     }
 
     public handleRoute(req: Request, res: Response): void {

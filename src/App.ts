@@ -11,6 +11,7 @@ import {AuthMiddleware} from "./Middlewares/AuthMiddleware"
 import {TaskService} from "./Services/TaskService"
 import {ProjectService} from "./Services/ProjectService"
 import {ProjectController} from "./Controllers/ProjectController"
+import {CurrentUser} from "./CurrentUser"
 
 export class App {
     private app: Application
@@ -20,20 +21,20 @@ export class App {
         this.app = express()
         this.app.use(express.json())
 
-        const authMiddleware = new AuthMiddleware()
-        const requestBodyMiddleware = new RequestBodyMiddleware()
-        this.app.use(requestBodyMiddleware.handleJson)
-
         const orm:ORM = new PrismaClient()
 
         const userService = new UserService(orm)
-        const userController = new UserController(userService)
-
         const projectService = new ProjectService(orm)
-        const projectController = new ProjectController(projectService)
-
         const taskService = new TaskService(orm)
-        const taskController = new TaskController(taskService)
+
+        const currentUser = new CurrentUser()
+        const authMiddleware = new AuthMiddleware(userService, currentUser)
+        const requestBodyMiddleware = new RequestBodyMiddleware()
+        this.app.use(requestBodyMiddleware.handleJson)
+
+        const userController = new UserController(userService, currentUser)
+        const projectController = new ProjectController(projectService, currentUser)
+        const taskController = new TaskController(taskService, currentUser)
 
         this.apiRouter = new ApiRouter(userController, taskController, projectController, authMiddleware)
         this.initRoutes()

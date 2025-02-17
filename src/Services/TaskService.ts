@@ -9,10 +9,10 @@ export class TaskService implements ITaskService {
         this.orm = orm
     }
 
-    async create(data: TaskData): Promise<TaskData> {
+    async create(data: Partial<TaskData>): Promise<TaskData> {
         try {
             return await this.orm.task.create({
-                data: data
+                data: data as TaskData
             })
         }
         catch (error) {
@@ -20,13 +20,13 @@ export class TaskService implements ITaskService {
         }
     }
 
-    async update(data: TaskData): Promise<TaskData> {
+    async update(data: Partial<TaskData>): Promise<TaskData> {
         try {
             return await this.orm.task.update({
                 where: {
                     id: data.id
                 },
-                data: data
+                data: data as TaskData
             })
         }
         catch (error) {
