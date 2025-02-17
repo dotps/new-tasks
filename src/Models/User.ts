@@ -1,7 +1,6 @@
 import {UserData} from "../Data/Types"
 import {Token} from "../Token"
 import {IModel} from "./IModel"
-import {ErrorMessages} from "./ErrorMessages"
 
 export class User implements IModel {
 
@@ -10,10 +9,6 @@ export class User implements IModel {
     private readonly email?: string
 
     private modelName: string = "Пользователь"
-    private errorMessages: ErrorMessages = {
-        nameIsRequired: "Имя пользователя обязательно.",
-        emailIsWrong: "Неверный e-mail.",
-    }
 
     constructor(data: Partial<UserData>) {
         this.id = Number(data?.id) || undefined
@@ -25,9 +20,6 @@ export class User implements IModel {
         return this.modelName
     }
 
-    // TODO: попробовать реализовать через фабрику
-    //  ResponseFactory.getCreate<UserData>(data)
-    //  ResponseFactory.getUpdate<UserData>(data)
     toCreateData(): Partial<UserData> {
         return {
             name: this.name,
@@ -45,31 +37,5 @@ export class User implements IModel {
     getToken(): string {
         if (!this?.id) return ""
         return Token.generate(this.id)
-    }
-
-    isValidCreateData(errors: string[]): boolean {
-        let isValid = true
-
-        if (!this.name) {
-            isValid = false
-            errors.push(this.errorMessages?.nameIsRequired)
-        }
-
-        if (!this.isValidEmail(this.email)) {
-            isValid = false
-            errors.push(this.errorMessages?.emailIsWrong)
-        }
-
-        return isValid
-    }
-
-    private isValidEmail(email: string | undefined): boolean {
-        if (!email) return false
-        const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        return pattern.test(email)
-    }
-
-    isValidUpdateData(errors: string[]): boolean {
-        return true
     }
 }

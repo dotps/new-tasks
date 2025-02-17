@@ -1,6 +1,5 @@
-import {ProjectData, UserData} from "../Data/Types"
+import {ProjectData} from "../Data/Types"
 import {IModel} from "./IModel"
-import {ErrorMessages} from "./ErrorMessages"
 
 export class Project implements IModel {
 
@@ -10,10 +9,6 @@ export class Project implements IModel {
     private readonly description?: string
 
     private modelName: string = "Проект"
-    private errorMessages: ErrorMessages = {
-        titleIsRequired: "Заголовок обязателен.",
-        userNotChainToProject: "Не привязан пользователь.",
-    }
 
     constructor(data: Partial<ProjectData>) {
         this.id = Number(data?.id) || undefined
@@ -39,25 +34,5 @@ export class Project implements IModel {
             ...this.toCreateData(),
             id: this.id,
         }
-    }
-
-    isValidCreateData(errors: string[]): boolean {
-        let isValid = true
-
-        if (!this.title) {
-            isValid = false
-            errors.push(this.errorMessages?.titleIsRequired)
-        }
-
-        if (!this.userId) {
-            isValid = false
-            errors.push(this.errorMessages.userNotChainToProject)
-        }
-
-        return isValid
-    }
-
-    isValidUpdateData(errors: string[]): boolean {
-        return true
     }
 }

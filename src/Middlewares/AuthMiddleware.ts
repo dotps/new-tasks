@@ -17,7 +17,7 @@ export class AuthMiddleware {
             return ResponseError.sendError(res, "Неверный формат токена.", ResponseCode.ERROR_UNAUTHORIZED)
         }
 
-        const userId = this.decodeToken(token)
+        const userId = AuthMiddleware.decodeToken(token)
 
         if (!userId) {
             return ResponseError.sendError(res, "Неверный токен.", ResponseCode.ERROR_UNAUTHORIZED);
@@ -30,7 +30,7 @@ export class AuthMiddleware {
         next()
     }
 
-    private decodeToken(token: string): number | undefined {
+    private static decodeToken(token: string): number | undefined {
         return Number(token) || undefined
     }
 }

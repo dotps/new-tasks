@@ -8,6 +8,8 @@ import {ResponseCode} from "../ResponseCode"
 import {AuthData} from "../Data/AuthData"
 import {ResponseError} from "../ResponseError"
 import {CreateEntityCommand} from "../Commands/CreateEntityCommand"
+import {UserValidator} from "../Validation/UserValidator"
+import {ValidationError} from "../ValidationError"
 
 export class UserController implements IUserController {
 
@@ -21,8 +23,9 @@ export class UserController implements IUserController {
         const user = new User(req.body)
 
         try {
-            const createCommand = new CreateEntityCommand<User, UserData>(user, this.userService.create.bind(this.userService))
-            const userData: UserData = await createCommand.execute()
+            const userValidator = new UserValidator(user)
+            if (!userValidator.isValidCreateData()) return
+            const userData: UserData = await this.userService.create(user.toCreateData() as UserData)
             const createdUser = new User(userData)
             const authData = new AuthData(createdUser)
             ResponseSuccess.send(res, authData, ResponseCode.SUCCESS_CREATED)

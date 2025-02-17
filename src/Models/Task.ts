@@ -1,6 +1,5 @@
 import {TaskData} from "../Data/Types"
 import {IModel} from "./IModel"
-import {ErrorMessages} from "./ErrorMessages"
 
 export class Task implements IModel {
 
@@ -11,12 +10,6 @@ export class Task implements IModel {
     private readonly dueAt?: Date
 
     private modelName: string = "Задача"
-    private errorMessages: ErrorMessages = {
-        idRequired: "Id обязателен.",
-        titleRequired: "Заголовок обязателен.",
-        taskNotChainToProject: "Задача не привязана к проекту.",
-        dueWrong: "Указан некорректный срок выполнения.",
-    }
 
     constructor(data: Partial<TaskData>) {
         this.id = Number(data?.id) || undefined
@@ -44,47 +37,5 @@ export class Task implements IModel {
             ...this.toCreateData(),
             id: this.id,
         }
-    }
-
-    isValidCreateData(errors: string[]): boolean {
-        let isValid = true
-
-        if (!this.title) {
-            isValid = false
-            errors.push(this.errorMessages?.titleRequired)
-        }
-
-        if (!this.projectId) {
-            isValid = false
-            errors.push(this.errorMessages?.taskNotChainToProject)
-        }
-
-        if (!this.isValidDue()) {
-            isValid = false
-            errors.push(this.errorMessages?.dueWrong)
-        }
-
-        return isValid
-    }
-
-    isValidUpdateData(errors: string[]): boolean {
-        let isValid = true
-
-        if (this.id === undefined) {
-            isValid = false
-            errors.push(this.errorMessages?.idRequired)
-        }
-
-        if (this.dueAt !== undefined && !this.isValidDue()) {
-            isValid = false
-            errors.push(this.errorMessages?.dueWrong)
-        }
-
-        return isValid
-    }
-
-    private isValidDue(): boolean {
-        if (!this.dueAt || isNaN(this.dueAt.getTime())) return false
-        return this.dueAt > new Date()
     }
 }
