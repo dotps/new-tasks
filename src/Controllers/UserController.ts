@@ -5,7 +5,6 @@ import {User} from "../Models/User"
 import {IUserService} from "../Services/IUserService"
 import {ResponseSuccess} from "../ResponseSuccess"
 import {ResponseCode} from "../ResponseCode"
-import {AuthData} from "../Data/AuthData"
 import {ResponseError} from "../ResponseError"
 import {UserValidator} from "../Validation/UserValidator"
 
@@ -25,8 +24,7 @@ export class UserController implements IUserController {
             if (!validator.isValidCreateData()) return
             const userData: UserData = await this.userService.create(user.toCreateData() as UserData)
             const createdUser = new User(userData)
-            const authData = new AuthData(createdUser)
-            ResponseSuccess.send(res, authData, ResponseCode.SUCCESS_CREATED)
+            ResponseSuccess.send(res, createdUser.toAuthData(), ResponseCode.SUCCESS_CREATED)
         }
         catch (error) {
             ResponseError.send(res, error)

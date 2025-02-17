@@ -1,6 +1,7 @@
 import {UserData} from "../Data/Types"
 import {Token} from "../Token"
 import {IModel} from "./IModel"
+import {AuthData} from "../Data/AuthData"
 
 export class User implements IModel {
 
@@ -31,6 +32,13 @@ export class User implements IModel {
         return {
             ...this.toCreateData(),
             id: this.id,
+        }
+    }
+
+    toAuthData(): AuthData {
+        return {
+            id: this.id,
+            token: this.getToken()
         }
     }
 
