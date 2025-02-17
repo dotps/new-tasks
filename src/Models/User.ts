@@ -37,7 +37,7 @@ export class User implements IModel {
 
     toAuthData(): AuthData {
         return {
-            id: this.id,
+            id: this.id || 0,
             token: this.getToken()
         }
     }
@@ -45,5 +45,9 @@ export class User implements IModel {
     getToken(): string {
         if (!this?.id) return ""
         return Token.generate(this.id)
+    }
+
+    getId(): number {
+        return this.id || 0
     }
 }

@@ -1,4 +1,4 @@
 export type AuthData = {
-    id?: number
+    id: number
     token: string
 }

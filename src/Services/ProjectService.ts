@@ -1,8 +1,9 @@
-import {ORM, ProjectData} from "../Data/Types"
+import {ORM, ProjectData, ProjectWithTasks} from "../Data/Types"
 import {IProjectService} from "./IProjectService"
 import {OrmError} from "../OrmError"
 
 export class ProjectService implements IProjectService {
+
     private orm: ORM
 
     constructor(orm: ORM) {
@@ -14,8 +15,7 @@ export class ProjectService implements IProjectService {
             return await this.orm.project.create({
                 data: data as ProjectData
             })
-        }
-        catch (error) {
+        } catch (error) {
             throw new OrmError(error)
         }
     }
@@ -28,8 +28,31 @@ export class ProjectService implements IProjectService {
                 },
                 data: data as ProjectData
             })
+        } catch (error) {
+            throw new OrmError(error)
         }
-        catch (error) {
+    }
+
+    async getProjectsWithTasks(userId: number): Promise<ProjectWithTasks[]> {
+        try {
+            return await this.orm.project.findMany({
+                where: {
+                    userId: userId,
+                    // id: 1,
+                },
+                select: {
+                    id: true,
+                    title: true,
+                    description: true,
+                    tasks: {
+                        select: {
+                            title: true,
+                            description: true,
+                        }
+                    }
+                }
+            })
+        } catch (error) {
             throw new OrmError(error)
         }
     }

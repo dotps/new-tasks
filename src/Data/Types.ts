@@ -7,6 +7,8 @@ export type {
     TaskData
 }
 
+export type ProjectWithTasks = Partial<ProjectData> & { tasks: Partial<TaskData>[] }
+
 export type ORM = PrismaClient & {
     customMethod?: () => void,
     // createEntity: <T, U>(data: T, model: { create: (args: { data: T }) => Promise<U> }, entityClass: new (data: U) => any) => Promise<any>
