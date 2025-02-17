@@ -8,6 +8,7 @@ import {ResponseCode} from "../ResponseCode"
 import {ResponseError} from "../ResponseError"
 import {TaskValidator} from "../Validation/TaskValidator"
 import {CurrentUser} from "../CurrentUser"
+import {ValidationError} from "../ValidationError"
 
 export class TaskController implements ITaskController {
     private readonly taskService: ITaskService
@@ -35,7 +36,7 @@ export class TaskController implements ITaskController {
     async updateTask(req: Request, res: Response): Promise<void> {
         const taskData = {
             ...req.body,
-            id: Number(req.params.id) || undefined
+            id: Number(req.params.taskId) || undefined
         }
         const task = new Task(taskData)
 
@@ -51,5 +52,29 @@ export class TaskController implements ITaskController {
     }
 
     // TODO: назначение исполнителя задачи
+    async assignUser(req: Request, res: Response): Promise<void> {
+        const taskId = Number(req.params.taskId) || undefined
+        const userId = Number(req.body.userId) || undefined
+        const currentUserId = this.currentUser.getId()
+
+        // TODO: продолжить
+
+        if (!taskId || !userId) {
+            return ResponseError.sendError(res, "Неверные входные данные.", ResponseCode.ERROR_BAD_REQUEST)
+        }
+
+        // TODO: нужно ли проверять присутствие userId в БД перед операциями или ORM выдаст ошибку сам?
+
+        try {
+            // const validator = new TaskValidator(task)
+            // if (!validator.isValidUpdateData()) return
+            // const taskData: TaskData = await this.taskService.update(task.toUpdateData())
+            // ResponseSuccess.send(res, taskData, ResponseCode.SUCCESS)
+        }
+        catch (error) {
+            ResponseError.send(res, error)
+        }
+    }
+
 
 }

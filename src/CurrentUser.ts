@@ -19,4 +19,8 @@ export class CurrentUser {
         }
         return this.user
     }
+
+    getId(): number {
+        return this.get().getId()
+    }
 }

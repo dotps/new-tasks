@@ -63,9 +63,14 @@ export class ApiRouter implements IRouter {
             this.taskController.createTask.bind(this.taskController)
         )
         this.router.put(
-            '/tasks/:id',
+            '/tasks/:taskId',
             this.authMiddleware.handle.bind(this.authMiddleware),
             this.taskController.updateTask.bind(this.taskController)
+        )
+        this.router.put(
+            '/tasks/:id/user',
+            this.authMiddleware.handle.bind(this.authMiddleware),
+            this.taskController.assignUser.bind(this.taskController)
         )
     }
 
