@@ -50,4 +50,6 @@ export class TaskController implements ITaskController {
         }
     }
 
+    // TODO: назначение исполнителя задачи
+
 }
