@@ -15,7 +15,7 @@ export class AuthMiddleware {
         this.userService = userService
     }
 
-    handle = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    async handle(req: Request, res: Response, next: NextFunction): Promise<void> {
 
         const authHeader = req.headers.authorization;
         if (!authHeader) {
@@ -38,40 +38,9 @@ export class AuthMiddleware {
         }
 
         this.currentUser.set(new User(userData))
-        // console.log(this.requestUser.get())
-        // res.locals.user = new User(userData)
 
         next()
     }
-
-    // async handle(req: Request, res: Response, next: NextFunction): Promise<void> {
-    //
-    //     const authHeader = req.headers.authorization;
-    //     if (!authHeader) {
-    //         return ResponseError.sendError(res, "Токен авторизации отклонен.", ResponseCode.ERROR_UNAUTHORIZED)
-    //     }
-    //
-    //     const [bearer, token] = authHeader.split(" ")
-    //     if (bearer !== 'Bearer' || !token) {
-    //         return ResponseError.sendError(res, "Неверный формат токена.", ResponseCode.ERROR_UNAUTHORIZED)
-    //     }
-    //
-    //     const userId = AuthMiddleware.decodeToken(token)
-    //     if (!userId) {
-    //         return ResponseError.sendError(res, "Неверный токен.", ResponseCode.ERROR_UNAUTHORIZED);
-    //     }
-    //
-    //     const userData: Partial<UserData> | null = await this.userService.getById(userId)
-    //     if (!userData) {
-    //         return ResponseError.sendError(res, "Авторизация не возможна. Пользователь не найден.", ResponseCode.ERROR_UNAUTHORIZED)
-    //     }
-    //
-    //     this.currentUser.set(new User(userData))
-    //     // console.log(this.requestUser.get())
-    //     // res.locals.user = new User(userData)
-    //
-    //     next()
-    // }
 
     private static decodeToken(token: string): number | undefined {
         return Number(token) || undefined
