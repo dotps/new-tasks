@@ -1,4 +1,4 @@
-import {Request, Response, Router} from "express"
+import {NextFunction, Request, Response, Router} from "express"
 import {IRouter} from "./IRouter"
 import {IUserController} from "../Controllers/IUserController"
 import {ITaskController} from "../Controllers/ITaskController"
@@ -33,24 +33,24 @@ export class ApiRouter implements IRouter {
 
     private initUserRoutes(): void {
         this.router.get(
-            '/users',
+            "/users",
             this.userController.getUsers.bind(this.userController)
         )
 
         this.router.post(
-            '/users',
+            "/users",
             this.userController.createUser.bind(this.userController)
         )
     }
 
     private initProjectRoutes(): void {
         this.router.get(
-            '/projects',
+            "/projects",
             this.authMiddleware.handle.bind(this.authMiddleware),
             this.projectController.getAll.bind(this.projectController)
         )
         this.router.post(
-            '/projects',
+            "/projects",
             this.authMiddleware.handle.bind(this.authMiddleware),
             this.projectController.createProject.bind(this.projectController)
         )
@@ -58,25 +58,40 @@ export class ApiRouter implements IRouter {
 
     private initTaskRoutes(): void {
         this.router.post(
-            '/tasks',
-            this.authMiddleware.handle.bind(this.authMiddleware),
-            this.taskController.createTask.bind(this.taskController)
+            "/tasks",
+            this.authMiddleware.handle,
+            this.taskController.createTask
         )
         this.router.put(
-            '/tasks/:taskId',
+            "/tasks/:taskId",
             this.authMiddleware.handle.bind(this.authMiddleware),
             this.taskController.updateTask.bind(this.taskController)
         )
         this.router.post(
-            '/tasks/:taskId/user',
+            "/tasks/:taskId/user",
             this.authMiddleware.handle.bind(this.authMiddleware),
             this.taskController.assignUser.bind(this.taskController)
         )
-        this.router.put(
-            '/tasks/:taskId/status',
-            this.authMiddleware.handle.bind(this.authMiddleware),
-            this.taskController.updateStatus.bind(this.taskController)
+        // this.router.patch(
+        //     "/tasks/:taskId/status",
+        //     this.authMiddleware.handle.bind(this.authMiddleware),
+        //     this.taskController.updateStatus.bind(this.taskController)
+        // )
+        this.router.patch(
+            "/tasks/:taskId/status",
+            this.authMiddleware.handle,
+            this.taskController.updateStatus
         )
+        // this.router.patch(
+        //     "/tasks/:taskId/status",
+        //     (req: Request, res: Response, next: NextFunction) => this.authMiddleware.handle(req, res, next),
+        //     (req: Request, res: Response) => this.taskController.updateStatus(req, res)
+        // )
+        // this.router.patch(
+        //     "/tasks/:taskId/status",
+        //     this.authMiddleware.handle,
+        //     this.taskController.updateStatus
+        // )
     }
 
     public handleRoute(req: Request, res: Response): void {

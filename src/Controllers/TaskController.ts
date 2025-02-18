@@ -8,6 +8,7 @@ import {ResponseCode} from "../ResponseCode"
 import {ResponseError} from "../ResponseError"
 import {TaskValidator} from "../Validation/TaskValidator"
 import {CurrentUser} from "../CurrentUser"
+import {ValidationError} from "../ValidationError"
 
 export class TaskController implements ITaskController {
     private readonly taskService: ITaskService
@@ -16,6 +17,10 @@ export class TaskController implements ITaskController {
     constructor(taskService: ITaskService, currentUser: CurrentUser) {
         this.taskService = taskService
         this.currentUser = currentUser
+        // this.createTask = this.createTask.bind(this)
+        // this.updateTask = this.updateTask.bind(this)
+        // this.updateStatus = this.updateStatus.bind(this)
+        // this.assignUser = this.assignUser.bind(this)
     }
 
     async createTask(req: Request, res: Response): Promise<void> {
@@ -50,25 +55,41 @@ export class TaskController implements ITaskController {
         }
     }
 
-    async updateStatus(req: Request, res: Response): Promise<void> {
+    updateStatus = async (req: Request, res: Response): Promise<void> => {
         try {
             const normalizedData: Partial<TaskData> = new Task(req.body).toUpdateData()
-            const taskData: Partial<TaskData> = {
+            const updateStatusData: Partial<TaskData> = {
                 id: Number(req.params.taskId) || undefined,
                 status: normalizedData.status
             }
-            console.log(taskData)
 
-            // TODO: тут продолжить
-            // const validator = new TaskValidator(new Task(taskData))
-            // if (!validator.isValidUpdateStatusData()) return
-            const result: TaskData = await this.taskService.update(taskData)
+            const validator = new TaskValidator(new Task(updateStatusData))
+            if (!validator.isValidUpdateStatusData()) return
+            const result: TaskData = await this.taskService.update(updateStatusData)
             ResponseSuccess.send(res, result, ResponseCode.SUCCESS)
         }
         catch (error) {
             ResponseError.send(res, error)
         }
     }
+
+    // async updateStatus(req: Request, res: Response): Promise<void> {
+    //     try {
+    //         const normalizedData: Partial<TaskData> = new Task(req.body).toUpdateData()
+    //         const updateStatusData: Partial<TaskData> = {
+    //             id: Number(req.params.taskId) || undefined,
+    //             status: normalizedData.status
+    //         }
+    //
+    //         const validator = new TaskValidator(new Task(updateStatusData))
+    //         if (!validator.isValidUpdateStatusData()) return
+    //         const result: TaskData = await this.taskService.update(updateStatusData)
+    //         ResponseSuccess.send(res, result, ResponseCode.SUCCESS)
+    //     }
+    //     catch (error) {
+    //         ResponseError.send(res, error)
+    //     }
+    // }
 
     // TODO: назначение исполнителя задачи
     async assignUser(req: Request, res: Response): Promise<void> {

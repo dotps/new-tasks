@@ -44,6 +44,6 @@ model Task {
 
 enum TaskStatus {
   CREATED
-  PROGRESS
+  PROCESS
   COMPLETED
 }

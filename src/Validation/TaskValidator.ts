@@ -9,6 +9,7 @@ export class TaskValidator implements IEntityValidator {
     private readonly errors: string[]
     private errorMessages: ErrorMessages = {
         idRequired: "Id обязателен.",
+        statusRequired: "Статус обязателен.",
         titleRequired: "Заголовок обязателен.",
         taskNotChainToProject: "Задача не привязана к проекту.",
         dueWrong: "Указан некорректный срок выполнения.",
@@ -50,8 +51,8 @@ export class TaskValidator implements IEntityValidator {
         const data: Partial<TaskData> = this.model.toUpdateData()
         let isValid = true
 
-        isValid = this.validateId(data) && isValid
-        isValid = this.validateDue(data) && isValid
+        isValid = this.isExistId(data) && isValid
+        isValid = this.isExistAndValidDue(data) && isValid
 
         if (!isValid) {
             ValidationError.throwUpdateData(this.model.getModelName(), this.errors)
@@ -60,8 +61,7 @@ export class TaskValidator implements IEntityValidator {
         return isValid
     }
 
-    // TODO: плохой нейминг, по факту проверка на undefined
-    validateId(data: Partial<TaskData>): boolean {
+    private isExistId(data: Partial<TaskData>): boolean {
         if (data.id === undefined) {
             this.errors.push(this.errorMessages?.idRequired)
             return false
@@ -69,7 +69,15 @@ export class TaskValidator implements IEntityValidator {
         return true
     }
 
-    private validateDue(data: Partial<TaskData>): boolean {
+    private isExistStatus(data: Partial<TaskData>): boolean {
+        if (data.status === undefined) {
+            this.errors.push(this.errorMessages?.statusRequired)
+            return false
+        }
+        return true
+    }
+
+    private isExistAndValidDue(data: Partial<TaskData>): boolean {
         if (data.dueAt !== undefined && !this.isValidDue(data.dueAt)) {
             this.errors.push(this.errorMessages?.dueWrong)
             return false
@@ -87,13 +95,27 @@ export class TaskValidator implements IEntityValidator {
         const data: Partial<TaskData> = this.model.toUpdateData()
         let isValid = true
 
-        isValid = this.validateId(data) && isValid
+        isValid = this.isExistId(data) && isValid
 
         // TODO: добавить userId в схему
         // if (data.userId !== currentUserId) {
         //     isValid = false
         //     errors.push(this.errorMessages?.assignOnlySelf)
         // }
+
+        if (!isValid) {
+            ValidationError.throwUpdateData(this.model.getModelName(), this.errors)
+        }
+
+        return isValid
+    }
+
+    isValidUpdateStatusData() {
+        const data: Partial<TaskData> = this.model.toUpdateData()
+        let isValid = true
+
+        isValid = this.isExistId(data) && isValid
+        isValid = this.isExistStatus(data) && isValid
 
         if (!isValid) {
             ValidationError.throwUpdateData(this.model.getModelName(), this.errors)
