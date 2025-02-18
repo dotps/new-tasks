@@ -43,6 +43,7 @@ model Task {
   status           TaskStatus @default(CREATED)
   assignedTo       User?      @relation(fields: [assignedToUserId], references: [id])
   assignedToUserId Int?
+  completedAt      DateTime?
 }
 
 enum TaskStatus {

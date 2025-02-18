@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import {ITaskController} from "./ITaskController";
-import {TaskData, toTaskStatus} from "../Data/Types";
+import {TaskData, TaskStatus} from "../Data/Types";
 import {Task} from "../Models/Task";
 import {ITaskService} from "../Services/ITaskService";
 import {ResponseSuccess} from "../ResponseSuccess"
@@ -61,6 +61,7 @@ export class TaskController implements ITaskController {
         // Поменять статус может только исполнитель задачи.
         // Сервис обновляет статус задачи в базе данных, и если задача завершена, фиксирует в бд время, затраченное на выполнение.
 
+        // TODO: и если задача завершена, фиксирует в бд время
         try {
             const normalizedData: Partial<TaskData> = new Task(req.body).toUpdateData()
             const updateStatusData: Partial<TaskData> = {
@@ -71,14 +72,17 @@ export class TaskController implements ITaskController {
             const validator = new TaskValidator(new Task(updateStatusData))
             if (!validator.isValidUpdateStatusData()) return
 
-            // TODO: тут
             const currentTaskData: TaskData | null = await this.taskService.getById(updateStatusData.id!)
             if (!currentTaskData) {
-                throw new Error("Задача не найдена.");
+                return ResponseError.send(res, new ValidationError("Задача не найдена.", ResponseCode.ERROR_NOT_FOUND))
             }
 
             if (currentTaskData.assignedToUserId !== this.currentUser.getId()) {
-                throw new Error("Только исполнитель задачи может изменить её статус.");
+                return ResponseError.send(res, new ValidationError("Только исполнитель задачи может изменить её статус.", ResponseCode.ERROR_BAD_REQUEST))
+            }
+// TODO: продолжить
+            if (updateStatusData.status === TaskStatus.COMPLETED) {
+                updateStatusData.completedAt = new Date()
             }
 
             const result: TaskData = await this.taskService.update(updateStatusData)

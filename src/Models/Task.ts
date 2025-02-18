@@ -9,6 +9,7 @@ export class Task implements IModel {
     private readonly description?: string
     private readonly dueAt?: Date
     private readonly status?: TaskStatus
+    private readonly completedAt?: Date
 
     private modelName: string = "Задача"
 
@@ -19,6 +20,7 @@ export class Task implements IModel {
         this.description = data?.description?.toString().trim() || undefined
         this.dueAt = data?.dueAt ? new Date(data.dueAt) : undefined
         this.status = toTaskStatus(data?.status?.toString().trim())
+        // this.completedAt = data?.completedAt ? new Date(data.completedAt) : undefined
     }
 
     getModelName(): string {
@@ -38,7 +40,8 @@ export class Task implements IModel {
         return {
             ...this.toCreateData(),
             id: this.id,
-            status: this.status
+            status: this.status,
+            completedAt: this.completedAt,
         }
     }
 }

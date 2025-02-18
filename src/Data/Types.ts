@@ -1,4 +1,4 @@
-import {PrismaClient, User as UserData, Project as ProjectData, Task as TaskData, TaskStatus} from "@prisma/client"
+import {PrismaClient, User as UserData, Project as ProjectData, Task as TaskData, TaskStatus as TaskStatusData} from "@prisma/client"
 
 export type EntityData = UserData | ProjectData | TaskData
 
@@ -6,14 +6,23 @@ export type {
     UserData,
     ProjectData,
     TaskData,
-    TaskStatus
+    // TaskStatus
 }
+
+export const TaskStatus = TaskStatusData
 
 export type ProjectWithTasks = Partial<ProjectData> & { tasks: Partial<TaskData>[] }
 
-export function toTaskStatus(status: string | undefined): TaskStatus | undefined {
-    if (Object.values(TaskStatus).includes(status as TaskStatus)) {
-        return status as TaskStatus
+// export function toTaskStatus(status: string | undefined): TaskStatus | undefined {
+//     if (Object.values(TaskStatus).includes(status as TaskStatus)) {
+//         return status as TaskStatus
+//     }
+//     return undefined
+// }
+
+export function toTaskStatus(status: string | undefined): TaskStatusData | undefined {
+    if (Object.values(TaskStatusData).includes(status as TaskStatusData)) {
+        return status as TaskStatusData
     }
     return undefined
 }
