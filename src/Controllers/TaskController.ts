@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import {ITaskController} from "./ITaskController";
-import {TaskData} from "../Data/Types";
+import {TaskData, toTaskStatus} from "../Data/Types";
 import {Task} from "../Models/Task";
 import {ITaskService} from "../Services/ITaskService";
 import {ResponseSuccess} from "../ResponseSuccess"
@@ -8,7 +8,6 @@ import {ResponseCode} from "../ResponseCode"
 import {ResponseError} from "../ResponseError"
 import {TaskValidator} from "../Validation/TaskValidator"
 import {CurrentUser} from "../CurrentUser"
-import {ValidationError} from "../ValidationError"
 
 export class TaskController implements ITaskController {
     private readonly taskService: ITaskService
@@ -51,25 +50,60 @@ export class TaskController implements ITaskController {
         }
     }
 
+    async updateStatus(req: Request, res: Response): Promise<void> {
+        try {
+            const normalizedData: Partial<TaskData> = new Task(req.body).toUpdateData()
+            const taskData: Partial<TaskData> = {
+                id: Number(req.params.taskId) || undefined,
+                status: normalizedData.status
+            }
+            console.log(taskData)
+
+            // TODO: тут продолжить
+            // const validator = new TaskValidator(new Task(taskData))
+            // if (!validator.isValidUpdateStatusData()) return
+            const result: TaskData = await this.taskService.update(taskData)
+            ResponseSuccess.send(res, result, ResponseCode.SUCCESS)
+        }
+        catch (error) {
+            ResponseError.send(res, error)
+        }
+    }
+
     // TODO: назначение исполнителя задачи
     async assignUser(req: Request, res: Response): Promise<void> {
-        const taskId = Number(req.params.taskId) || undefined
-        const userId = Number(req.body.userId) || undefined
+        // const taskId = Number(req.params.taskId) || undefined
+        // const userId = Number(req.body.userId) || undefined
         const currentUserId = this.currentUser.getId()
 
         // TODO: продолжить
 
-        if (!taskId || !userId) {
-            return ResponseError.sendError(res, "Неверные входные данные.", ResponseCode.ERROR_BAD_REQUEST)
-        }
+        // if (!taskId) {
+        //     return ResponseError.sendError(res, "Не указан id задачи.", ResponseCode.ERROR_BAD_REQUEST)
+        // }
+
+        // if (!taskId || !userId) {
+        //     return ResponseError.sendError(res, "Неверные входные данные.", ResponseCode.ERROR_BAD_REQUEST)
+        // }
+
+        // if (userId !== currentUserId) {
+        //     return ResponseError.sendError(res, "Вы можете назначить только себя исполнителем.", ResponseCode.ERROR_FORBIDDEN);
+        // }
 
         // TODO: нужно ли проверять присутствие userId в БД перед операциями или ORM выдаст ошибку сам?
 
         try {
+            const taskData = {
+                id: Number(req.params.taskId),
+                userId: currentUserId,
+            }
+            const task = new Task(taskData)
+            console.log(task)
+
             // const validator = new TaskValidator(task)
-            // if (!validator.isValidUpdateData()) return
-            // const taskData: TaskData = await this.taskService.update(task.toUpdateData())
-            // ResponseSuccess.send(res, taskData, ResponseCode.SUCCESS)
+            // if (!validator.isValidAssignUser()) return
+            const result: TaskData = await this.taskService.update(task.toUpdateData())
+            ResponseSuccess.send(res, result, ResponseCode.SUCCESS)
         }
         catch (error) {
             ResponseError.send(res, error)

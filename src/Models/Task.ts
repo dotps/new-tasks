@@ -1,4 +1,4 @@
-import {TaskData} from "../Data/Types"
+import {TaskData, TaskStatus, toTaskStatus} from "../Data/Types"
 import {IModel} from "./IModel"
 
 export class Task implements IModel {
@@ -8,6 +8,7 @@ export class Task implements IModel {
     private readonly title?: string
     private readonly description?: string
     private readonly dueAt?: Date
+    private readonly status?: TaskStatus
 
     private modelName: string = "Задача"
 
@@ -17,6 +18,7 @@ export class Task implements IModel {
         this.title = data?.title?.toString().trim() || undefined
         this.description = data?.description?.toString().trim() || undefined
         this.dueAt = data?.dueAt ? new Date(data.dueAt) : undefined
+        this.status = toTaskStatus(data?.status?.toString().trim())
     }
 
     getModelName(): string {
@@ -36,6 +38,7 @@ export class Task implements IModel {
         return {
             ...this.toCreateData(),
             id: this.id,
+            status: this.status
         }
     }
 }

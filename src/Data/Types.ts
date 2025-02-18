@@ -1,13 +1,22 @@
-import {PrismaClient, User as UserData, Project as ProjectData, Task as TaskData} from "@prisma/client"
+import {PrismaClient, User as UserData, Project as ProjectData, Task as TaskData, TaskStatus} from "@prisma/client"
 
 export type EntityData = UserData | ProjectData | TaskData
+
 export type {
     UserData,
     ProjectData,
-    TaskData
+    TaskData,
+    TaskStatus
 }
 
 export type ProjectWithTasks = Partial<ProjectData> & { tasks: Partial<TaskData>[] }
+
+export function toTaskStatus(status: string | undefined): TaskStatus | undefined {
+    if (Object.values(TaskStatus).includes(status as TaskStatus)) {
+        return status as TaskStatus
+    }
+    return undefined
+}
 
 export type ORM = PrismaClient & {
     customMethod?: () => void,
@@ -19,9 +28,3 @@ export type ORM = PrismaClient & {
     //     create: (args: { data: TaskData }) => Promise<TaskData>;
     // }
 }
-
-// TODO: изучить возможности реализации через интерфейс
-// export interface TaskData extends Task {
-//
-// }
-
