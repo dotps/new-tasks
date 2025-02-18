@@ -1,4 +1,4 @@
-import {ORM, TaskData} from "../Data/Types"
+import {ORM, TaskData, UserData} from "../Data/Types"
 import {ITaskService} from "./ITaskService"
 import {OrmError} from "../OrmError"
 
@@ -27,6 +27,34 @@ export class TaskService implements ITaskService {
                     id: data.id
                 },
                 data: data as TaskData
+            })
+        }
+        catch (error) {
+            throw new OrmError(error)
+        }
+    }
+
+    // async changeStatus(data: Partial<TaskData>, taskId: number, userId: number): Promise<TaskData> {
+    //     try {
+    //         return await this.orm.task.update({
+    //             where: {
+    //                 id: taskId,
+    //                 assignedTo:
+    //             },
+    //             data: data as TaskData
+    //         })
+    //     }
+    //     catch (error) {
+    //         throw new OrmError(error)
+    //     }
+    // }
+
+    async getById(id: number): Promise<TaskData | null> {
+        try {
+            return await this.orm.task.findUnique({
+                where: {
+                    id: id
+                }
             })
         }
         catch (error) {
