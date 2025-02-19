@@ -11,17 +11,25 @@ export class ValidationError extends Error {
         this.error = error
     }
 
-    static throwCreateData(modelName: string, errors: string[]): ValidationError {
-        throw new ValidationError(
-            `Сущность "${modelName}" не создана. Входные данные не валидны. ${errors.join(" ")}`,
+    static CreateData(modelName: string, errors?: string[]): ValidationError {
+        return new ValidationError(
+            `Сущность "${modelName}" не создана. Входные данные не валидны. ${errors?.join(" ")}`,
             ResponseCode.ERROR_BAD_REQUEST
         )
     }
 
-    static throwUpdateData(modelName: string, errors: string[]): ValidationError {
-        throw new ValidationError(
-            `Сущность "${modelName}" не обновлена. Входные данные не валидны. ${errors.join(" ")}`,
+    static UpdateData(modelName: string, errors?: string[]): ValidationError {
+        return new ValidationError(
+            `Сущность "${modelName}" не обновлена. Входные данные не валидны. ${errors?.join(" ")}`,
             ResponseCode.ERROR_BAD_REQUEST
         )
     }
+
+    static EntityNotFound(modelName: string, errors?: string[]): ValidationError {
+        return new ValidationError(
+            `Запрашиваемая запись сущности "${modelName}" не найдена. ${errors?.join(" ")}`,
+            ResponseCode.ERROR_BAD_REQUEST
+        )
+    }
+
 }

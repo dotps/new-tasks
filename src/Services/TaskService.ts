@@ -34,21 +34,6 @@ export class TaskService implements ITaskService {
         }
     }
 
-    // async changeStatus(data: Partial<TaskData>, taskId: number, userId: number): Promise<TaskData> {
-    //     try {
-    //         return await this.orm.task.update({
-    //             where: {
-    //                 id: taskId,
-    //                 assignedTo:
-    //             },
-    //             data: data as TaskData
-    //         })
-    //     }
-    //     catch (error) {
-    //         throw new OrmError(error)
-    //     }
-    // }
-
     async getById(id: number): Promise<TaskData | null> {
         try {
             return await this.orm.task.findUnique({

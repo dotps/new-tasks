@@ -31,7 +31,7 @@ export class ProjectValidator implements IEntityValidator {
         }
 
         if (!isValid) {
-            ValidationError.throwCreateData(this.model.getModelName(), errors)
+            ValidationError.CreateData(this.model.getModelName(), errors)
         }
 
         return isValid

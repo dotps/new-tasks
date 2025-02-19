@@ -19,12 +19,13 @@ export class TaskController implements ITaskController {
     }
 
     async createTask(req: Request, res: Response): Promise<void> {
-        const task = new Task(req.body)
-
         try {
-            const validator = new TaskValidator(task)
+            const normalizedData: Partial<TaskData> = new Task(req.body).toCreateData()
+
+            const validator = new TaskValidator(normalizedData)
             if (!validator.isValidCreateData()) return
-            const taskData: TaskData = await this.taskService.create(task.toCreateData())
+
+            const taskData: TaskData = await this.taskService.create(normalizedData)
             ResponseSuccess.send(res, taskData, ResponseCode.SUCCESS_CREATED)
         } catch (error) {
             ResponseError.send(res, error)
@@ -32,15 +33,16 @@ export class TaskController implements ITaskController {
     }
 
     async updateTask(req: Request, res: Response): Promise<void> {
-        const taskData = {
+        const taskData1 = {
             ...req.body,
             id: Number(req.params.taskId) || undefined
         }
-        const task = new Task(taskData)
+        const task = new Task(taskData1)
 
         try {
-            const validator = new TaskValidator(task)
+            const validator = new TaskValidator(taskData1)
             if (!validator.isValidUpdateData()) return
+
             const taskData: TaskData = await this.taskService.update(task.toUpdateData())
             ResponseSuccess.send(res, taskData, ResponseCode.SUCCESS)
         } catch (error) {
@@ -56,11 +58,12 @@ export class TaskController implements ITaskController {
                 status: normalizedData.status
             }
 
-            const validator = new TaskValidator(new Task(updateStatusData))
+            const validator = new TaskValidator(updateStatusData)
             if (!validator.isValidUpdateStatusData()) return
 
             const currentTaskData: TaskData | null = await this.taskService.getById(updateStatusData.id!)
-            const currentTaskValidator = new TaskValidator(new Task(currentTaskData))
+            const currentTaskValidator = new TaskValidator(currentTaskData)
+
             if (!currentTaskValidator.canChangeStatus(this.currentUser.getId())) return
 
             if (updateStatusData.status === TaskStatus.COMPLETED) {
@@ -82,10 +85,12 @@ export class TaskController implements ITaskController {
                 assignedToUserId: this.currentUser.getId()
             }
 
-            const validator = new TaskValidator(new Task(assignedUserTaskData))
+            const validator = new TaskValidator(assignedUserTaskData)
             if (!validator.isValidAssignSelfData()) return
+
             const currentTaskData: TaskData | null = await this.taskService.getById(assignedUserTaskData.id!)
-            const currentTaskValidator = new TaskValidator(new Task(currentTaskData))
+
+            const currentTaskValidator = new TaskValidator(currentTaskData)
             if (!currentTaskValidator.canAssignUser()) return
 
             const result: TaskData = await this.taskService.update(assignedUserTaskData)
