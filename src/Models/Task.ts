@@ -8,12 +8,12 @@ export class Task implements IModel {
     private readonly title?: string
     private readonly description?: string
     private readonly dueAt?: Date
-    private readonly status?: TaskStatus
+    private readonly status?: typeof TaskStatus
     private readonly completedAt?: Date
 
     private modelName: string = "Задача"
 
-    constructor(data: Partial<TaskData>) {
+    constructor(data: Partial<TaskData> | null) {
         this.id = Number(data?.id) || undefined
         this.projectId = Number(data?.projectId) || undefined
         this.title = data?.title?.toString().trim() || undefined

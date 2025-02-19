@@ -73,14 +73,10 @@ export class TaskController implements ITaskController {
             if (!validator.isValidUpdateStatusData()) return
 
             const currentTaskData: TaskData | null = await this.taskService.getById(updateStatusData.id!)
-            if (!currentTaskData) {
-                return ResponseError.send(res, new ValidationError("Задача не найдена.", ResponseCode.ERROR_NOT_FOUND))
-            }
 
-            if (currentTaskData.assignedToUserId !== this.currentUser.getId()) {
-                return ResponseError.send(res, new ValidationError("Только исполнитель задачи может изменить её статус.", ResponseCode.ERROR_BAD_REQUEST))
-            }
-// TODO: продолжить
+            const currentTaskValidator = new TaskValidator(new Task(currentTaskData))
+            if (!currentTaskValidator.canChangeStatus(this.currentUser.getId())) return
+
             if (updateStatusData.status === TaskStatus.COMPLETED) {
                 updateStatusData.completedAt = new Date()
             }

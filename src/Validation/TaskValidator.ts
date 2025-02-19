@@ -3,6 +3,7 @@ import {ErrorMessages} from "../Models/ErrorMessages"
 import {ValidationError} from "../ValidationError"
 import {Task} from "../Models/Task"
 import {IEntityValidator} from "./IEntityValidator"
+import {CurrentUser} from "../CurrentUser"
 
 export class TaskValidator implements IEntityValidator {
     private model: Task
@@ -13,7 +14,8 @@ export class TaskValidator implements IEntityValidator {
         titleRequired: "Заголовок обязателен.",
         taskNotChainToProject: "Задача не привязана к проекту.",
         dueWrong: "Указан некорректный срок выполнения.",
-        assignOnlySelf: "Указан некорректный срок выполнения.",
+        assignOnlySelf: ".",
+        changeStatusCanOnlySelf: "Только исполнитель задачи может изменить её статус.",
     }
 
     constructor(model: Task) {
@@ -116,6 +118,23 @@ export class TaskValidator implements IEntityValidator {
 
         isValid = this.isExistId(data) && isValid
         isValid = this.isExistStatus(data) && isValid
+
+        if (!isValid) {
+            ValidationError.throwUpdateData(this.model.getModelName(), this.errors)
+        }
+
+        return isValid
+    }
+
+    canChangeStatus(currentUserId: number) {
+        const data: Partial<TaskData> = this.model.toUpdateData()
+        let isValid = true
+
+        isValid = this.isExistId(data) && isValid
+        if (data.assignedToUserId !== currentUserId) {
+            this.errors.push(this.errorMessages?.changeStatusCanOnlySelf)
+            isValid = false
+        }
 
         if (!isValid) {
             ValidationError.throwUpdateData(this.model.getModelName(), this.errors)
