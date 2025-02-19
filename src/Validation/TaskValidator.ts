@@ -2,14 +2,14 @@ import {TaskData, ValidationType} from "../Data/Types"
 import {ErrorMessages} from "../Models/ErrorMessages"
 import {ValidationError} from "../ValidationError"
 import {IEntityValidator} from "./IEntityValidator"
-import {Validator} from "./Validator"
+import {DataWithId, Validator} from "./Validator"
 
 // export class TaskValidator implements IEntityValidator {
 export class TaskValidator extends Validator<TaskData> {
     // private readonly data: Partial<TaskData>
     // private readonly errors: string[] = []
-    private readonly title: string = "Задача"
-    private readonly errorMessages: ErrorMessages = {
+    override readonly title: string = "Задача"
+    override readonly errorMessages: ErrorMessages = {
         idRequired: "Id обязателен.",
         statusRequired: "Статус обязателен.",
         titleRequired: "Заголовок обязателен.",
@@ -21,6 +21,7 @@ export class TaskValidator extends Validator<TaskData> {
 
     constructor(data: Partial<TaskData> | null) {
         super(data)
+        // TODO: тут продолжить
         // if (!data) throw ValidationError.EntityNotFound(this.title)
         // this.data = data
     }
