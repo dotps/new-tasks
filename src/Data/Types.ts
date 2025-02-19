@@ -33,3 +33,8 @@ export type ORM = PrismaClient & {
     //     create: (args: { data: TaskData }) => Promise<TaskData>;
     // }
 }
+
+export enum ValidationType {
+    CREATE,
+    UPDATE
+}

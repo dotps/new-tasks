@@ -1,11 +1,13 @@
-import {TaskData} from "../Data/Types"
+import {TaskData, ValidationType} from "../Data/Types"
 import {ErrorMessages} from "../Models/ErrorMessages"
 import {ValidationError} from "../ValidationError"
 import {IEntityValidator} from "./IEntityValidator"
+import {Validator} from "./Validator"
 
-export class TaskValidator implements IEntityValidator {
-    private readonly data: Partial<TaskData>
-    private readonly errors: string[] = []
+// export class TaskValidator implements IEntityValidator {
+export class TaskValidator extends Validator<TaskData> {
+    // private readonly data: Partial<TaskData>
+    // private readonly errors: string[] = []
     private readonly title: string = "Задача"
     private readonly errorMessages: ErrorMessages = {
         idRequired: "Id обязателен.",
@@ -18,42 +20,36 @@ export class TaskValidator implements IEntityValidator {
     }
 
     constructor(data: Partial<TaskData> | null) {
-        if (!data) throw ValidationError.EntityNotFound(this.title)
-        this.data = data
+        super(data)
+        // if (!data) throw ValidationError.EntityNotFound(this.title)
+        // this.data = data
     }
 
     isValidCreateData(): boolean {
         if (!this.data.title) this.errors.push(this.errorMessages?.titleRequired)
         if (!this.data.projectId) this.errors.push(this.errorMessages?.taskNotChainToProject)
         if (!this.isValidDue(this.data.dueAt)) this.errors.push(this.errorMessages?.dueWrong)
-        if (this.errors.length > 0) throw ValidationError.CreateData(this.title, this.errors)
+        this.throwValidationError(ValidationType.CREATE)
         return true
     }
 
     isValidUpdateData(): boolean {
-        let isValid = true
-
-        isValid = this.isExistId() && isValid
-        isValid = this.isExistAndValidDue() && isValid
-
-        if (!isValid) {
-            throw ValidationError.UpdateData(this.title, this.errors)
-        }
-
-        return isValid
-    }
-
-    private isExistId(): boolean {
-        // if (this.data.id === undefined) {
-        if (!this.data.id) {
-            this.errors.push(this.errorMessages?.idRequired)
-            return false
-        }
+        this.validateExistId()
+        this.validateDue() // TODO: тут по неймингам поработать
+        this.throwValidationError(ValidationType.UPDATE)
         return true
     }
 
-    private isExistStatus(): boolean {
-        if (this.data.status === undefined) {
+    // private validateExistTaskId(): boolean {
+    //     if (!this.data.id) {
+    //         this.errors.push(this.errorMessages?.idRequired)
+    //         return false
+    //     }
+    //     return true
+    // }
+
+    private validateExistStatus(): boolean {
+        if (!this.data.status) {
             this.errors.push(this.errorMessages?.statusRequired)
             return false
         }
@@ -68,7 +64,7 @@ export class TaskValidator implements IEntityValidator {
         return true
     }
 
-    private isExistAndValidDue(): boolean {
+    private validateDue(): boolean {
         if (this.data.dueAt !== undefined && !this.isValidDue(this.data.dueAt)) {
             this.errors.push(this.errorMessages?.dueWrong)
             return false
@@ -82,51 +78,43 @@ export class TaskValidator implements IEntityValidator {
     }
 
     isValidAssignSelfData() {
-        this.isExistId()
+        this.validateExistId()
         this.isExistAssignedUserId()
-        if (this.errors.length > 0) throw ValidationError.UpdateData(this.title, this.errors)
+        this.throwValidationError(ValidationType.UPDATE)
         return true
     }
 
-    // TODO: продолжить рефакторинг
     isValidUpdateStatusData() {
-        let isValid = true
-
-        isValid = this.isExistId() && isValid
-        isValid = this.isExistStatus() && isValid
-
-        if (!isValid) {
-            throw ValidationError.UpdateData(this.title, this.errors)
-        }
-
-        return isValid
+        this.validateExistId()
+        this.validateExistStatus()
+        this.throwValidationError(ValidationType.UPDATE)
+        return true
     }
 
     canChangeStatus(currentUserId: number) {
-        let isValid = true
-
-        isValid = this.isExistId() && isValid
+        this.validateExistId()
         if (this.data.assignedToUserId !== currentUserId) {
             this.errors.push(this.errorMessages?.changeStatusCanOnlySelf)
-            isValid = false
         }
-
-        if (!isValid) {
-            throw ValidationError.UpdateData(this.title, this.errors)
-        }
-
-        return isValid
+        this.throwValidationError(ValidationType.UPDATE)
+        return true
     }
 
     canAssignUser() {
-        let isValid = true
-
-        isValid = this.isExistId() && isValid
-
-        if (!isValid) {
-            throw ValidationError.UpdateData(this.title, this.errors)
-        }
-
-        return isValid
+        this.validateExistId()
+        this.throwValidationError(ValidationType.UPDATE)
+        return true
     }
+
+    // throwValidationError(type: ValidationType) {
+    //     if (this.errors.length > 0) {
+    //         switch (type) {
+    //             case ValidationType.CREATE:
+    //                 throw ValidationError.CreateData(this.title, this.errors)
+    //             case ValidationType.UPDATE:
+    //                 throw ValidationError.UpdateData(this.title, this.errors)
+    //         }
+    //     }
+    // }
 }
+
