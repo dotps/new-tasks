@@ -8,8 +8,8 @@ export class Task implements IModel {
     private readonly title?: string
     private readonly description?: string
     private readonly dueAt?: Date
-    private readonly status?: typeof TaskStatus
-    private readonly completedAt?: Date
+    private readonly status?: TaskStatus
+    // private readonly completedAt?: Date
 
     private modelName: string = "Задача"
 
@@ -41,7 +41,7 @@ export class Task implements IModel {
             ...this.toCreateData(),
             id: this.id,
             status: this.status,
-            completedAt: this.completedAt,
+            // completedAt: this.completedAt,
         }
     }
 }

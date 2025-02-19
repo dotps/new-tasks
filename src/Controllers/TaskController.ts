@@ -56,12 +56,6 @@ export class TaskController implements ITaskController {
     }
 
     async updateStatus(req: Request, res: Response): Promise<void> {
-
-        // Пользователь отправляет запрос для изменения статуса задачи (например, с «в процессе» на «завершена»).
-        // Поменять статус может только исполнитель задачи.
-        // Сервис обновляет статус задачи в базе данных, и если задача завершена, фиксирует в бд время, затраченное на выполнение.
-
-        // TODO: и если задача завершена, фиксирует в бд время
         try {
             const normalizedData: Partial<TaskData> = new Task(req.body).toUpdateData()
             const updateStatusData: Partial<TaskData> = {
