@@ -14,8 +14,8 @@ export class TaskValidator implements IEntityValidator {
         titleRequired: "Заголовок обязателен.",
         taskNotChainToProject: "Задача не привязана к проекту.",
         dueWrong: "Указан некорректный срок выполнения.",
-        assignOnlySelf: ".",
         changeStatusCanOnlySelf: "Только исполнитель задачи может изменить её статус.",
+        assignedToUserRequired: "Id исполнителя обязателен.",
     }
 
     constructor(model: Task) {
@@ -79,6 +79,14 @@ export class TaskValidator implements IEntityValidator {
         return true
     }
 
+    private isExistAssignedUserId(data: Partial<TaskData>): boolean {
+        if (data.assignedToUserId === undefined) {
+            this.errors.push(this.errorMessages?.assignedToUserRequired)
+            return false
+        }
+        return true
+    }
+
     private isExistAndValidDue(data: Partial<TaskData>): boolean {
         if (data.dueAt !== undefined && !this.isValidDue(data.dueAt)) {
             this.errors.push(this.errorMessages?.dueWrong)
@@ -92,18 +100,14 @@ export class TaskValidator implements IEntityValidator {
         return dueAt > new Date()
     }
 
-    // TODO: плохой нейминг
-    isValidAssignUser() {
+    isValidAssignSelfData() {
         const data: Partial<TaskData> = this.model.toUpdateData()
         let isValid = true
 
-        isValid = this.isExistId(data) && isValid
+        console.log(data)
 
-        // TODO: добавить userId в схему
-        // if (data.userId !== currentUserId) {
-        //     isValid = false
-        //     errors.push(this.errorMessages?.assignOnlySelf)
-        // }
+        isValid = this.isExistId(data) && isValid
+        isValid = this.isExistAssignedUserId(data) && isValid
 
         if (!isValid) {
             ValidationError.throwUpdateData(this.model.getModelName(), this.errors)
@@ -135,6 +139,19 @@ export class TaskValidator implements IEntityValidator {
             this.errors.push(this.errorMessages?.changeStatusCanOnlySelf)
             isValid = false
         }
+
+        if (!isValid) {
+            ValidationError.throwUpdateData(this.model.getModelName(), this.errors)
+        }
+
+        return isValid
+    }
+
+    canAssignUser() {
+        const data: Partial<TaskData> = this.model.toUpdateData()
+        let isValid = true
+
+        isValid = this.isExistId(data) && isValid
 
         if (!isValid) {
             ValidationError.throwUpdateData(this.model.getModelName(), this.errors)

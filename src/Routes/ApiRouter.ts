@@ -36,7 +36,6 @@ export class ApiRouter implements IRouter {
             "/users",
             this.userController.getUsers.bind(this.userController)
         )
-
         this.router.post(
             "/users",
             this.userController.createUser.bind(this.userController)
@@ -44,37 +43,33 @@ export class ApiRouter implements IRouter {
     }
 
     private initProjectRoutes(): void {
+        this.router.use("/projects", this.authMiddleware.handle.bind(this.authMiddleware))
         this.router.get(
             "/projects",
-            this.authMiddleware.handle.bind(this.authMiddleware),
             this.projectController.getAll.bind(this.projectController)
         )
         this.router.post(
             "/projects",
-            this.authMiddleware.handle.bind(this.authMiddleware),
             this.projectController.createProject.bind(this.projectController)
         )
     }
 
     private initTaskRoutes(): void {
+        this.router.use("/tasks", this.authMiddleware.handle.bind(this.authMiddleware))
         this.router.post(
             "/tasks",
-            this.authMiddleware.handle.bind(this.authMiddleware),
             this.taskController.createTask.bind(this.taskController)
         )
         this.router.put(
             "/tasks/:taskId",
-            this.authMiddleware.handle.bind(this.authMiddleware),
             this.taskController.updateTask.bind(this.taskController)
         )
-        this.router.post(
-            "/tasks/:taskId/user",
-            this.authMiddleware.handle.bind(this.authMiddleware),
-            this.taskController.assignUser.bind(this.taskController)
+        this.router.patch(
+            "/tasks/:taskId/assigned-user",
+            this.taskController.assignSelf.bind(this.taskController)
         )
         this.router.patch(
             "/tasks/:taskId/status",
-            this.authMiddleware.handle.bind(this.authMiddleware),
             this.taskController.updateStatus.bind(this.taskController)
         )
     }
