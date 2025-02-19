@@ -44,7 +44,8 @@ export class TaskValidator implements IEntityValidator {
     }
 
     private isExistId(): boolean {
-        if (this.data.id === undefined) {
+        // if (this.data.id === undefined) {
+        if (!this.data.id) {
             this.errors.push(this.errorMessages?.idRequired)
             return false
         }
@@ -87,6 +88,7 @@ export class TaskValidator implements IEntityValidator {
         return true
     }
 
+    // TODO: продолжить рефакторинг
     isValidUpdateStatusData() {
         let isValid = true
 
