@@ -23,28 +23,11 @@ export class TaskValidator implements IEntityValidator {
     }
 
     isValidCreateData(): boolean {
-        let isValid = true
-
-        if (!this.data.title) {
-            isValid = false
-            this.errors.push(this.errorMessages?.titleRequired)
-        }
-
-        if (!this.data.projectId) {
-            isValid = false
-            this.errors.push(this.errorMessages?.taskNotChainToProject)
-        }
-
-        if (!this.isValidDue(this.data.dueAt)) {
-            isValid = false
-            this.errors.push(this.errorMessages?.dueWrong)
-        }
-
-        if (!isValid) {
-            throw ValidationError.CreateData(this.title, this.errors)
-        }
-
-        return isValid
+        if (!this.data.title) this.errors.push(this.errorMessages?.titleRequired)
+        if (!this.data.projectId) this.errors.push(this.errorMessages?.taskNotChainToProject)
+        if (!this.isValidDue(this.data.dueAt)) this.errors.push(this.errorMessages?.dueWrong)
+        if (this.errors.length > 0) throw ValidationError.CreateData(this.title, this.errors)
+        return true
     }
 
     isValidUpdateData(): boolean {
@@ -77,7 +60,7 @@ export class TaskValidator implements IEntityValidator {
     }
 
     private isExistAssignedUserId(): boolean {
-        if (this.data.assignedToUserId === undefined) {
+        if (!this.data.assignedToUserId) {
             this.errors.push(this.errorMessages?.assignedToUserRequired)
             return false
         }
@@ -98,16 +81,10 @@ export class TaskValidator implements IEntityValidator {
     }
 
     isValidAssignSelfData() {
-        let isValid = true
-
-        isValid = this.isExistId() && isValid
-        isValid = this.isExistAssignedUserId() && isValid
-
-        if (!isValid) {
-            throw ValidationError.UpdateData(this.title, this.errors)
-        }
-
-        return isValid
+        this.isExistId()
+        this.isExistAssignedUserId()
+        if (this.errors.length > 0) throw ValidationError.UpdateData(this.title, this.errors)
+        return true
     }
 
     isValidUpdateStatusData() {
