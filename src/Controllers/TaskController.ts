@@ -18,6 +18,8 @@ export class TaskController implements ITaskController {
         this.currentUser = currentUser
     }
 
+    // TODO: протестировать все методы
+
     async createTask(req: Request, res: Response): Promise<void> {
         try {
             const normalizedData: Partial<TaskData> = new Task(req.body).toCreateData()
@@ -33,17 +35,17 @@ export class TaskController implements ITaskController {
     }
 
     async updateTask(req: Request, res: Response): Promise<void> {
-        const taskData1 = {
-            ...req.body,
-            id: Number(req.params.taskId) || undefined
-        }
-        const task = new Task(taskData1)
-
         try {
-            const validator = new TaskValidator(taskData1)
+            const normalizedData: Partial<TaskData> = new Task(req.body).toUpdateData()
+            const updateData: Partial<TaskData> = {
+                ...normalizedData,
+                id: Number(req.params.taskId) || undefined,
+            }
+
+            const validator = new TaskValidator(updateData)
             if (!validator.isValidUpdateData()) return
 
-            const taskData: TaskData = await this.taskService.update(task.toUpdateData())
+            const taskData: TaskData = await this.taskService.update(updateData)
             ResponseSuccess.send(res, taskData, ResponseCode.SUCCESS)
         } catch (error) {
             ResponseError.send(res, error)
@@ -78,7 +80,6 @@ export class TaskController implements ITaskController {
     }
 
     async assignSelf(req: Request, res: Response): Promise<void> {
-
         try {
             const assignedUserTaskData: Partial<TaskData> = {
                 id: Number(req.params.taskId) || undefined,

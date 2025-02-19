@@ -28,7 +28,7 @@ export class ValidationError extends Error {
     static EntityNotFound(modelName: string, errors?: string[]): ValidationError {
         return new ValidationError(
             `Запрашиваемая запись сущности "${modelName}" не найдена. ${errors?.join(" ")}`,
-            ResponseCode.ERROR_BAD_REQUEST
+            ResponseCode.ERROR_NOT_FOUND
         )
     }
 
