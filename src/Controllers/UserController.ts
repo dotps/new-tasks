@@ -1,6 +1,6 @@
 import {Request, Response} from "express"
 import {IUserController} from "./IUserController"
-import {TaskData, UserData, ValidationType} from "../Data/Types"
+import {CompletedTasksFilter, TaskData, UserData, ValidationType, WorkingTimeData} from "../Data/Types"
 import {User} from "../Models/User"
 import {IUserService} from "../Services/IUserService"
 import {ResponseSuccess} from "../ResponseSuccess"
@@ -10,6 +10,7 @@ import {UserValidator} from "../Validation/UserValidator"
 import {CurrentUser} from "../CurrentUser"
 import {ITaskService} from "../Services/ITaskService"
 import {TaskUtils} from "../Utils/TaskUtils"
+import {QueryHelper} from "../Utils/QueryHelper"
 
 export class UserController implements IUserController {
 
@@ -40,9 +41,6 @@ export class UserController implements IUserController {
 
     async getWorkingTime(req: Request, res: Response): Promise<void> {
         try {
-
-            // ?projects=1,2&start_date=&end_date=
-
             const userData: Partial<UserData> = {
                 id: Number(req.params.userId) || undefined,
             }
@@ -50,15 +48,20 @@ export class UserController implements IUserController {
             const validator = new UserValidator(userData)
             if (!validator.validateExistId()) validator.throwValidationError(ValidationType.NOT_FOUND)
 
-            // Любой пользователь может запросить время работы одного разработчика и отфильтровать по проектам и временным интервалам.
-            // Например:
-            // все проекты за месяц
-            // один проект за последнюю неделю
+            const filter: CompletedTasksFilter = {
+                userId: userData.id!,
+                projectsIds: QueryHelper.parseNumberList(req.query?.projects?.toString()),
+                startDate: QueryHelper.parseDate(req.query?.start_date?.toString()),
+                endDate: QueryHelper.parseDate(req.query?.end_date?.toString())
+            }
 
-            const tasks: Partial<TaskData>[] = await this.taskService.getCompletedTasks(userData.id!)
+            const tasks: Partial<TaskData>[] = await this.taskService.getCompletedTasks(filter)
             const seconds = TaskUtils.calculateWorkingTime(tasks)
+            const response: WorkingTimeData = {
+                seconds: seconds
+            }
 
-            ResponseSuccess.send(res, {seconds: seconds}, ResponseCode.SUCCESS)
+            ResponseSuccess.send(res, response, ResponseCode.SUCCESS)
         }
         catch (error) {
             ResponseError.send(res, error)

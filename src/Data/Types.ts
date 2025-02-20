@@ -43,3 +43,14 @@ export enum ValidationType {
 export type DataWithId = {
     id: number
 }
+
+export type CompletedTasksFilter = {
+    userId: number,
+    projectsIds?: number[],
+    startDate?: Date,
+    endDate?: Date,
+}
+
+export type WorkingTimeData = {
+    seconds: number
+}
