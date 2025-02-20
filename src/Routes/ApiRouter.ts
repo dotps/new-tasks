@@ -32,10 +32,6 @@ export class ApiRouter implements IRouter {
     }
 
     private initUserRoutes(): void {
-        this.router.get(
-            "/users",
-            this.userController.getUsers.bind(this.userController)
-        )
         this.router.post(
             "/users",
             this.userController.createUser.bind(this.userController)

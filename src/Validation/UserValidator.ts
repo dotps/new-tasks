@@ -1,49 +1,27 @@
-import {UserData} from "../Data/Types"
-import {User} from "../Models/User"
+import {UserData, ValidationType} from "../Data/Types"
 import {ErrorMessages} from "../Models/ErrorMessages"
-import {ValidationError} from "../ValidationError"
-import {IEntityValidator} from "./IEntityValidator"
+import {Validator} from "./Validator"
 
-export class UserValidator implements IEntityValidator {
-    private model: User
-    private errorMessages: ErrorMessages = {
+export class UserValidator extends Validator<UserData> {
+    override readonly title: string = "Пользователь"
+    override readonly errorMessages: ErrorMessages = {
         nameIsRequired: "Имя пользователя обязательно.",
         emailIsWrong: "Неверный e-mail.",
     }
 
-    constructor(user: User) {
-        this.model = user
+    constructor(data: Partial<UserData> | null) {
+        super(data)
     }
 
-    isValidCreateData(): boolean {
-        const errors: string[] = []
-        const data: Partial<UserData> = this.model.toCreateData()
-        let isValid = true
-
-        if (!data.name) {
-            isValid = false
-            errors.push(this.errorMessages?.nameIsRequired)
-        }
-
-        if (!this.isValidEmail(data.email)) {
-            isValid = false
-            errors.push(this.errorMessages?.emailIsWrong)
-        }
-
-        if (!isValid) {
-            ValidationError.CreateData(this.model.getModelName(), errors)
-        }
-
-        return isValid
+    validateCreateDataOrThrow(): void {
+        if (!this.data.name) this.errors.push(this.errorMessages?.nameIsRequired)
+        if (!this.isValidEmail(this.data.email)) this.errors.push(this.errorMessages?.emailIsWrong)
+        this.throwValidationError(ValidationType.CREATE)
     }
 
     private isValidEmail(email: string | undefined): boolean {
         if (!email) return false
         const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         return pattern.test(email)
-    }
-
-    isValidUpdateData(): boolean {
-        return true
     }
 }

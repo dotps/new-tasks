@@ -20,12 +20,12 @@ export class UserController implements IUserController {
     }
 
     async createUser(req: Request, res: Response): Promise<void> {
-        const user = new User(req.body)
-
         try {
-            const validator = new UserValidator(user)
-            if (!validator.isValidCreateData()) return
-            const userData: UserData = await this.userService.create(user.toCreateData())
+            const normalizedData: Partial<UserData> = new User(req.body).toCreateData()
+            const validator = new UserValidator(normalizedData)
+            validator.validateCreateDataOrThrow()
+
+            const userData: UserData = await this.userService.create(normalizedData)
             const createdUser = new User(userData)
             ResponseSuccess.send(res, createdUser.toAuthData(), ResponseCode.SUCCESS_CREATED)
         }
@@ -33,9 +33,4 @@ export class UserController implements IUserController {
             ResponseError.send(res, error)
         }
     }
-
-    async getUsers(req: Request, res: Response): Promise<void> {
-        console.log("getUsers")
-    }
-
 }
