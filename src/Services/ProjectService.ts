@@ -38,7 +38,6 @@ export class ProjectService implements IProjectService {
             return await this.orm.project.findMany({
                 where: {
                     userId: userId,
-                    // id: 1,
                 },
                 select: {
                     id: true,
@@ -46,8 +45,15 @@ export class ProjectService implements IProjectService {
                     description: true,
                     tasks: {
                         select: {
+                            id: true,
                             title: true,
-                            description: true,
+                            status: true,
+                            assignedTo: {
+                                select: {
+                                    id: true,
+                                    name: true,
+                                }
+                            },
                         }
                     }
                 }
