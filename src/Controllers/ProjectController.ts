@@ -11,12 +11,15 @@ import {CurrentUser} from "../CurrentUser"
 import {UserValidator} from "../Validation/UserValidator"
 import {QueryHelper} from "../Utils/QueryHelper"
 import {TaskHelper} from "../Utils/TaskHelper"
+import {ITaskService} from "../Services/ITaskService"
 
 export class ProjectController implements IProjectController {
     private readonly projectService: IProjectService
     private readonly currentUser: CurrentUser
+    private readonly taskService: ITaskService
 
-    constructor(projectService: IProjectService, currentUser: CurrentUser) {
+    constructor(projectService: IProjectService, taskService: ITaskService, currentUser: CurrentUser) {
+        this.taskService = taskService
         this.projectService = projectService
         this.currentUser = currentUser
     }
@@ -48,16 +51,23 @@ export class ProjectController implements IProjectController {
 
     async getWorkingTime(req: Request, res: Response): Promise<void> {
         try {
-            // TODO: продолжить, можно ли использовать getWorkingTime из Task
+            const projectData: Partial<ProjectData> = {
+                id: Number(req.params.projectId) || undefined
+            }
+            const validator = new ProjectValidator(projectData)
+            if (!validator.validateExistId()) validator.throwValidationError(ValidationType.NOT_FOUND)
 
-            const projectId = Number(req.query?.project)
+            const projectsIds = projectData.id ? [projectData.id] : undefined
             const filter: CompletedTasksFilter = {
-                projectsIds: ,
+                projectsIds: projectsIds,
                 startDate: QueryHelper.parseDate(req.query?.start_date?.toString()),
                 endDate: QueryHelper.parseDate(req.query?.end_date?.toString())
             }
-            //
-            const tasks: Partial<TaskData>[] = await this.taskService.getCompletedTasks(filter)
+            console.log(filter)
+
+            // {{base_url}}/api/projects/1/working-time
+
+            const tasks: Partial<TaskData>[] = await this.taskService.getCompletedTasksNEW(filter)
             console.log(tasks)
             // const seconds = TaskHelper.calculateWorkingTime(tasks)
             // const response: WorkingTimeData = {
