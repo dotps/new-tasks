@@ -20,10 +20,12 @@ export class ProjectController implements IProjectController {
 
     async createProject(req: Request, res: Response): Promise<void> {
         try {
-            const project = new Project(req.body)
-            const validator = new ProjectValidator(project)
-            if (!validator.isValidCreateData()) return
-            const projectData: ProjectData = await this.projectService.create(project.toCreateData())
+            const normalizedData: Partial<ProjectData> = new Project(req.body).toCreateData()
+
+            const validator = new ProjectValidator(normalizedData)
+            validator.validateCreateDataOrThrow()
+
+            const projectData: ProjectData = await this.projectService.create(normalizedData)
             ResponseSuccess.send(res, projectData, ResponseCode.SUCCESS_CREATED)
         }
         catch (error) {
@@ -33,8 +35,7 @@ export class ProjectController implements IProjectController {
 
     async getAll(req: Request, res: Response): Promise<void> {
         try {
-            const currentUser = this.currentUser.get()
-            const result = await this.projectService.getProjectsWithTasks(currentUser.getId())
+            const result = await this.projectService.getProjectsWithTasks(this.currentUser.getId())
             ResponseSuccess.send(res, result, ResponseCode.SUCCESS_CREATED)
         }
         catch (error) {
