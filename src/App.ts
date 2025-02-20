@@ -32,7 +32,7 @@ export class App {
         const requestBodyMiddleware = new RequestBodyMiddleware()
         this.app.use(requestBodyMiddleware.handleJson)
 
-        const userController = new UserController(userService, currentUser)
+        const userController = new UserController(userService, taskService, currentUser)
         const projectController = new ProjectController(projectService, currentUser)
         const taskController = new TaskController(taskService, currentUser)
 

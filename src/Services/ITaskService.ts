@@ -4,4 +4,5 @@ export interface ITaskService {
     create(data: Partial<TaskData>): Promise<TaskData>
     update(data: Partial<TaskData>): Promise<TaskData>
     getById(id: number): Promise<TaskData | null>
+    getCompletedTasks(userId: number): Promise<Partial<TaskData>[]>
 }

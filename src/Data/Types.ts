@@ -36,7 +36,8 @@ export type ORM = PrismaClient & {
 
 export enum ValidationType {
     CREATE,
-    UPDATE
+    UPDATE,
+    NOT_FOUND,
 }
 
 export type DataWithId = {

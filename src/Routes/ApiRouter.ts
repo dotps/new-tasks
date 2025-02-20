@@ -1,4 +1,4 @@
-import {NextFunction, Request, Response, Router} from "express"
+import {Request, Response, Router} from "express"
 import {IRouter} from "./IRouter"
 import {IUserController} from "../Controllers/IUserController"
 import {ITaskController} from "../Controllers/ITaskController"
@@ -32,9 +32,14 @@ export class ApiRouter implements IRouter {
     }
 
     private initUserRoutes(): void {
+        this.router.use("/users", this.authMiddleware.handle.bind(this.authMiddleware))
         this.router.post(
             "/users",
             this.userController.createUser.bind(this.userController)
+        )
+        this.router.get(
+            "/users/:userId/working-time",
+            this.userController.getWorkingTime.bind(this.userController)
         )
     }
 

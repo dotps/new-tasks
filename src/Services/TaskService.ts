@@ -46,4 +46,22 @@ export class TaskService implements ITaskService {
             throw new OrmError(error)
         }
     }
+
+    async getCompletedTasks(userId: number): Promise<Partial<TaskData>[]> {
+        try {
+            return await this.orm.task.findMany({
+                where: {
+                    assignedToUserId: userId,
+                    completedAt: { not: null }
+                },
+                select: {createdAt: true, completedAt: true}
+                // TODO: тут надо еще одно поле когда задача была взята в работу, createdAt не подходит
+            })
+        }
+        catch (error) {
+            throw new OrmError(error)
+        }
+    }
 }
+
+export type CompletedTaskDefault = {createdAt: true, completedAt: true}

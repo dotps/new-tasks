@@ -13,7 +13,8 @@ export class Validator<T extends DataWithId> {
         this.data = data
     }
 
-    protected validateExistId(): boolean {
+    // protected validateExistId(): boolean {
+    validateExistId(): boolean {
         if (!this.data.id) {
             this.errors.push(this.errorMessages?.idRequired)
             return false
@@ -21,13 +22,16 @@ export class Validator<T extends DataWithId> {
         return true
     }
 
-    protected throwValidationError(type: ValidationType) {
+    // protected throwValidationError(type: ValidationType) {
+    throwValidationError(type: ValidationType) {
         if (this.errors.length > 0) {
             switch (type) {
                 case ValidationType.CREATE:
                     throw ValidationError.CreateData(this.title, this.errors)
                 case ValidationType.UPDATE:
                     throw ValidationError.UpdateData(this.title, this.errors)
+                case ValidationType.NOT_FOUND:
+                    throw ValidationError.EntityNotFound(this.title, this.errors)
             }
         }
     }

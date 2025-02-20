@@ -1,8 +1,6 @@
 import {ORM, UserData} from "../Data/Types"
 import {IUserService} from "./IUserService"
 import {OrmError} from "../OrmError"
-import {ResponseError} from "../ResponseError"
-import {ResponseCode} from "../ResponseCode"
 
 export class UserService implements IUserService {
 
