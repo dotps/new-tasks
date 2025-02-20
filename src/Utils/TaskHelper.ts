@@ -1,6 +1,6 @@
 import {TaskData} from "../Data/Types";
 
-export class TaskUtils {
+export class TaskHelper {
     static calculateWorkingTime(tasks: Partial<TaskData>[]): number {
         let seconds = 0
         for (const task of tasks) {

@@ -9,7 +9,7 @@ import {ResponseError} from "../ResponseError"
 import {UserValidator} from "../Validation/UserValidator"
 import {CurrentUser} from "../CurrentUser"
 import {ITaskService} from "../Services/ITaskService"
-import {TaskUtils} from "../Utils/TaskUtils"
+import {TaskHelper} from "../Utils/TaskHelper"
 import {QueryHelper} from "../Utils/QueryHelper"
 
 export class UserController implements IUserController {
@@ -56,7 +56,7 @@ export class UserController implements IUserController {
             }
 
             const tasks: Partial<TaskData>[] = await this.taskService.getCompletedTasks(filter)
-            const seconds = TaskUtils.calculateWorkingTime(tasks)
+            const seconds = TaskHelper.calculateWorkingTime(tasks)
             const response: WorkingTimeData = {
                 seconds: seconds
             }
