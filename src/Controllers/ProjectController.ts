@@ -50,21 +50,15 @@ export class ProjectController implements IProjectController {
         try {
             // TODO: продолжить, можно ли использовать getWorkingTime из Task
 
-            // const userData: Partial<UserData> = {
-            //     id: Number(req.params.userId) || undefined,
-            // }
+            const projectId = Number(req.query?.project)
+            const filter: CompletedTasksFilter = {
+                projectsIds: ,
+                startDate: QueryHelper.parseDate(req.query?.start_date?.toString()),
+                endDate: QueryHelper.parseDate(req.query?.end_date?.toString())
+            }
             //
-            // const validator = new UserValidator(userData)
-            // if (!validator.validateExistId()) validator.throwValidationError(ValidationType.NOT_FOUND)
-            //
-            // const filter: CompletedTasksFilter = {
-            //     userId: userData.id!,
-            //     projectsIds: QueryHelper.parseNumberList(req.query?.projects?.toString()),
-            //     startDate: QueryHelper.parseDate(req.query?.start_date?.toString()),
-            //     endDate: QueryHelper.parseDate(req.query?.end_date?.toString())
-            // }
-            //
-            // const tasks: Partial<TaskData>[] = await this.taskService.getCompletedTasks(filter)
+            const tasks: Partial<TaskData>[] = await this.taskService.getCompletedTasks(filter)
+            console.log(tasks)
             // const seconds = TaskHelper.calculateWorkingTime(tasks)
             // const response: WorkingTimeData = {
             //     seconds: seconds

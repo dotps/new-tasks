@@ -49,11 +49,14 @@ export class UserController implements IUserController {
             if (!validator.validateExistId()) validator.throwValidationError(ValidationType.NOT_FOUND)
 
             const filter: CompletedTasksFilter = {
-                userId: userData.id!,
+                userId: userData.id,
                 projectsIds: QueryHelper.parseNumberList(req.query?.projects?.toString()),
                 startDate: QueryHelper.parseDate(req.query?.start_date?.toString()),
                 endDate: QueryHelper.parseDate(req.query?.end_date?.toString())
             }
+
+            // TODO: /api/users/10000/working-time?projects=&start_date=&end_date=
+            // выдает 0 секунд, а по идее нужно ошибку, что пользователь с id 10000 не найден
 
             const tasks: Partial<TaskData>[] = await this.taskService.getCompletedTasks(filter)
             const seconds = TaskHelper.calculateWorkingTime(tasks)

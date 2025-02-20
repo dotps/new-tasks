@@ -45,7 +45,7 @@ export type DataWithId = {
 }
 
 export type CompletedTasksFilter = {
-    userId: number,
+    userId?: number,
     projectsIds?: number[],
     startDate?: Date,
     endDate?: Date,
