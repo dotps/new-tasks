@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {ProjectData} from "../Data/Types";
+import {CompletedTasksFilter, ProjectData, TaskData, UserData, ValidationType, WorkingTimeData} from "../Data/Types";
 import {Project} from "../Models/Project";
 import {ResponseSuccess} from "../ResponseSuccess"
 import {ResponseCode} from "../ResponseCode"
@@ -8,6 +8,9 @@ import {IProjectController} from "./IProjectController"
 import {IProjectService} from "../Services/IProjectService"
 import {ProjectValidator} from "../Validation/ProjectValidator"
 import {CurrentUser} from "../CurrentUser"
+import {UserValidator} from "../Validation/UserValidator"
+import {QueryHelper} from "../Utils/QueryHelper"
+import {TaskHelper} from "../Utils/TaskHelper"
 
 export class ProjectController implements IProjectController {
     private readonly projectService: IProjectService
@@ -42,4 +45,36 @@ export class ProjectController implements IProjectController {
             ResponseError.send(res, error)
         }
     }
+
+    async getWorkingTime(req: Request, res: Response): Promise<void> {
+        try {
+            // TODO: продолжить, можно ли использовать getWorkingTime из Task
+
+            // const userData: Partial<UserData> = {
+            //     id: Number(req.params.userId) || undefined,
+            // }
+            //
+            // const validator = new UserValidator(userData)
+            // if (!validator.validateExistId()) validator.throwValidationError(ValidationType.NOT_FOUND)
+            //
+            // const filter: CompletedTasksFilter = {
+            //     userId: userData.id!,
+            //     projectsIds: QueryHelper.parseNumberList(req.query?.projects?.toString()),
+            //     startDate: QueryHelper.parseDate(req.query?.start_date?.toString()),
+            //     endDate: QueryHelper.parseDate(req.query?.end_date?.toString())
+            // }
+            //
+            // const tasks: Partial<TaskData>[] = await this.taskService.getCompletedTasks(filter)
+            // const seconds = TaskHelper.calculateWorkingTime(tasks)
+            // const response: WorkingTimeData = {
+            //     seconds: seconds
+            // }
+            //
+            // ResponseSuccess.send(res, response, ResponseCode.SUCCESS)
+        }
+        catch (error) {
+            ResponseError.send(res, error)
+        }
+    }
+
 }

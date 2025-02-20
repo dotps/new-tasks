@@ -49,6 +49,10 @@ export class ApiRouter implements IRouter {
             "/projects",
             this.projectController.getAll.bind(this.projectController)
         )
+        this.router.get(
+            "/projects/:projectId",
+            this.projectController.getWorkingTime.bind(this.projectController)
+        )
         this.router.post(
             "/projects",
             this.projectController.createProject.bind(this.projectController)
