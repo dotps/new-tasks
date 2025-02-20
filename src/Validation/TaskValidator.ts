@@ -27,7 +27,32 @@ export class TaskValidator extends Validator<TaskData> {
 
     validateUpdateDataOrThrow(): void {
         this.validateExistId()
-        this.validateExistDue() // TODO: тут по неймингам поработать
+        this.validateExistDue()
+        this.throwValidationError(ValidationType.UPDATE)
+    }
+
+    validateAssignSelfDataOrThrow(): void {
+        this.validateExistId()
+        this.validateExistAssignedUserId()
+        this.throwValidationError(ValidationType.UPDATE)
+    }
+
+    validateUpdateStatusDataOrThrow(): void {
+        this.validateExistId()
+        this.validateExistStatus()
+        this.throwValidationError(ValidationType.UPDATE)
+    }
+
+    canChangeStatusOrThrow(currentUserId: number): void {
+        this.validateExistId()
+        if (this.data.assignedToUserId !== currentUserId) {
+            this.errors.push(this.errorMessages?.changeStatusCanOnlySelf)
+        }
+        this.throwValidationError(ValidationType.UPDATE)
+    }
+
+    canAssignUserOrThrow(): void {
+        this.validateExistId()
         this.throwValidationError(ValidationType.UPDATE)
     }
 
@@ -59,31 +84,5 @@ export class TaskValidator extends Validator<TaskData> {
         if (!dueAt || isNaN(dueAt.getTime())) return false
         return dueAt > new Date()
     }
-
-    validateAssignSelfDataOrThrow(): void {
-        this.validateExistId()
-        this.validateExistAssignedUserId()
-        this.throwValidationError(ValidationType.UPDATE)
-    }
-
-    validateUpdateStatusDataOrThrow(): void {
-        this.validateExistId()
-        this.validateExistStatus()
-        this.throwValidationError(ValidationType.UPDATE)
-    }
-
-    canChangeStatusOrThrow(currentUserId: number): void {
-        this.validateExistId()
-        if (this.data.assignedToUserId !== currentUserId) {
-            this.errors.push(this.errorMessages?.changeStatusCanOnlySelf)
-        }
-        this.throwValidationError(ValidationType.UPDATE)
-    }
-
-    canAssignUserOrThrow(): void {
-        this.validateExistId()
-        this.throwValidationError(ValidationType.UPDATE)
-    }
-
 }
 
