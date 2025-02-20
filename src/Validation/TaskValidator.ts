@@ -1,13 +1,8 @@
 import {TaskData, ValidationType} from "../Data/Types"
 import {ErrorMessages} from "../Models/ErrorMessages"
-import {ValidationError} from "../ValidationError"
-import {IEntityValidator} from "./IEntityValidator"
-import {DataWithId, Validator} from "./Validator"
+import {Validator} from "./Validator"
 
-// export class TaskValidator implements IEntityValidator {
 export class TaskValidator extends Validator<TaskData> {
-    // private readonly data: Partial<TaskData>
-    // private readonly errors: string[] = []
     override readonly title: string = "Задача"
     override readonly errorMessages: ErrorMessages = {
         idRequired: "Id обязателен.",
@@ -21,33 +16,20 @@ export class TaskValidator extends Validator<TaskData> {
 
     constructor(data: Partial<TaskData> | null) {
         super(data)
-        // TODO: тут продолжить
-        // if (!data) throw ValidationError.EntityNotFound(this.title)
-        // this.data = data
     }
 
-    isValidCreateData(): boolean {
+    validateCreateDataOrThrow(): void {
         if (!this.data.title) this.errors.push(this.errorMessages?.titleRequired)
         if (!this.data.projectId) this.errors.push(this.errorMessages?.taskNotChainToProject)
         if (!this.isValidDue(this.data.dueAt)) this.errors.push(this.errorMessages?.dueWrong)
         this.throwValidationError(ValidationType.CREATE)
-        return true
     }
 
-    isValidUpdateData(): boolean {
+    validateUpdateDataOrThrow(): void {
         this.validateExistId()
-        this.validateDue() // TODO: тут по неймингам поработать
+        this.validateExistDue() // TODO: тут по неймингам поработать
         this.throwValidationError(ValidationType.UPDATE)
-        return true
     }
-
-    // private validateExistTaskId(): boolean {
-    //     if (!this.data.id) {
-    //         this.errors.push(this.errorMessages?.idRequired)
-    //         return false
-    //     }
-    //     return true
-    // }
 
     private validateExistStatus(): boolean {
         if (!this.data.status) {
@@ -57,7 +39,7 @@ export class TaskValidator extends Validator<TaskData> {
         return true
     }
 
-    private isExistAssignedUserId(): boolean {
+    private validateExistAssignedUserId(): boolean {
         if (!this.data.assignedToUserId) {
             this.errors.push(this.errorMessages?.assignedToUserRequired)
             return false
@@ -65,7 +47,7 @@ export class TaskValidator extends Validator<TaskData> {
         return true
     }
 
-    private validateDue(): boolean {
+    private validateExistDue(): boolean {
         if (this.data.dueAt !== undefined && !this.isValidDue(this.data.dueAt)) {
             this.errors.push(this.errorMessages?.dueWrong)
             return false
@@ -78,44 +60,30 @@ export class TaskValidator extends Validator<TaskData> {
         return dueAt > new Date()
     }
 
-    isValidAssignSelfData() {
+    validateAssignSelfDataOrThrow(): void {
         this.validateExistId()
-        this.isExistAssignedUserId()
+        this.validateExistAssignedUserId()
         this.throwValidationError(ValidationType.UPDATE)
-        return true
     }
 
-    isValidUpdateStatusData() {
+    validateUpdateStatusDataOrThrow(): void {
         this.validateExistId()
         this.validateExistStatus()
         this.throwValidationError(ValidationType.UPDATE)
-        return true
     }
 
-    canChangeStatus(currentUserId: number) {
+    canChangeStatusOrThrow(currentUserId: number): void {
         this.validateExistId()
         if (this.data.assignedToUserId !== currentUserId) {
             this.errors.push(this.errorMessages?.changeStatusCanOnlySelf)
         }
         this.throwValidationError(ValidationType.UPDATE)
-        return true
     }
 
-    canAssignUser() {
+    canAssignUserOrThrow(): void {
         this.validateExistId()
         this.throwValidationError(ValidationType.UPDATE)
-        return true
     }
 
-    // throwValidationError(type: ValidationType) {
-    //     if (this.errors.length > 0) {
-    //         switch (type) {
-    //             case ValidationType.CREATE:
-    //                 throw ValidationError.CreateData(this.title, this.errors)
-    //             case ValidationType.UPDATE:
-    //                 throw ValidationError.UpdateData(this.title, this.errors)
-    //         }
-    //     }
-    // }
 }
 

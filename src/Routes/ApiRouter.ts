@@ -66,7 +66,7 @@ export class ApiRouter implements IRouter {
         )
         this.router.patch(
             "/tasks/:taskId/assigned-user",
-            this.taskController.assignSelf.bind(this.taskController)
+            this.taskController.assignUser.bind(this.taskController)
         )
         this.router.patch(
             "/tasks/:taskId/status",

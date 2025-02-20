@@ -38,3 +38,7 @@ export enum ValidationType {
     CREATE,
     UPDATE
 }
+
+export type DataWithId = {
+    id: number
+}
