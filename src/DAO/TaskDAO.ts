@@ -2,8 +2,9 @@ import {CompletedTasksFilter, ORM, TaskData, WorkingTimeData} from "../Data/Type
 import {OrmError} from "../OrmError"
 import {Prisma} from "@prisma/client"
 import {ITaskDAO} from "./ITaskDAO"
+import {CrudDAO} from "./CrudDAO"
 
-export class TaskDAO implements ITaskDAO {
+export class TaskDAO extends CrudDAO<TaskData> {
 
     private orm: ORM
 
