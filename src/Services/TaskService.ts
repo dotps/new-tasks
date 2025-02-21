@@ -1,8 +1,11 @@
-import {CompletedTasksFilter, ORM, TaskData, UserData} from "../Data/Types"
+import {CompletedTasksFilter, ORM, TaskData, WorkingTimeData} from "../Data/Types"
 import {ITaskService} from "./ITaskService"
 import {OrmError} from "../OrmError"
+import {Prisma} from "@prisma/client"
+import {TaskHelper} from "../Utils/TaskHelper"
 
 export class TaskService implements ITaskService {
+
     private orm: ORM
 
     constructor(orm: ORM) {
@@ -50,7 +53,7 @@ export class TaskService implements ITaskService {
     async getCompletedTasks(filter: CompletedTasksFilter): Promise<Partial<TaskData>[]> {
         try {
             const projectsFilter = filter?.projectsIds?.length === 0 ? undefined : filter.projectsIds
-            console.log(filter)
+            const selectUser = !filter?.includeUser ? undefined : includeUser
             return await this.orm.task.findMany({
                 where: {
                     assignedToUserId: filter.userId,
@@ -63,7 +66,14 @@ export class TaskService implements ITaskService {
                         in: projectsFilter
                     },
                 },
-                select: { createdAt: true, completedAt: true, assignedToUserId: true }
+                select: {
+                    id: true,
+                    projectId: true,
+                    createdAt: true,
+                    completedAt: true,
+                    assignedToUserId: true,
+                    ...selectUser
+                }
                 // TODO: тут надо еще одно поле когда задача была взята в работу, createdAt не подходит
             })
         }
@@ -72,30 +82,20 @@ export class TaskService implements ITaskService {
         }
     }
 
-    async getCompletedTasksNEW(filter: CompletedTasksFilter): Promise<Partial<TaskData>[]> {
-        try {
-            const projectsFilter = filter?.projectsIds?.length === 0 ? undefined : filter.projectsIds
-            console.log(filter)
-            // TODO: доделать запрос
-            return await this.orm.task.findMany({
-                where: {
-                    // assignedToUserId: filter.userId,
-                    completedAt: {
-                        // not: null,
-                        gte: filter.startDate,
-                        lte: filter.endDate,
-                    },
-                    projectId: {
-                        // in: projectsFilter
-                    },
-                },
-                select: { id: true, createdAt: true, completedAt: true, assignedToUserId: true }
-                // TODO: тут надо еще одно поле когда задача была взята в работу, createdAt не подходит
-            })
-        }
-        catch (error) {
-            throw new OrmError(error)
+    async getWorkingTime(filter: CompletedTasksFilter): Promise<WorkingTimeData> {
+        const tasks: Partial<TaskData>[] = await this.getCompletedTasks(filter)
+        const seconds = TaskHelper.calculateWorkingTime(tasks)
+        return {
+            totalSeconds: seconds
         }
     }
 }
 
+const includeUser: Prisma.TaskInclude = {
+    assignedTo: {
+        select: {
+            id: true,
+            name: true,
+        }
+    }
+}

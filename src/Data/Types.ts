@@ -49,8 +49,9 @@ export type CompletedTasksFilter = {
     projectsIds?: number[],
     startDate?: Date,
     endDate?: Date,
+    includeUser?: boolean,
 }
 
 export type WorkingTimeData = {
-    seconds: number
+    totalSeconds: number,
 }

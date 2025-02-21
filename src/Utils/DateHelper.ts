@@ -6,7 +6,6 @@ export class DateHelper {
     static isValidDate(date: Date | string): boolean {
         if (date === null) return false
         if (date instanceof Date) return true
-
         return this.dateLongPattern.test(date) || this.dateShortPattern.test(date)
     }
 }

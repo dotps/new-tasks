@@ -61,20 +61,12 @@ export class ProjectController implements IProjectController {
             const filter: CompletedTasksFilter = {
                 projectsIds: projectsIds,
                 startDate: QueryHelper.parseDate(req.query?.start_date?.toString()),
-                endDate: QueryHelper.parseDate(req.query?.end_date?.toString())
+                endDate: QueryHelper.parseDate(req.query?.end_date?.toString()),
+                includeUser: true,
             }
-            console.log(filter)
 
-            // {{base_url}}/api/projects/1/working-time
-
-            const tasks: Partial<TaskData>[] = await this.taskService.getCompletedTasksNEW(filter)
-            console.log(tasks)
-            // const seconds = TaskHelper.calculateWorkingTime(tasks)
-            // const response: WorkingTimeData = {
-            //     seconds: seconds
-            // }
-            //
-            // ResponseSuccess.send(res, response, ResponseCode.SUCCESS)
+            const result = await this.taskService.getWorkingTime(filter)
+            ResponseSuccess.send(res, result, ResponseCode.SUCCESS)
         }
         catch (error) {
             ResponseError.send(res, error)

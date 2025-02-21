@@ -58,13 +58,8 @@ export class UserController implements IUserController {
             // TODO: /api/users/10000/working-time?projects=&start_date=&end_date=
             // выдает 0 секунд, а по идее нужно ошибку, что пользователь с id 10000 не найден
 
-            const tasks: Partial<TaskData>[] = await this.taskService.getCompletedTasks(filter)
-            const seconds = TaskHelper.calculateWorkingTime(tasks)
-            const response: WorkingTimeData = {
-                seconds: seconds
-            }
-
-            ResponseSuccess.send(res, response, ResponseCode.SUCCESS)
+            const result = await this.taskService.getWorkingTime(filter)
+            ResponseSuccess.send(res, result, ResponseCode.SUCCESS)
         }
         catch (error) {
             ResponseError.send(res, error)
