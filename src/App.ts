@@ -12,6 +12,9 @@ import {TaskService} from "./Services/TaskService"
 import {ProjectService} from "./Services/ProjectService"
 import {ProjectController} from "./Controllers/ProjectController"
 import {CurrentUser} from "./CurrentUser"
+import {ITaskService} from "./Services/ITaskService"
+import {ITaskDAO} from "./DAO/ITaskDAO"
+import {TaskDAO} from "./DAO/TaskDAO"
 
 export class App {
     private app: Application
@@ -23,9 +26,11 @@ export class App {
 
         const orm:ORM = new PrismaClient()
 
+        const taskDAO: ITaskDAO = new TaskDAO(orm)
+
         const userService = new UserService(orm)
         const projectService = new ProjectService(orm)
-        const taskService = new TaskService(orm)
+        const taskService = new TaskService(taskDAO)
 
         const currentUser = new CurrentUser()
         const authMiddleware = new AuthMiddleware(userService, currentUser)
