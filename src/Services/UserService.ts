@@ -4,22 +4,22 @@ import {IUserDAO} from "../DAO/IUserDAO"
 
 export class UserService implements IUserService {
 
-    private userDAO: IUserDAO
+    private dao: IUserDAO
 
     constructor(userDAO: IUserDAO) {
-        this.userDAO = userDAO
+        this.dao = userDAO
     }
 
     async create(data: Partial<UserData>): Promise<UserData> {
-        return await this.userDAO.create(data)
+        return await this.dao.create(data)
     }
 
     async update(data: Partial<UserData>): Promise<UserData> {
-        return await this.userDAO.update(data)
+        return await this.dao.update(data)
     }
 
     async getById(id: number): Promise<UserData | null> {
-        return await this.userDAO.getById(id)
+        return await this.dao.getById(id)
     }
 }
 

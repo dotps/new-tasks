@@ -1,8 +1,6 @@
 import {CompletedTasksFilter, ORM, TaskData, WorkingTimeData} from "../Data/Types"
 import {OrmError} from "../OrmError"
 import {Prisma} from "@prisma/client"
-import {TaskHelper} from "../Utils/TaskHelper"
-import {ValidationError} from "../ValidationError"
 import {ITaskDAO} from "./ITaskDAO"
 
 export class TaskDAO implements ITaskDAO {
