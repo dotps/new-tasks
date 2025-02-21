@@ -17,6 +17,8 @@ import {ITaskDAO} from "./DAO/ITaskDAO"
 import {TaskDAO} from "./DAO/TaskDAO"
 import {IUserDAO} from "./DAO/IUserDAO"
 import {UserDAO} from "./DAO/UserDAO"
+import {IProjectDAO} from "./DAO/IProjectDAO"
+import {ProjectDAO} from "./DAO/ProjectDAO"
 
 export class App {
     private app: Application
@@ -29,10 +31,11 @@ export class App {
         const orm:ORM = new PrismaClient()
 
         const userDAO: IUserDAO = new UserDAO(orm)
+        const projectDAO: IProjectDAO = new ProjectDAO(orm)
         const taskDAO: ITaskDAO = new TaskDAO(orm)
 
         const userService = new UserService(userDAO)
-        const projectService = new ProjectService(orm)
+        const projectService = new ProjectService(projectDAO)
         const taskService = new TaskService(taskDAO)
 
         const currentUser = new CurrentUser()

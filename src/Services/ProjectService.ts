@@ -1,65 +1,23 @@
-import {ORM, ProjectData, ProjectWithTasks} from "../Data/Types"
+import {ProjectData, ProjectWithTasks} from "../Data/Types"
 import {IProjectService} from "./IProjectService"
-import {OrmError} from "../OrmError"
+import {IProjectDAO} from "../DAO/IProjectDAO"
 
 export class ProjectService implements IProjectService {
 
-    private orm: ORM
+    private dao: IProjectDAO
 
-    constructor(orm: ORM) {
-        this.orm = orm
+    constructor(dao: IProjectDAO) {
+        this.dao = dao
     }
 
     async create(data: Partial<ProjectData>): Promise<ProjectData> {
-        try {
-            return await this.orm.project.create({
-                data: data as ProjectData
-            })
-        } catch (error) {
-            throw new OrmError(error)
-        }
+        return await this.dao.create(data)
     }
 
     async update(data: Partial<ProjectData>): Promise<ProjectData> {
-        try {
-            return await this.orm.project.update({
-                where: {
-                    id: data.id
-                },
-                data: data as ProjectData
-            })
-        } catch (error) {
-            throw new OrmError(error)
-        }
+        return await this.dao.update(data)
     }
-
     async getProjectsWithTasks(userId: number): Promise<ProjectWithTasks[]> {
-        try {
-            return await this.orm.project.findMany({
-                where: {
-                    userId: userId,
-                },
-                select: {
-                    id: true,
-                    title: true,
-                    description: true,
-                    tasks: {
-                        select: {
-                            id: true,
-                            title: true,
-                            status: true,
-                            assignedTo: {
-                                select: {
-                                    id: true,
-                                    name: true,
-                                }
-                            },
-                        }
-                    }
-                }
-            })
-        } catch (error) {
-            throw new OrmError(error)
-        }
+        return await this.dao.getProjectsWithTasks(userId)
     }
 }
