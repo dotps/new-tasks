@@ -1,51 +1,25 @@
-import {ORM, UserData} from "../Data/Types"
+import {UserData} from "../Data/Types"
 import {IUserService} from "./IUserService"
-import {OrmError} from "../OrmError"
+import {IUserDAO} from "../DAO/IUserDAO"
 
 export class UserService implements IUserService {
 
-    private orm: ORM
+    private userDAO: IUserDAO
 
-    constructor(orm: ORM) {
-        this.orm = orm
+    constructor(userDAO: IUserDAO) {
+        this.userDAO = userDAO
     }
 
     async create(data: Partial<UserData>): Promise<UserData> {
-        try {
-            return await this.orm.user.create({
-                data: data as UserData
-            })
-        }
-        catch (error) {
-            throw new OrmError(error)
-        }
+        return await this.userDAO.create(data)
     }
 
     async update(data: Partial<UserData>): Promise<UserData> {
-        try {
-            return await this.orm.user.update({
-                where: {
-                    id: data.id
-                },
-                data: data as UserData
-            })
-        }
-        catch (error) {
-            throw new OrmError(error)
-        }
+        return await this.userDAO.update(data)
     }
 
     async getById(id: number): Promise<UserData | null> {
-        try {
-            return await this.orm.user.findUnique({
-                where: {
-                    id: id
-                }
-            })
-        }
-        catch (error) {
-            throw new OrmError(error)
-        }
+        return await this.userDAO.getById(id)
     }
 }
 
