@@ -3,6 +3,7 @@ import {ITaskService} from "./ITaskService"
 import {OrmError} from "../OrmError"
 import {Prisma} from "@prisma/client"
 import {TaskHelper} from "../Utils/TaskHelper"
+import {ValidationError} from "../ValidationError"
 
 export class TaskService implements ITaskService {
 
@@ -84,6 +85,7 @@ export class TaskService implements ITaskService {
 
     async getWorkingTime(filter: CompletedTasksFilter): Promise<WorkingTimeData> {
         const tasks: Partial<TaskData>[] = await this.getCompletedTasks(filter)
+        if (tasks.length === 0) throw ValidationError.EntityNotFound()
         const seconds = TaskHelper.calculateWorkingTime(tasks)
         return {
             totalSeconds: seconds
