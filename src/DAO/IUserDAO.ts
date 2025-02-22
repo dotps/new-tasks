@@ -1,7 +1,6 @@
 import {UserData} from "../Data/Types"
+import {ICrudDAO} from "./ICrudDAO"
 
-export interface IUserDAO {
-    // create(data: Partial<UserData>): Promise<UserData>
-    // update(data: Partial<UserData>): Promise<UserData>
+export interface IUserDAO extends ICrudDAO<UserData> {
     // getById(id: number): Promise<UserData | null>
 }

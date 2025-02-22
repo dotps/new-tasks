@@ -12,14 +12,12 @@ import {TaskService} from "./Services/TaskService"
 import {ProjectService} from "./Services/ProjectService"
 import {ProjectController} from "./Controllers/ProjectController"
 import {CurrentUser} from "./CurrentUser"
-import {ITaskService} from "./Services/ITaskService"
 import {ITaskDAO} from "./DAO/ITaskDAO"
 import {TaskDAO} from "./DAO/TaskDAO"
 import {IUserDAO} from "./DAO/IUserDAO"
 import {UserDAO} from "./DAO/UserDAO"
 import {IProjectDAO} from "./DAO/IProjectDAO"
 import {ProjectDAO} from "./DAO/ProjectDAO"
-import { ORM2 } from "./DAO/CrudDAO"
 
 export class App {
     private app: Application
@@ -30,14 +28,14 @@ export class App {
         this.app.use(express.json())
 
         const orm:ORM = new PrismaClient()
-        const prisma = new PrismaClient()
-        const orm2:ORM2 = {
-            user: prisma.user,
-            task: prisma.task,
-            project: prisma.project,
-        }
+        // const prisma = new PrismaClient()
+        // const orm2:ORM2 = {
+        //     user: prisma.user,
+        //     task: prisma.task,
+        //     project: prisma.project,
+        // }
 
-        const userDAO: IUserDAO = new UserDAO(orm2)
+        const userDAO: IUserDAO = new UserDAO(orm.user)
         const projectDAO: IProjectDAO = new ProjectDAO(orm)
         const taskDAO: ITaskDAO = new TaskDAO(orm)
 

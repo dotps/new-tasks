@@ -4,7 +4,8 @@ import {Prisma} from "@prisma/client"
 import {ITaskDAO} from "./ITaskDAO"
 import {CrudDAO} from "./CrudDAO"
 
-export class TaskDAO extends CrudDAO<TaskData> {
+// export class TaskDAO extends CrudDAO<TaskData> {
+export class TaskDAO implements ITaskDAO {
 
     private orm: ORM
 

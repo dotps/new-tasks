@@ -1,4 +1,5 @@
-import {PrismaClient, User as UserData, Project as ProjectData, Task as TaskData} from "@prisma/client"
+import {PrismaClient, User as UserData, Project as ProjectData, Task as TaskData, Prisma} from "@prisma/client"
+import {DefaultArgs} from "@prisma/client/runtime/client"
 
 export type EntityData = UserData | ProjectData | TaskData
 
@@ -7,6 +8,8 @@ export type {
     ProjectData,
     TaskData,
 }
+
+export type UserModelDelegate = Prisma.UserDelegate<DefaultArgs, Prisma.PrismaClientOptions>
 
 export type ProjectWithTasks = Partial<ProjectData> & { tasks: Partial<TaskData>[] }
 
