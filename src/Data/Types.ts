@@ -10,6 +10,8 @@ export type {
 }
 
 export type UserModelDelegate = Prisma.UserDelegate<DefaultArgs, Prisma.PrismaClientOptions>
+export type TaskModelDelegate = Prisma.TaskDelegate<DefaultArgs, Prisma.PrismaClientOptions>
+export type ProjectModelDelegate = Prisma.ProjectDelegate<DefaultArgs, Prisma.PrismaClientOptions>
 
 export type ProjectWithTasks = Partial<ProjectData> & { tasks: Partial<TaskData>[] }
 

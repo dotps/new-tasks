@@ -1,61 +1,19 @@
-import {CompletedTasksFilter, ORM, TaskData, WorkingTimeData} from "../Data/Types"
+import {CompletedTasksFilter, TaskData, TaskModelDelegate} from "../Data/Types"
 import {OrmError} from "../OrmError"
 import {Prisma} from "@prisma/client"
 import {ITaskDAO} from "./ITaskDAO"
 import {CrudDAO} from "./CrudDAO"
 
-// export class TaskDAO extends CrudDAO<TaskData> {
-export class TaskDAO implements ITaskDAO {
-
-    private orm: ORM
-
-    constructor(orm: ORM) {
-        this.orm = orm
-    }
-
-    async create(data: Partial<TaskData>): Promise<TaskData> {
-        try {
-            return await this.orm.task.create({
-                data: data as TaskData
-            })
-        }
-        catch (error) {
-            throw new OrmError(error)
-        }
-    }
-
-    async update(data: Partial<TaskData>): Promise<TaskData> {
-        try {
-            return await this.orm.task.update({
-                where: {
-                    id: data.id
-                },
-                data: data as TaskData
-            })
-        }
-        catch (error) {
-            throw new OrmError(error)
-        }
-    }
-
-    async getById(id: number): Promise<TaskData | null> {
-        try {
-            return await this.orm.task.findUnique({
-                where: {
-                    id: id
-                }
-            })
-        }
-        catch (error) {
-            throw new OrmError(error)
-        }
+export class TaskDAO extends CrudDAO<TaskData, TaskModelDelegate> implements ITaskDAO {
+    constructor(model: TaskModelDelegate) {
+        super(model)
     }
 
     async getCompletedTasks(filter: CompletedTasksFilter): Promise<Partial<TaskData>[]> {
         try {
             const projectsFilter = filter?.projectsIds?.length === 0 ? undefined : filter.projectsIds
             const selectUser = !filter?.includeUser ? undefined : includeUser
-            return await this.orm.task.findMany({
+            return await this.model.findMany({
                 where: {
                     assignedToUserId: filter.userId,
                     completedAt: {
