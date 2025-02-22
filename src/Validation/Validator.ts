@@ -1,6 +1,6 @@
 import {DataWithId, ValidationType} from "../Data/Types"
-import {ErrorMessages} from "../Models/ErrorMessages"
-import {ValidationError} from "../ValidationError"
+import {ErrorMessages} from "../Errors/ErrorMessages"
+import {ValidationError} from "../Errors/ValidationError"
 
 export class Validator<T extends DataWithId> {
     protected readonly data: Partial<T>

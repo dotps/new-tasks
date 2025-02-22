@@ -1,5 +1,5 @@
 import {TaskData, ValidationType} from "../Data/Types"
-import {ErrorMessages} from "../Models/ErrorMessages"
+import {ErrorMessages} from "../Errors/ErrorMessages"
 import {Validator} from "./Validator"
 
 export class TaskValidator extends Validator<TaskData> {

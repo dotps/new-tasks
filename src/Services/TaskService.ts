@@ -1,7 +1,7 @@
 import {CompletedTasksFilter, TaskData, WorkingTimeData} from "../Data/Types"
 import {ITaskService} from "./ITaskService"
 import {TaskHelper} from "../Utils/TaskHelper"
-import {ValidationError} from "../ValidationError"
+import {ValidationError} from "../Errors/ValidationError"
 import {ITaskDAO} from "../DAO/ITaskDAO"
 
 export class TaskService implements ITaskService {

@@ -1,5 +1,5 @@
 import {CompletedTasksFilter, TaskData, TaskModelDelegate} from "../Data/Types"
-import {OrmError} from "../OrmError"
+import {OrmError} from "../Errors/OrmError"
 import {Prisma} from "@prisma/client"
 import {ITaskDAO} from "./ITaskDAO"
 import {CrudDAO} from "./CrudDAO"

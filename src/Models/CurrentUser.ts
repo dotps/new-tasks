@@ -1,6 +1,6 @@
-import {User} from "./Models/User"
-import {ResponseCode} from "./ResponseCode"
-import {ValidationError} from "./ValidationError"
+import {User} from "./User"
+import {ResponseCode} from "../Responses/ResponseCode"
+import {ValidationError} from "../Errors/ValidationError"
 
 export class CurrentUser {
 

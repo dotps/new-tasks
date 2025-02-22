@@ -1,6 +1,6 @@
 import {Request, Response, NextFunction} from "express"
-import {ResponseError} from "../ResponseError"
-import {ResponseCode} from "../ResponseCode"
+import {ResponseError} from "../Responses/ResponseError"
+import {ResponseCode} from "../Responses/ResponseCode"
 
 export class RequestBodyMiddleware {
 

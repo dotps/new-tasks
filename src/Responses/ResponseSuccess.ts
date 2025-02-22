@@ -4,6 +4,5 @@ import {ResponseCode} from "./ResponseCode"
 export class ResponseSuccess {
     static send(res: Response, data: any, statusCode: ResponseCode = ResponseCode.SUCCESS): void {
         res.status(statusCode).json(data)
-        // TODO: переделать чтобы можно было использовать разные форматы XML, JSON. Добавить слой view
     }
 }

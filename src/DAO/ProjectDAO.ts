@@ -1,5 +1,5 @@
 import {ORM, ProjectData, ProjectModelDelegate, ProjectWithTasks, TaskData, TaskModelDelegate} from "../Data/Types"
-import {OrmError} from "../OrmError"
+import {OrmError} from "../Errors/OrmError"
 import {IProjectDAO} from "./IProjectDAO"
 import {CrudDAO} from "./CrudDAO"
 import {ICrudDAO} from "./ICrudDAO"

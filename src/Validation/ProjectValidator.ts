@@ -1,4 +1,4 @@
-import {ErrorMessages} from "../Models/ErrorMessages"
+import {ErrorMessages} from "../Errors/ErrorMessages"
 import {ProjectData, ValidationType} from "../Data/Types"
 import {Validator} from "./Validator"
 

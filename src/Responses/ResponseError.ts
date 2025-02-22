@@ -1,8 +1,8 @@
 import {Response} from "express"
 import {ResponseCode} from "./ResponseCode"
 
-import {ValidationError} from "./ValidationError"
-import {OrmError} from "./OrmError"
+import {ValidationError} from "../Errors/ValidationError"
+import {OrmError} from "../Errors/OrmError"
 
 export class ResponseError {
 

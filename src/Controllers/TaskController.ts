@@ -3,11 +3,11 @@ import {ITaskController} from "./ITaskController";
 import {TaskData, TaskStatus} from "../Data/Types";
 import {Task} from "../Models/Task";
 import {ITaskService} from "../Services/ITaskService";
-import {ResponseSuccess} from "../ResponseSuccess"
-import {ResponseCode} from "../ResponseCode"
-import {ResponseError} from "../ResponseError"
+import {ResponseSuccess} from "../Responses/ResponseSuccess"
+import {ResponseCode} from "../Responses/ResponseCode"
+import {ResponseError} from "../Responses/ResponseError"
 import {TaskValidator} from "../Validation/TaskValidator"
-import {CurrentUser} from "../CurrentUser"
+import {CurrentUser} from "../Models/CurrentUser"
 
 export class TaskController implements ITaskController {
     private readonly taskService: ITaskService

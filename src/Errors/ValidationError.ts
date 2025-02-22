@@ -1,4 +1,4 @@
-import {ResponseCode} from "./ResponseCode"
+import {ResponseCode} from "../Responses/ResponseCode"
 
 export class ValidationError extends Error {
 

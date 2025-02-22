@@ -1,5 +1,5 @@
 import {UserData} from "../Data/Types"
-import {Token} from "../Token"
+import {Token} from "../Utils/Token"
 import {IModel} from "./IModel"
 import {AuthData} from "../Data/AuthData"
 

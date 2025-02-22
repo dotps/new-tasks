@@ -3,11 +3,11 @@ import {IUserController} from "./IUserController"
 import {CompletedTasksFilter, TaskData, UserData, ValidationType, WorkingTimeData} from "../Data/Types"
 import {User} from "../Models/User"
 import {IUserService} from "../Services/IUserService"
-import {ResponseSuccess} from "../ResponseSuccess"
-import {ResponseCode} from "../ResponseCode"
-import {ResponseError} from "../ResponseError"
+import {ResponseSuccess} from "../Responses/ResponseSuccess"
+import {ResponseCode} from "../Responses/ResponseCode"
+import {ResponseError} from "../Responses/ResponseError"
 import {UserValidator} from "../Validation/UserValidator"
-import {CurrentUser} from "../CurrentUser"
+import {CurrentUser} from "../Models/CurrentUser"
 import {ITaskService} from "../Services/ITaskService"
 import {TaskHelper} from "../Utils/TaskHelper"
 import {QueryHelper} from "../Utils/QueryHelper"
@@ -54,9 +54,6 @@ export class UserController implements IUserController {
                 startDate: QueryHelper.parseDate(req.query?.start_date?.toString()),
                 endDate: QueryHelper.parseDate(req.query?.end_date?.toString())
             }
-
-            // TODO: /api/users/10000/working-time?projects=&start_date=&end_date=
-            // TODO: выдает 0 секунд, а по идее нужно ошибку, что пользователь с id 10000 не найден
 
             const result = await this.taskService.getWorkingTime(filter)
             ResponseSuccess.send(res, result, ResponseCode.SUCCESS)

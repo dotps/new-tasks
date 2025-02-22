@@ -3,8 +3,8 @@ import {IRouter} from "./IRouter"
 import {IUserController} from "../Controllers/IUserController"
 import {ITaskController} from "../Controllers/ITaskController"
 import {AuthMiddleware} from "../Middlewares/AuthMiddleware"
-import {ResponseError} from "../ResponseError"
-import {ResponseCode} from "../ResponseCode"
+import {ResponseError} from "../Responses/ResponseError"
+import {ResponseCode} from "../Responses/ResponseCode"
 import {IProjectController} from "../Controllers/IProjectController"
 
 export class ApiRouter implements IRouter {
