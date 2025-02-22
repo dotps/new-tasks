@@ -1,5 +1,6 @@
 import {App} from "./App"
-import {Config} from "./Config"
 
 const app = new App()
-app.start(Config.appPort)
+const port = Number(process.env.APP_PORT)
+
+app.start(port)
