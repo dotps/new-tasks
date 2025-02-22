@@ -1,4 +1,4 @@
-import {ProjectData} from "../Data/Types"
+import {ProjectData} from "../Types"
 import {IModel} from "./IModel"
 
 export class Project implements IModel {

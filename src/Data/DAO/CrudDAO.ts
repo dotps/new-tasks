@@ -1,5 +1,5 @@
-import {EntityData} from "../Data/Types";
-import {OrmError} from "../Errors/OrmError";
+import {EntityData} from "../Types";
+import {OrmError} from "../../Errors/OrmError";
 import {ICrudDAO} from "./ICrudDAO"
 import {CrudMethods} from "./CrudMethods"
 

@@ -1,4 +1,4 @@
-import {UserData, UserModelDelegate} from "../Data/Types"
+import {UserData, UserModelDelegate} from "../Types"
 import {IUserDAO} from "./IUserDAO"
 import {CrudDAO} from "./CrudDAO"
 

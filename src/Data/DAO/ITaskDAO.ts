@@ -1,4 +1,4 @@
-import {CompletedTasksFilter, TaskData} from "../Data/Types"
+import {CompletedTasksFilter, TaskData} from "../Types"
 import {ICrudDAO} from "./ICrudDAO"
 
 export interface ITaskDAO extends ICrudDAO<TaskData> {

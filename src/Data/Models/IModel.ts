@@ -1,4 +1,4 @@
-import {ProjectData, TaskData, UserData} from "../Data/Types"
+import {ProjectData, TaskData, UserData} from "../Types"
 
 export interface IModel {
     toCreateData(): Partial<TaskData> | Partial<ProjectData> | Partial<UserData>

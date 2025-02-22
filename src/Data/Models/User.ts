@@ -1,7 +1,7 @@
-import {UserData} from "../Data/Types"
-import {Token} from "../Utils/Token"
+import {UserData} from "../Types"
+import {Token} from "../../Helpers/Token"
 import {IModel} from "./IModel"
-import {AuthData} from "../Data/AuthData"
+import {AuthData} from "../AuthData"
 
 export class User implements IModel {
 

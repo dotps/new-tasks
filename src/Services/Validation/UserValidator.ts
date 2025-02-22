@@ -1,5 +1,5 @@
-import {UserData, ValidationType} from "../Data/Types"
-import {ErrorMessages} from "../Errors/ErrorMessages"
+import {UserData, ValidationType} from "../../Data/Types"
+import {ErrorMessages} from "../../Errors/ErrorMessages"
 import {Validator} from "./Validator"
 
 export class UserValidator extends Validator<UserData> {

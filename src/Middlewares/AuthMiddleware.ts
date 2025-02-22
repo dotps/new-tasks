@@ -1,10 +1,10 @@
 import {NextFunction, Request, Response} from "express"
 import {ResponseError} from "../Responses/ResponseError"
 import {ResponseCode} from "../Responses/ResponseCode"
-import {User} from "../Models/User"
+import {User} from "../Data/Models/User"
 import {UserData} from "../Data/Types"
 import {IUserService} from "../Services/IUserService"
-import {CurrentUser} from "../Models/CurrentUser"
+import {CurrentUser} from "../Data/Models/CurrentUser"
 
 export class AuthMiddleware {
     private userService: IUserService

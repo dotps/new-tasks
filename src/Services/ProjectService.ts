@@ -1,6 +1,6 @@
 import {ProjectData, ProjectWithTasks} from "../Data/Types"
 import {IProjectService} from "./IProjectService"
-import {IProjectDAO} from "../DAO/IProjectDAO"
+import {IProjectDAO} from "../Data/DAO/IProjectDAO"
 
 export class ProjectService implements IProjectService {
 

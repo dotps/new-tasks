@@ -1,4 +1,4 @@
-import {ProjectData, ProjectWithTasks} from "../Data/Types"
+import {ProjectData, ProjectWithTasks} from "../Types"
 import {ICrudDAO} from "./ICrudDAO"
 
 export interface IProjectDAO extends ICrudDAO<ProjectData> {

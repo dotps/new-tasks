@@ -1,6 +1,6 @@
 import {UserData} from "../Data/Types"
 import {IUserService} from "./IUserService"
-import {IUserDAO} from "../DAO/IUserDAO"
+import {IUserDAO} from "../Data/DAO/IUserDAO"
 
 export class UserService implements IUserService {
 

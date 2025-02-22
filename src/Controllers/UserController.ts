@@ -1,16 +1,16 @@
 import {Request, Response} from "express"
 import {IUserController} from "./IUserController"
 import {CompletedTasksFilter, TaskData, UserData, ValidationType, WorkingTimeData} from "../Data/Types"
-import {User} from "../Models/User"
+import {User} from "../Data/Models/User"
 import {IUserService} from "../Services/IUserService"
 import {ResponseSuccess} from "../Responses/ResponseSuccess"
 import {ResponseCode} from "../Responses/ResponseCode"
 import {ResponseError} from "../Responses/ResponseError"
-import {UserValidator} from "../Validation/UserValidator"
-import {CurrentUser} from "../Models/CurrentUser"
+import {UserValidator} from "../Services/Validation/UserValidator"
+import {CurrentUser} from "../Data/Models/CurrentUser"
 import {ITaskService} from "../Services/ITaskService"
-import {TaskHelper} from "../Utils/TaskHelper"
-import {QueryHelper} from "../Utils/QueryHelper"
+import {TaskHelper} from "../Helpers/TaskHelper"
+import {QueryHelper} from "../Helpers/QueryHelper"
 
 export class UserController implements IUserController {
 

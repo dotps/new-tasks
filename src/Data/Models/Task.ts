@@ -1,4 +1,4 @@
-import {TaskData, TaskStatus, toTaskStatus} from "../Data/Types"
+import {TaskData, TaskStatus, toTaskStatus} from "../Types"
 import {IModel} from "./IModel"
 
 export class Task implements IModel {

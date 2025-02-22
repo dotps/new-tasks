@@ -1,13 +1,13 @@
 import {Request, Response} from "express";
 import {ITaskController} from "./ITaskController";
 import {TaskData, TaskStatus} from "../Data/Types";
-import {Task} from "../Models/Task";
+import {Task} from "../Data/Models/Task";
 import {ITaskService} from "../Services/ITaskService";
 import {ResponseSuccess} from "../Responses/ResponseSuccess"
 import {ResponseCode} from "../Responses/ResponseCode"
 import {ResponseError} from "../Responses/ResponseError"
-import {TaskValidator} from "../Validation/TaskValidator"
-import {CurrentUser} from "../Models/CurrentUser"
+import {TaskValidator} from "../Services/Validation/TaskValidator"
+import {CurrentUser} from "../Data/Models/CurrentUser"
 
 export class TaskController implements ITaskController {
     private readonly taskService: ITaskService
