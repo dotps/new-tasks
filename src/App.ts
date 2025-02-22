@@ -28,16 +28,10 @@ export class App {
         this.app.use(express.json())
 
         const orm:ORM = new PrismaClient()
-        // const prisma = new PrismaClient()
-        // const orm2:ORM2 = {
-        //     user: prisma.user,
-        //     task: prisma.task,
-        //     project: prisma.project,
-        // }
 
         const userDAO: IUserDAO = new UserDAO(orm.user)
-        const projectDAO: IProjectDAO = new ProjectDAO(orm)
-        const taskDAO: ITaskDAO = new TaskDAO(orm)
+        const projectDAO: IProjectDAO = new ProjectDAO(orm.project)
+        const taskDAO: ITaskDAO = new TaskDAO(orm.task)
 
         const userService = new UserService(userDAO)
         const projectService = new ProjectService(projectDAO)

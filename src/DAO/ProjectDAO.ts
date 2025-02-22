@@ -1,41 +1,16 @@
-import {ORM, ProjectData, ProjectWithTasks} from "../Data/Types"
+import {ORM, ProjectData, ProjectModelDelegate, ProjectWithTasks, TaskData, TaskModelDelegate} from "../Data/Types"
 import {OrmError} from "../OrmError"
 import {IProjectDAO} from "./IProjectDAO"
+import {CrudDAO} from "./CrudDAO"
 
-export class ProjectDAO implements IProjectDAO {
-
-    private orm: ORM
-
-    constructor(orm: ORM) {
-        this.orm = orm
-    }
-
-    async create(data: Partial<ProjectData>): Promise<ProjectData> {
-        try {
-            return await this.orm.project.create({
-                data: data as ProjectData
-            })
-        } catch (error) {
-            throw new OrmError(error)
-        }
-    }
-
-    async update(data: Partial<ProjectData>): Promise<ProjectData> {
-        try {
-            return await this.orm.project.update({
-                where: {
-                    id: data.id
-                },
-                data: data as ProjectData
-            })
-        } catch (error) {
-            throw new OrmError(error)
-        }
+export class ProjectDAO extends CrudDAO<ProjectData, ProjectModelDelegate> implements IProjectDAO {
+    constructor(model: ProjectModelDelegate) {
+        super(model)
     }
 
     async getProjectsWithTasks(userId: number): Promise<ProjectWithTasks[]> {
         try {
-            return await this.orm.project.findMany({
+            return await this.model.findMany({
                 where: {
                     userId: userId,
                 },
