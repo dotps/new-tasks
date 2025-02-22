@@ -2,6 +2,7 @@ import {ORM, ProjectData, ProjectModelDelegate, ProjectWithTasks, TaskData, Task
 import {OrmError} from "../OrmError"
 import {IProjectDAO} from "./IProjectDAO"
 import {CrudDAO} from "./CrudDAO"
+import {ICrudDAO} from "./ICrudDAO"
 
 export class ProjectDAO extends CrudDAO<ProjectData, ProjectModelDelegate> implements IProjectDAO {
     constructor(model: ProjectModelDelegate) {

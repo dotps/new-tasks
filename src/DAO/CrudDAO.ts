@@ -1,4 +1,4 @@
-import {EntityData, TaskData} from "../Data/Types";
+import {EntityData} from "../Data/Types";
 import {OrmError} from "../OrmError";
 import {ICrudDAO} from "./ICrudDAO"
 import {CrudMethods} from "./CrudMethods"
