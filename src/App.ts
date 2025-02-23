@@ -18,6 +18,8 @@ import {IUserDAO} from "./Data/DAO/IUserDAO"
 import {UserDAO} from "./Data/DAO/UserDAO"
 import {IProjectDAO} from "./Data/DAO/IProjectDAO"
 import {ProjectDAO} from "./Data/DAO/ProjectDAO"
+import {ConsoleLogger} from "./Services/Logger/ConsoleLogger"
+import {Logger} from "./Services/Logger/Logger"
 
 export class App {
     private app: Application
@@ -26,6 +28,8 @@ export class App {
     constructor() {
         this.app = express()
         this.app.use(express.json())
+
+        Logger.init(new ConsoleLogger(true))
 
         const orm:ORM = new PrismaClient()
 

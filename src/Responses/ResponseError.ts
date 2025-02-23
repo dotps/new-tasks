@@ -4,6 +4,7 @@ import {ResponseCode} from "./ResponseCode"
 import {ValidationError} from "../Errors/ValidationError"
 import {OrmError} from "../Errors/OrmError"
 import {PrismaErrorHelper} from "../Helpers/PrismaErrorHelper"
+import {Logger} from "../Services/Logger/Logger"
 
 export class ResponseError {
 
@@ -33,12 +34,11 @@ export class ResponseError {
         else {
             this.sendError(res, "Неизвестная ошибка.", ResponseCode.SERVER_ERROR, error)
         }
-
-        console.log(error)
     }
 
     static sendError(res: Response, message: string, statusCode: ResponseCode, errorContext?: any): void {
         const error = new ResponseError(message, statusCode, errorContext)
+        Logger.error(JSON.stringify(error))
         res.status(statusCode).json(error)
     }
 
