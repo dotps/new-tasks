@@ -1,5 +1,5 @@
 import {UserData} from "../Types"
-import {Token} from "../../Helpers/Token"
+import {AccessRefreshToken} from "../../Helpers/AccessRefreshToken"
 import {IModel} from "./IModel"
 import {AuthData} from "../AuthData"
 
@@ -38,16 +38,22 @@ export class User implements IModel {
     toAuthData(): AuthData {
         return {
             id: this.id || 0,
-            token: this.getToken()
+            accessToken: this.getAccessToken(),
+            refreshToken: this.getRefreshToken()
         }
     }
 
-    getToken(): string {
+    getAccessToken(): string {
         if (!this?.id) return ""
-        return Token.generate(this.id)
+        return AccessRefreshToken.generateAccessToken(this.id)
     }
 
     getId(): number {
         return this.id || 0
+    }
+
+    private getRefreshToken() {
+        if (!this?.id) return ""
+        return AccessRefreshToken.generateRefreshToken(this.id)
     }
 }
