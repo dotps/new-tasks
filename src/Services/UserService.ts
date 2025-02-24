@@ -1,10 +1,11 @@
 import {UserData} from "../Data/Types"
 import {IUserService} from "./IUserService"
 import {IUserDAO} from "../Data/DAO/IUserDAO"
+import {ITokenService} from "./ITokenService"
 
 export class UserService implements IUserService {
 
-    private dao: IUserDAO
+    private readonly dao: IUserDAO
 
     constructor(userDAO: IUserDAO) {
         this.dao = userDAO

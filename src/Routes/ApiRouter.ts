@@ -22,6 +22,7 @@ export class ApiRouter implements IRouter {
 
         this.router = Router()
 
+        this.initTokenRoutes()
         this.initUserRoutes()
         this.initProjectRoutes()
         this.initTaskRoutes()
@@ -31,12 +32,19 @@ export class ApiRouter implements IRouter {
         return this.router
     }
 
+    private initTokenRoutes(): void {
+        this.router.post(
+            "/tokens/refresh",
+            this.authMiddleware.refreshAccessToken.bind(this.authMiddleware)
+        )
+    }
+
     private initUserRoutes(): void {
-        this.router.use("/users", this.authMiddleware.handle.bind(this.authMiddleware))
         this.router.post(
             "/users",
             this.userController.createUser.bind(this.userController)
         )
+        this.router.use("/users", this.authMiddleware.handle.bind(this.authMiddleware))
         this.router.get(
             "/users/:userId/working-time",
             this.userController.getWorkingTime.bind(this.userController)

@@ -1,6 +1,6 @@
 import {Request, Response} from "express"
 import {IUserController} from "./IUserController"
-import {CompletedTasksFilter, TaskData, UserData, ValidationType, WorkingTimeData} from "../Data/Types"
+import {CompletedTasksFilter, UserData, ValidationType} from "../Data/Types"
 import {User} from "../Data/Models/User"
 import {IUserService} from "../Services/IUserService"
 import {ResponseSuccess} from "../Responses/ResponseSuccess"
@@ -9,16 +9,39 @@ import {ResponseError} from "../Responses/ResponseError"
 import {UserValidator} from "../Services/Validation/UserValidator"
 import {CurrentUser} from "../Data/Models/CurrentUser"
 import {ITaskService} from "../Services/ITaskService"
-import {TaskHelper} from "../Helpers/TaskHelper"
 import {QueryHelper} from "../Helpers/QueryHelper"
+import {ITokenService} from "../Services/ITokenService"
+import {AuthData} from "../Data/AuthData"
+
+class AuthDataGenerator {
+
+    private userData: UserData
+    private tokenService: ITokenService
+
+    constructor(userData: UserData, tokenService: ITokenService) {
+        this.userData = userData
+        this.tokenService = tokenService
+    }
+
+    toData(): AuthData {
+        const userId = this.userData.id || 0
+        return {
+            id: userId,
+            accessToken: this.tokenService.generateAccessToken(userId),
+            refreshToken: this.tokenService.generateRefreshToken(userId)
+        }
+    }
+}
 
 export class UserController implements IUserController {
 
     private readonly userService: IUserService
-    private taskService: ITaskService
+    private readonly tokenService: ITokenService
+    private readonly taskService: ITaskService
     private readonly currentUser: CurrentUser
 
-    constructor(userService: IUserService, taskService: ITaskService, currentUser: CurrentUser) {
+    constructor(userService: IUserService, taskService: ITaskService, currentUser: CurrentUser, tokenService: ITokenService) {
+        this.tokenService = tokenService
         this.taskService = taskService
         this.currentUser = currentUser
         this.userService = userService
@@ -31,8 +54,8 @@ export class UserController implements IUserController {
             validator.validateCreateDataOrThrow()
 
             const userData: UserData = await this.userService.create(normalizedData)
-            const createdUser = new User(userData)
-            ResponseSuccess.send(res, createdUser.toAuthData(), ResponseCode.SUCCESS_CREATED)
+            const authData = new AuthDataGenerator(userData, this.tokenService)
+            ResponseSuccess.send(res, authData.toData(), ResponseCode.SUCCESS_CREATED)
         }
         catch (error) {
             ResponseError.send(res, error)

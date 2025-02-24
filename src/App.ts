@@ -20,6 +20,8 @@ import {IProjectDAO} from "./Data/DAO/IProjectDAO"
 import {ProjectDAO} from "./Data/DAO/ProjectDAO"
 import {ConsoleLogger} from "./Services/Logger/ConsoleLogger"
 import {Logger} from "./Services/Logger/Logger"
+import {ITokenService} from "./Services/ITokenService"
+import {SimpleTokenService} from "./Services/SimpleTokenService"
 
 export class App {
     private app: Application
@@ -29,6 +31,9 @@ export class App {
         this.app = express()
         this.app.use(express.json())
 
+        // "accessToken": "YWNjZXNzLXRva2VuITkhMTc0MDQwMDY2Nzc0NA==",
+        // "refreshToken": "cmVmcmVzaC10b2tlbiE5ITE3NDA0ODM0Njc3NDQ="
+
         Logger.init(new ConsoleLogger(true))
 
         const orm:ORM = new PrismaClient()
@@ -37,16 +42,19 @@ export class App {
         const projectDAO: IProjectDAO = new ProjectDAO(orm.project)
         const taskDAO: ITaskDAO = new TaskDAO(orm.task)
 
+        const tokenService: ITokenService = new SimpleTokenService()
+
         const userService = new UserService(userDAO)
         const projectService = new ProjectService(projectDAO)
         const taskService = new TaskService(taskDAO)
 
         const currentUser = new CurrentUser()
-        const authMiddleware = new AuthMiddleware(userService, currentUser)
+
+        const authMiddleware = new AuthMiddleware(userService, currentUser, tokenService)
         const requestBodyMiddleware = new RequestBodyMiddleware()
         this.app.use(requestBodyMiddleware.handleJson)
 
-        const userController = new UserController(userService, taskService, currentUser)
+        const userController = new UserController(userService, taskService, currentUser, tokenService)
         const projectController = new ProjectController(projectService, taskService, currentUser)
         const taskController = new TaskController(taskService, currentUser)
 

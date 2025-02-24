@@ -42,7 +42,7 @@ export class ProjectController implements IProjectController {
     async getAll(req: Request, res: Response): Promise<void> {
         try {
             const result = await this.projectService.getProjectsWithTasks(this.currentUser.getId())
-            ResponseSuccess.send(res, result, ResponseCode.SUCCESS_CREATED)
+            ResponseSuccess.send(res, result, ResponseCode.SUCCESS)
         }
         catch (error) {
             ResponseError.send(res, error)

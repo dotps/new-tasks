@@ -1,7 +1,5 @@
 import {UserData} from "../Types"
-import {SimpleAccessRefreshToken} from "../../Helpers/SimpleAccessRefreshToken"
 import {IModel} from "./IModel"
-import {AuthData} from "../AuthData"
 
 export class User implements IModel {
 
@@ -32,15 +30,6 @@ export class User implements IModel {
         return {
             ...this.toCreateData(),
             id: this.id,
-        }
-    }
-
-    toAuthData(): AuthData {
-        const userId = this.id || 0
-        return {
-            id: userId,
-            accessToken: SimpleAccessRefreshToken.generateAccessToken(userId),
-            refreshToken: SimpleAccessRefreshToken.generateRefreshToken(userId)
         }
     }
 
