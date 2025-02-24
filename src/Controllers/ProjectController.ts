@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {CompletedTasksFilter, ProjectData, TaskData, UserData, ValidationType, WorkingTimeData} from "../Data/Types";
+import {CompletedTasksFilter, ProjectData, ValidationType} from "../Data/Types";
 import {Project} from "../Data/Models/Project";
 import {ResponseSuccess} from "../Responses/ResponseSuccess"
 import {ResponseCode} from "../Responses/ResponseCode"
@@ -8,9 +8,7 @@ import {IProjectController} from "./IProjectController"
 import {IProjectService} from "../Services/IProjectService"
 import {ProjectValidator} from "../Services/Validation/ProjectValidator"
 import {CurrentUser} from "../Data/Models/CurrentUser"
-import {UserValidator} from "../Services/Validation/UserValidator"
 import {QueryHelper} from "../Helpers/QueryHelper"
-import {TaskHelper} from "../Helpers/TaskHelper"
 import {ITaskService} from "../Services/ITaskService"
 
 export class ProjectController implements IProjectController {

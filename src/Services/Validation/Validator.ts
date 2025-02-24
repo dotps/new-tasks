@@ -13,7 +13,6 @@ export class Validator<T extends DataWithId> {
         this.data = data
     }
 
-    // protected validateExistId(): boolean {
     validateExistId(): boolean {
         if (!this.data.id) {
             this.errors.push(this.errorMessages?.idRequired)
@@ -22,7 +21,6 @@ export class Validator<T extends DataWithId> {
         return true
     }
 
-    // protected throwValidationError(type: ValidationType) {
     throwValidationError(type: ValidationType) {
         if (this.errors.length > 0) {
             switch (type) {
