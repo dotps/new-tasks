@@ -90,18 +90,6 @@ describe("Создание проекта (с реальными сервиса�
         console.log("Request", mockCreateProjectRequest.body)
         console.log("Статус ответа:", responseStatus.mock.calls[0][0])
         console.log("Ответ:", response)
-
-        // Очистка тестовых данных
-        await prisma.project.deleteMany({
-            where: {
-                userId: testUser.id
-            }
-        })
-        await prisma.user.delete({
-            where: {
-                id: testUser.id
-            }
-        })
     })
 
     it("создание нового проекта", async () => {
@@ -151,16 +139,7 @@ describe("Создание проекта (с реальными сервиса�
         const taskService = new TaskService(taskDAO)
         const projectController = new ProjectController(projectService, taskService, mockCurrentUser)
 
-        // Создаем новый запрос с userId для этого теста
-        const request = {
-            body: {
-                title: "Тестовый проект",
-                description: "Описание тестового проекта",
-                userId: testUser.id
-            }
-        }
-
-        await projectController.createProject(request as Request, mockCreateProjectResponse as Response)
+        await projectController.createProject(mockCreateProjectRequest as Request, mockCreateProjectResponse as Response)
 
         expect(responseStatus).toHaveBeenCalledWith(ResponseCode.SERVER_ERROR)
         expect(responseJson).toHaveBeenCalledWith(
