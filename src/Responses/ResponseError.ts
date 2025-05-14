@@ -50,4 +50,8 @@ export class ResponseError {
             }
         }
     }
+
+    getMessage(): string {
+        return this.message
+    }
 }

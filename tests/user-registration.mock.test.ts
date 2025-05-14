@@ -63,8 +63,8 @@ describe("Регистрация пользователя", () => {
 
         mockRequest = {
             body: {
-                name: "Test User",
-                email: "test@example.com"
+                name: "Иван Иваныч",
+                email: "test@test.ru"
             }
         }
 
@@ -75,8 +75,8 @@ describe("Регистрация пользователя", () => {
 
         mockUserData = {
             id: 1,
-            name: "Test User",
-            email: "test@example.com",
+            name: "Иван Иваныч",
+            email: "test@test.ru",
             createdAt: new Date()
         }
     })
@@ -89,8 +89,8 @@ describe("Регистрация пользователя", () => {
         await userController.createUser(mockRequest as Request, mockResponse as Response)
 
         expect(mockUserService.create).toHaveBeenCalledWith({
-            name: "Test User",
-            email: "test@example.com"
+            name: mockRequest.body.name,
+            email: mockRequest.body.email
         })
 
         expect(responseStatus).toHaveBeenCalledWith(201)
@@ -104,9 +104,7 @@ describe("Регистрация пользователя", () => {
     })
 
     it("ошибка валидации при отсутствии обязательных полей", async () => {
-        mockRequest.body = {
-            name: "Test User"
-        }
+        delete mockRequest.body.email
 
         await userController.createUser(mockRequest as Request, mockResponse as Response)
 
@@ -121,10 +119,7 @@ describe("Регистрация пользователя", () => {
     })
 
     it("ошибка валидации при некорректном формате email", async () => {
-        mockRequest.body = {
-            name: "Test User",
-            email: "invalid-email"
-        }
+        mockRequest.body.email = "email"
 
         await userController.createUser(mockRequest as Request, mockResponse as Response)
 

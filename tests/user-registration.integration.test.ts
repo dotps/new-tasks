@@ -8,6 +8,8 @@ import {PrismaClient} from "@prisma/client"
 import {UserDAO} from "../src/Data/DAO/UserDAO"
 import {TaskDAO} from "../src/Data/DAO/TaskDAO"
 import {ResponseCode} from "../src/Responses/ResponseCode"
+import {TaskController} from "../src/Controllers/TaskController"
+import {ResponseError} from "../src/Responses/ResponseError"
 
 jest.mock("../src/Services/Logger/Logger", () => ({
     Logger: {
@@ -20,6 +22,7 @@ jest.mock("../src/Services/Logger/Logger", () => ({
 
 describe("Регистрация пользователя (с реальными сервисами):", () => {
     let prisma: PrismaClient
+    let invalidPrisma: PrismaClient
     let userController: UserController
     let mockRequest: Partial<Request>
     let mockResponse: Partial<Response>
@@ -29,6 +32,14 @@ describe("Регистрация пользователя (с реальными
     beforeAll(async () => {
         prisma = new PrismaClient()
         await prisma.$connect()
+
+        invalidPrisma = new PrismaClient({
+            datasources: {
+                db: {
+                    url: "postgresql://postgres:password@localhost:5432/tasks"
+                }
+            }
+        })
     })
 
     afterAll(async () => {
@@ -72,8 +83,10 @@ describe("Регистрация пользователя (с реальными
     })
 
     afterEach(async () => {
+        const response = responseJson.mock.calls[0][0] instanceof ResponseError ? responseJson.mock.calls[0][0].getMessage() : responseJson.mock.calls[0][0]
         console.log("Request", mockRequest.body)
-        console.log("statusCode", responseJson.mock.calls[0][0].statusCode)
+        console.log("Статус ответа:", responseStatus.mock.calls[0][0])
+        console.log("Ответ:", response)
     })
 
     it("регистрация нового пользователя", async () => {
@@ -173,5 +186,32 @@ describe("Регистрация пользователя (с реальными
         expect(users).toHaveLength(1)
 
         console.log("Пользователей с таким e-mail", users)
+    })
+
+    it("ошибка при невозможности подключиться к БД", async () => {
+        const userDAO = new UserDAO(invalidPrisma.user)
+        const taskDAO = new TaskDAO(invalidPrisma.task)
+        const userService = new UserService(userDAO)
+        const taskService = new TaskService(taskDAO)
+        const tokenService = new SimpleTokenService()
+        const currentUser = new CurrentUser()
+
+        userController = new UserController(
+            userService,
+            taskService,
+            currentUser,
+            tokenService
+        )
+
+        await userController.createUser(mockRequest as Request, mockResponse as Response)
+
+        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.SERVER_ERROR)
+        expect(responseJson).toHaveBeenCalledWith(
+            expect.objectContaining({
+                message: "Ошибка в ORM.",
+                statusCode: ResponseCode.SERVER_ERROR,
+                timestamp: expect.any(String)
+            })
+        )
     })
 })
