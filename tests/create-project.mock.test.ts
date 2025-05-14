@@ -1,10 +1,10 @@
 import {Request, Response} from "express"
-import {TaskController} from "../src/Controllers/TaskController"
-import {ITaskService} from "../src/Services/ITaskService"
+import {ProjectController} from "../src/Controllers/ProjectController"
+import {IProjectService} from "../src/Services/IProjectService"
 import {CurrentUser} from "../src/Data/Models/CurrentUser"
-import {TaskData, TaskStatus, UserData} from "../src/Data/Types"
+import {ProjectData, UserData} from "../src/Data/Types"
 import {User} from "../src/Data/Models/User"
-import {Task} from "../src/Data/Models/Task"
+import {ITaskService} from "../src/Services/ITaskService"
 import {ResponseError} from "../src/Responses/ResponseError"
 
 jest.mock("../src/Services/Logger/Logger", () => ({
@@ -16,19 +16,26 @@ jest.mock("../src/Services/Logger/Logger", () => ({
     },
 }))
 
-describe("Создание задачи: ", () => {
+describe("Создание проекта: ", () => {
+    let mockProjectService: jest.Mocked<IProjectService>
     let mockTaskService: jest.Mocked<ITaskService>
     let mockCurrentUser: CurrentUser
-    let taskController: TaskController
+    let projectController: ProjectController
     let mockRequest: Partial<Request>
     let mockResponse: Partial<Response>
     let responseJson: jest.Mock
     let responseStatus: jest.Mock
-    let mockTaskData: TaskData
+    let mockProjectData: ProjectData
 
     beforeEach(() => {
         console.log("======================================================================")
         console.log(expect.getState().currentTestName)
+
+        mockProjectService = {
+            create: jest.fn(),
+            update: jest.fn(),
+            getProjectsWithTasks: jest.fn()
+        } as jest.Mocked<IProjectService>
 
         mockTaskService = {
             create: jest.fn(),
@@ -47,7 +54,8 @@ describe("Создание задачи: ", () => {
         }
         mockCurrentUser.set(new User(mockUserData))
 
-        taskController = new TaskController(
+        projectController = new ProjectController(
+            mockProjectService,
             mockTaskService,
             mockCurrentUser
         )
@@ -55,14 +63,11 @@ describe("Создание задачи: ", () => {
         responseJson = jest.fn()
         responseStatus = jest.fn().mockReturnValue({json: responseJson})
 
-        const taskDueDate = new Date(Date.now() + 24 * 60 * 60 * 1000) // +1 день
-
         mockRequest = {
             body: {
-                title: "Тестовая задача",
-                description: "Описание тестовой задачи",
-                projectId: 1,
-                dueAt: taskDueDate
+                title: "Тестовый проект",
+                description: "Описание тестового проекта",
+                userId: 1
             }
         }
 
@@ -71,16 +76,12 @@ describe("Создание задачи: ", () => {
             json: responseJson
         }
 
-        mockTaskData = {
+        mockProjectData = {
             id: 1,
-            title: "Тестовая задача",
-            description: "Описание тестовой задачи",
-            projectId: 1,
-            dueAt: taskDueDate,
-            status: TaskStatus.CREATED,
-            createdAt: new Date(),
-            assignedToUserId: null,
-            completedAt: null
+            title: "Тестовый проект",
+            description: "Описание тестового проекта",
+            userId: 1,
+            createdAt: new Date()
         }
     })
 
@@ -91,22 +92,25 @@ describe("Создание задачи: ", () => {
         console.log("Ответ:", response)
     })
 
-    it("создание новой задачи", async () => {
-        mockTaskService.create.mockResolvedValue(mockTaskData)
+    it("создание нового проекта", async () => {
+        mockProjectService.create.mockResolvedValue(mockProjectData)
 
-        await taskController.createTask(mockRequest as Request, mockResponse as Response)
+        await projectController.createProject(mockRequest as Request, mockResponse as Response)
 
-        const expectedData = new Task(mockRequest.body).toCreateData()
-        expect(mockTaskService.create).toHaveBeenCalledWith(expectedData)
+        const expectedData = {
+            title: mockRequest.body.title,
+            description: mockRequest.body.description,
+            userId: mockRequest.body.userId
+        }
+        expect(mockProjectService.create).toHaveBeenCalledWith(expectedData)
 
         expect(responseStatus).toHaveBeenCalledWith(201)
         expect(responseJson).toHaveBeenCalledWith(
             expect.objectContaining({
                 id: expect.any(Number),
-                title: mockTaskData.title,
-                description: mockTaskData.description,
-                projectId: mockTaskData.projectId,
-                status: mockTaskData.status
+                title: mockProjectData.title,
+                description: mockProjectData.description,
+                userId: mockProjectData.userId
             })
         )
     })
@@ -114,22 +118,7 @@ describe("Создание задачи: ", () => {
     it("ошибка валидации при отсутствии обязательных полей", async () => {
         delete mockRequest.body.title
 
-        await taskController.createTask(mockRequest as Request, mockResponse as Response)
-
-        expect(responseStatus).toHaveBeenCalledWith(400)
-        expect(responseJson).toHaveBeenCalledWith(
-            expect.objectContaining({
-                message: expect.any(String),
-                statusCode: 400,
-                timestamp: expect.any(String)
-            })
-        )
-    })
-
-    it("ошибка валидации при отсутствии projectId", async () => {
-        delete mockRequest.body.projectId
-
-        await taskController.createTask(mockRequest as Request, mockResponse as Response)
+        await projectController.createProject(mockRequest as Request, mockResponse as Response)
 
         expect(responseStatus).toHaveBeenCalledWith(400)
         expect(responseJson).toHaveBeenCalledWith(

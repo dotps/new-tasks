@@ -5,6 +5,7 @@ import {ITaskService} from "../src/Services/ITaskService"
 import {CurrentUser} from "../src/Data/Models/CurrentUser"
 import {ITokenService} from "../src/Services/ITokenService"
 import {UserData} from "../src/Data/Types"
+import {ResponseError} from "../src/Responses/ResponseError"
 
 jest.mock("../src/Services/Logger/Logger", () => ({
     Logger: {
@@ -28,6 +29,9 @@ describe("Регистрация пользователя", () => {
     let mockUserData: UserData
 
     beforeEach(() => {
+        console.log("======================================================================")
+        console.log(expect.getState().currentTestName)
+
         mockUserService = {
             create: jest.fn(),
             update: jest.fn(),
@@ -79,6 +83,13 @@ describe("Регистрация пользователя", () => {
             email: "test@test.ru",
             createdAt: new Date()
         }
+    })
+
+    afterEach(async () => {
+        const response = responseJson.mock.calls[0][0] instanceof ResponseError ? responseJson.mock.calls[0][0].getMessage() : responseJson.mock.calls[0][0]
+        console.log("Request", mockRequest.body)
+        console.log("Статус ответа:", responseStatus.mock.calls[0][0])
+        console.log("Ответ:", response)
     })
 
     it("регистрирация нового пользователя", async () => {
