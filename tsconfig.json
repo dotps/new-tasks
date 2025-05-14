@@ -8,7 +8,7 @@
     "skipLibCheck": true,
     "outDir": "dist",
     "resolveJsonModule": true,
-    "types": ["node", "express"]
+    "types": ["node", "express", "jest"]
   },
-  "include": ["src"]
+  "include": ["src/**/*", "tests/**/*"]
 }

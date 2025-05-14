@@ -5,5 +5,6 @@ export enum ResponseCode {
     ERROR_UNAUTHORIZED = 401,
     ERROR_FORBIDDEN = 403,
     ERROR_NOT_FOUND = 404,
+    ERROR_CONFLICT = 409,
     SERVER_ERROR = 500
 }
