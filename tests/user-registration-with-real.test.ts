@@ -71,6 +71,11 @@ describe("Регистрация пользователя (с реальными
         }
     })
 
+    afterEach(async () => {
+        console.log("Request", mockRequest.body)
+        console.log("statusCode", responseJson.mock.calls[0][0].statusCode)
+    })
+
     it("регистрация нового пользователя", async () => {
         await userController.createUser(mockRequest as Request, mockResponse as Response)
 
@@ -89,8 +94,23 @@ describe("Регистрация пользователя (с реальными
         expect(createdUser?.name).toBe(mockRequest.body.name)
         expect(createdUser?.email).toBe(mockRequest.body.email)
 
-        console.log("Request", mockRequest.body)
         console.log("Созданный пользователь", createdUser)
+    })
+
+    it("ошибка валидации при отсутствии полей", async () => {
+        delete mockRequest.body.email
+        delete mockRequest.body.name
+
+        await userController.createUser(mockRequest as Request, mockResponse as Response)
+
+        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.ERROR_BAD_REQUEST)
+        expect(responseJson).toHaveBeenCalledWith(
+            expect.objectContaining({
+                message: expect.any(String),
+                statusCode: ResponseCode.ERROR_BAD_REQUEST,
+                timestamp: expect.any(String)
+            })
+        )
     })
 
     it("ошибка валидации при отсутствии обязательных полей", async () => {
@@ -106,8 +126,6 @@ describe("Регистрация пользователя (с реальными
                 timestamp: expect.any(String)
             })
         )
-
-        console.log("Request", mockRequest.body)
     })
 
     it("ошибка валидации при некорректном формате email", async () => {
@@ -123,8 +141,6 @@ describe("Регистрация пользователя (с реальными
                 timestamp: expect.any(String)
             })
         )
-
-        console.log("Request", mockRequest.body)
     })
 
     it("не даст создать пользователя с существующим email", async () => {
@@ -135,7 +151,6 @@ describe("Регистрация пользователя (с реальными
             }
         })
 
-        console.log("Request", mockRequest.body)
         console.log("Созданный пользователь", createdUser)
 
         responseJson.mockClear()
