@@ -91,7 +91,6 @@ describe("Создание проекта (с реальными сервиса�
         console.log("Статус ответа:", responseStatus.mock.calls[0][0])
         console.log("Ответ:", response)
     })
-
     it("создание нового проекта", async () => {
         await projectController.createProject(mockCreateProjectRequest as Request, mockCreateProjectResponse as Response)
 
@@ -133,20 +132,23 @@ describe("Создание проекта (с реальными сервиса�
     })
 
     it("ошибка валидации при несуществующем пользователе", async () => {
-        mockCreateProjectRequest.body.userId = 99999999999
+        mockCurrentUser.set(new User({
+            id: 9999999,
+            name: "Иван Иваныч",
+            email: `${Date.now()}@test.ru`
+        }))
 
         await projectController.createProject(mockCreateProjectRequest as Request, mockCreateProjectResponse as Response)
 
-        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.SERVER_ERROR)
+        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.ERROR_CONFLICT)
         expect(responseJson).toHaveBeenCalledWith(
             expect.objectContaining({
                 message: expect.any(String),
-                statusCode: ResponseCode.SERVER_ERROR,
+                statusCode: ResponseCode.ERROR_CONFLICT,
                 timestamp: expect.any(String)
             })
         )
     })
-
     it("ошибка при невозможности подключиться к БД", async () => {
         const projectDAO = new ProjectDAO(invalidPrisma.project)
         const projectService = new ProjectService(projectDAO)
