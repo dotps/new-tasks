@@ -30,8 +30,6 @@ export class ProjectController implements IProjectController {
                 userId: this.currentUser.getId()
             }
 
-            console.log(createProjectData)
-
             const validator = new ProjectValidator(createProjectData)
             validator.validateCreateDataOrThrow()
 

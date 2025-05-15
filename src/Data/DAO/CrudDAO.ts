@@ -49,16 +49,6 @@ export class CrudDAO<TData extends EntityData, TModel extends CrudMethods<TData>
         }
     }
 
-    // async findMany(where?: Partial<TData>): Promise<TData[]> {
-    //     try {
-    //         return await this.model.findMany({
-    //             where,
-    //         });
-    //     } catch (error) {
-    //         throw new OrmError(error);
-    //     }
-    // }
-    //
     async getById(id: number): Promise<TData | null> {
         try {
             return await this.model.findUnique({
@@ -71,5 +61,4 @@ export class CrudDAO<TData extends EntityData, TModel extends CrudMethods<TData>
             throw new OrmError(error)
         }
     }
-
 }

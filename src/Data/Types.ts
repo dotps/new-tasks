@@ -30,13 +30,6 @@ export function toTaskStatus(status: string | undefined): TaskStatus | undefined
 
 export type ORM = PrismaClient & {
     customMethod?: () => void,
-    // createEntity: <T, U>(data: T, model: { create: (args: { data: T }) => Promise<U> }, entityClass: new (data: U) => any) => Promise<any>
-    // project: {
-    //     create: (args: { data: ProjectData }) => Promise<ProjectData>;
-    // },
-    // task: {
-    //     create: (args: { data: TaskData }) => Promise<TaskData>;
-    // }
 }
 
 export enum ValidationType {

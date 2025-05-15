@@ -33,7 +33,6 @@ export class TaskDAO extends CrudDAO<TaskData, TaskModelDelegate> implements ITa
                     assignedToUserId: true,
                     ...selectUser
                 }
-                // TODO: тут надо еще одно поле когда задача была взята в работу, createdAt не подходит
             })
         }
         catch (error) {

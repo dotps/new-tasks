@@ -31,9 +31,6 @@ export class App {
         this.app = express()
         this.app.use(express.json())
 
-        // "accessToken": "YWNjZXNzLXRva2VuITkhMTc0MDQwMDY2Nzc0NA==",
-        // "refreshToken": "cmVmcmVzaC10b2tlbiE5ITE3NDA0ODM0Njc3NDQ="
-
         Logger.init(new ConsoleLogger(true))
 
         const orm:ORM = new PrismaClient()
