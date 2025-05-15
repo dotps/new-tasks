@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {CompletedTasksFilter, ProjectData, ValidationType} from "../Data/Types";
+import {CompletedTasksFilter, ProjectData, TaskData, ValidationType} from "../Data/Types"
 import {Project} from "../Data/Models/Project";
 import {ResponseSuccess} from "../Responses/ResponseSuccess"
 import {ResponseCode} from "../Responses/ResponseCode"
@@ -25,11 +25,15 @@ export class ProjectController implements IProjectController {
     async createProject(req: Request, res: Response): Promise<void> {
         try {
             const normalizedData: Partial<ProjectData> = new Project(req.body).toCreateData()
+            const createProjectData: Partial<ProjectData> = {
+                ...normalizedData,
+                userId: this.currentUser.getId()
+            }
 
-            const validator = new ProjectValidator(normalizedData)
+            const validator = new ProjectValidator(createProjectData)
             validator.validateCreateDataOrThrow()
 
-            const projectData: ProjectData = await this.projectService.create(normalizedData)
+            const projectData: ProjectData = await this.projectService.create(createProjectData)
             ResponseSuccess.send(res, projectData, ResponseCode.SUCCESS_CREATED)
         }
         catch (error) {
