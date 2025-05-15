@@ -117,33 +117,11 @@ describe("Обновление задачи: ", () => {
         )
     })
 
-    /*
     it("ошибка при обновлении несуществующей задачи", async () => {
-        // mockTaskService.getById.mockResolvedValue(null)
-        // mockTaskService.update.mockImplementation(() => {
-        //     throw new Error("Update should not be called for non-existent task")
-        // })
-
-        await taskController.updateTask(mockRequest as Request, mockResponse as Response)
-
-        expect(responseStatus).toHaveBeenCalledWith(500)
-        expect(responseJson).toHaveBeenCalledWith(
-            expect.objectContaining({
-                message: expect.any(String),
-                statusCode: 500,
-                timestamp: expect.any(String)
-            })
-        )
-    })*/
-
-    it("ошибка валидации при отсутствии обязательных полей", async () => {
-        delete mockRequest.body.title
-
-        // mockTaskService.update.mockImplementation(() => {
-        //     throw new Error("Validation error: missing required fields")
-        // })
-
-        // TODO: тест выявил проблему при отсутствии обязательных полей возвращается ответ 200
+        mockTaskService.getById.mockResolvedValue(null)
+        mockTaskService.update.mockImplementation(() => {
+            throw new Error("Задача не найдена")
+        })
 
         await taskController.updateTask(mockRequest as Request, mockResponse as Response)
 
@@ -160,7 +138,26 @@ describe("Обновление задачи: ", () => {
     it("ошибка валидации при неверном статусе задачи", async () => {
         mockRequest.body.status = "INVALID_STATUS"
         mockTaskService.update.mockImplementation(() => {
-            throw new Error("Validation error: invalid status")
+            throw new Error("Неверный статус")
+        })
+
+        await taskController.updateTask(mockRequest as Request, mockResponse as Response)
+
+        expect(responseStatus).toHaveBeenCalledWith(500)
+        expect(responseJson).toHaveBeenCalledWith(
+            expect.objectContaining({
+                message: expect.any(String),
+                statusCode: 500,
+                timestamp: expect.any(String)
+            })
+        )
+    })
+
+    // TODO: продолжить
+    it("ошибка валидации при несуществующем проекте", async () => {
+        mockRequest.body.projectId = 9999
+        mockTaskService.update.mockImplementation(() => {
+            throw new Error("Проект не существует.")
         })
 
         await taskController.updateTask(mockRequest as Request, mockResponse as Response)

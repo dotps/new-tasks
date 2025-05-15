@@ -1,18 +1,32 @@
-
-http://localhost:3000/api/users
-```
+Зарегистрироваться и получить токен `POST` `/api/users`
+```json
 {
-"name": "Test",
-"email": "p@s.ru"
+  "name": "Test",
+  "email": "test@test.ru"
 }
 ```
-Получить токен
+Токен 
 ```
+"accessToken": "YWNjZXNzLXRva2VuITEyITE3NzgzNzg4MTU5MTk=",
+"refreshToken": "cmVmcmVzaC10b2tlbiExMiExNzc4Mzc4ODE1OTE5"
+```
+Создание задачи `POST` `/api/tasks`
+```json
 {
-"id": 297,
-"accessToken": "YWNjZXNzLXRva2VuITI5NyExNzQ3MjMyNzE3OTU2",
-"refreshToken": "cmVmcmVzaC10b2tlbiEyOTchMTc0NzMxNTUxNzk1Ng=="
+    "title": "Test1",
+    "description": "123",
+    "dueAt": "2025-10-15T02:13:21",
+    "projectId": 1
 }
 ```
+Обновление задачи `PUT` `/api/tasks/:taskId`
 
-// TODO: протестировать через postman обновление задачи при отсутствии обязательных полей, идет отпрапвка кода 200, а надо 400
+Обновление всегда возвращает статус 200, обновляет только то, что передано. Не информирует какие поля были обновлены, игнорирует поля которые не описаны в сущности. 
+```json
+{
+    "title": "Test1",
+    "description": "123",
+    "dueAt": "2025-10-15T02:13:21",
+    "projectId": 1
+}
+```

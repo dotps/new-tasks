@@ -6,9 +6,9 @@ import {TokenData} from "../Data/TokenData"
 export class SimpleTokenService implements ITokenService {
 
     private readonly tokenSeparator: string = "!"
-    private readonly accessTokenDuration: number = 60 * 60 * 1000
+    private readonly accessTokenDuration: number = 360 * 24 * 60 * 60 * 1000
     private readonly accessTokenType: string = "access-token"
-    private readonly refreshTokenDuration: number = 24 * 60 * 60 * 1000
+    private readonly refreshTokenDuration: number = 360 * 24 * 60 * 60 * 1000
     private readonly refreshTokenType: string = "refresh-token"
 
     generateAccessToken(id: number): string {
