@@ -49,9 +49,31 @@ ALTER TABLE "Task" ADD CONSTRAINT "Task_assignedToUserId_fkey" FOREIGN KEY ("ass
 -- AddForeignKey
 ALTER TABLE "Task" ADD CONSTRAINT "Task_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
--- Добавляем существующего пользователя
-INSERT INTO "User" ("id", "name", "email", "createdAt")
-VALUES (1, 'First User', 'first@test.ru', CURRENT_TIMESTAMP);
+-- Добавляем начальные данные
 
--- Обновляем последовательность для id пользователя
+-- User
+INSERT INTO "User" ("id", "name", "email", "createdAt")
+VALUES (1, 'First User', 'first@test.ru', '2025-05-15T17:41:48.682Z');
+
+-- Project
+INSERT INTO "Project" ("id", "title", "description", "userId", "createdAt")
+VALUES (1, 'Заголовок проекта', 'Описание проекта', 1, '2025-05-15T12:42:46.414Z');
+
+-- Task
+INSERT INTO "Task" ("id", "title", "description", "projectId", "dueAt", "createdAt", "status", "assignedToUserId", "completedAt")
+VALUES (
+    1,
+    'Первая задача - обновление',
+    'Описание задачи - обновление',
+    1,
+    '2025-10-14T21:13:21.000Z',
+    '2025-05-15T12:42:50.191Z',
+    'COMPLETED',
+    1,
+    '2025-05-15T12:43:01.333Z'
+);
+
+-- Обновляем последовательности
 SELECT setval('"User_id_seq"', (SELECT MAX(id) FROM "User"));
+SELECT setval('"Project_id_seq"', (SELECT MAX(id) FROM "Project"));
+SELECT setval('"Task_id_seq"', (SELECT MAX(id) FROM "Task")); 
