@@ -42,7 +42,6 @@ export class TaskController implements ITaskController {
 
             const validator = new TaskValidator(updateData)
             validator.validateUpdateDataOrThrow()
-
             const taskData: TaskData = await this.taskService.update(updateData)
             ResponseSuccess.send(res, taskData, ResponseCode.SUCCESS)
         } catch (error) {

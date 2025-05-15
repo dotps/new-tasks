@@ -153,7 +153,6 @@ describe("Обновление задачи: ", () => {
         )
     })
 
-    // TODO: продолжить
     it("ошибка валидации при несуществующем проекте", async () => {
         mockRequest.body.projectId = 9999
         mockTaskService.update.mockImplementation(() => {
