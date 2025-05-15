@@ -38,4 +38,12 @@ export class ValidationError extends Error {
         )
     }
 
+    static NotFound(errors?: string[]): ValidationError {
+        const errorsText = errors ? errors?.join(" ") : ""
+        return new ValidationError(
+            errorsText,
+            ResponseCode.ERROR_NOT_FOUND
+        )
+    }
+
 }

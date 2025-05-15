@@ -12,6 +12,8 @@ import {ITaskService} from "../Services/ITaskService"
 import {QueryHelper} from "../Helpers/QueryHelper"
 import {ITokenService} from "../Services/ITokenService"
 import {AuthDataGenerator} from "../Data/AuthDataGenerator"
+import {log} from "node:util"
+import {ValidationError} from "../Errors/ValidationError"
 
 export class UserController implements IUserController {
 

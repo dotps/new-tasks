@@ -30,7 +30,7 @@ export class TaskService implements ITaskService {
 
     async getWorkingTime(filter: CompletedTasksFilter): Promise<WorkingTimeData> {
         const tasks: Partial<TaskData>[] = await this.dao.getCompletedTasks(filter)
-        if (tasks.length === 0) throw ValidationError.EntityNotFound()
+        if (tasks.length === 0) throw ValidationError.NotFound(["Нет завершенных задач, согласно переданных данных для фильтрации."])
         const seconds = TaskHelper.calculateWorkingTime(tasks)
         return {
             totalSeconds: seconds
