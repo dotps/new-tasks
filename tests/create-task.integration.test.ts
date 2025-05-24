@@ -38,7 +38,7 @@ describe("Создание задачи (с реальными сервисам�
         invalidPrisma = new PrismaClient({
             datasources: {
                 db: {
-                    url: "postgresql://postgres:password@localhost:5432/tasks"
+                    url: "postgresql://postgres:password@nonexistenthost:5432/tasks_test"
                 }
             }
         })

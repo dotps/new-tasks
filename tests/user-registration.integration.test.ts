@@ -36,7 +36,7 @@ describe("Регистрация пользователя (с реальными
         invalidPrisma = new PrismaClient({
             datasources: {
                 db: {
-                    url: "postgresql://postgres:password@localhost:5432/tasks"
+                    url: "postgresql://postgres:password@nonexistenthost:5432/tasks_test"
                 }
             }
         })
@@ -168,6 +168,20 @@ describe("Регистрация пользователя (с реальными
 
         responseJson.mockClear()
         responseStatus.mockClear()
+
+        const userDAO = new UserDAO(prisma.user)
+        const taskDAO = new TaskDAO(prisma.task)
+        const userService = new UserService(userDAO)
+        const taskService = new TaskService(taskDAO)
+        const tokenService = new SimpleTokenService()
+        const currentUser = new CurrentUser()
+
+        userController = new UserController(
+            userService,
+            taskService,
+            currentUser,
+            tokenService
+        )
 
         console.log("Пытаемся создать второго пользователя с тем же email")
         await userController.createUser(mockRequest as Request, mockResponse as Response)
