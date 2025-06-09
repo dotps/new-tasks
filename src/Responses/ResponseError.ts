@@ -28,10 +28,10 @@ export class ResponseError {
             this.sendError(res, error.message, error.responseCode, error)
         }
         else if (error instanceof Error) {
-            this.sendError(res, error.message, ResponseCode.SERVER_ERROR, error)
+            this.sendError(res, error.message, ResponseCode.ServerError, error)
         }
         else {
-            this.sendError(res, "Неизвестная ошибка.", ResponseCode.SERVER_ERROR, error)
+            this.sendError(res, "Неизвестная ошибка.", ResponseCode.ServerError, error)
         }
     }
 

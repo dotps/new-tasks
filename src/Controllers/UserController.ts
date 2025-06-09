@@ -37,7 +37,7 @@ export class UserController implements IUserController {
 
             const userData: UserData = await this.userService.create(normalizedData)
             const authData = new AuthDataGenerator(userData, this.tokenService)
-            ResponseSuccess.send(res, authData.toData(), ResponseCode.SUCCESS_CREATED)
+            ResponseSuccess.send(res, authData.toData(), ResponseCode.SuccessCreated)
         }
         catch (error) {
             ResponseError.send(res, error)
@@ -51,7 +51,7 @@ export class UserController implements IUserController {
             }
 
             const validator = new UserValidator(userData)
-            if (!validator.validateExistId()) validator.throwValidationError(ValidationType.NOT_FOUND)
+            if (!validator.validateExistId()) validator.throwValidationError(ValidationType.NotFound)
 
             const filter: CompletedTasksFilter = {
                 userId: userData.id,
@@ -61,7 +61,7 @@ export class UserController implements IUserController {
             }
 
             const result = await this.taskService.getWorkingTime(filter)
-            ResponseSuccess.send(res, result, ResponseCode.SUCCESS)
+            ResponseSuccess.send(res, result, ResponseCode.Success)
         }
         catch (error) {
             ResponseError.send(res, error)

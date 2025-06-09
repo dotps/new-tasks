@@ -16,6 +16,6 @@ export class ProjectValidator extends Validator<ProjectData> {
     validateCreateDataOrThrow(): void {
         if (!this.data.title) this.errors.push(this.errorMessages?.titleIsRequired)
         if (!this.data.userId) this.errors.push(this.errorMessages.userNotChainToProject)
-        this.throwValidationError(ValidationType.CREATE)
+        this.throwValidationError(ValidationType.Create)
     }
 }

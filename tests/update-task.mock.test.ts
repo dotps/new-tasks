@@ -66,7 +66,7 @@ describe("Обновление задачи: ", () => {
                 description: "Обновленное описание задачи",
                 projectId: 1,
                 dueAt: taskDueDate,
-                status: TaskStatus.PROCESS
+                status: TaskStatus.Process
             }
         }
 
@@ -81,7 +81,7 @@ describe("Обновление задачи: ", () => {
             description: "Обновленное описание задачи",
             projectId: 1,
             dueAt: taskDueDate,
-            status: TaskStatus.PROCESS,
+            status: TaskStatus.Process,
             createdAt: new Date(),
             assignedToUserId: null,
             completedAt: null

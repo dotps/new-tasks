@@ -116,11 +116,11 @@ describe("Регистрация пользователя (с реальными
 
         await userController.createUser(mockRequest as Request, mockResponse as Response)
 
-        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.ERROR_BAD_REQUEST)
+        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.ErrorBadRequest)
         expect(responseJson).toHaveBeenCalledWith(
             expect.objectContaining({
                 message: expect.any(String),
-                statusCode: ResponseCode.ERROR_BAD_REQUEST,
+                statusCode: ResponseCode.ErrorBadRequest,
                 timestamp: expect.any(String)
             })
         )
@@ -131,11 +131,11 @@ describe("Регистрация пользователя (с реальными
 
         await userController.createUser(mockRequest as Request, mockResponse as Response)
 
-        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.ERROR_BAD_REQUEST)
+        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.ErrorBadRequest)
         expect(responseJson).toHaveBeenCalledWith(
             expect.objectContaining({
                 message: expect.any(String),
-                statusCode: ResponseCode.ERROR_BAD_REQUEST,
+                statusCode: ResponseCode.ErrorBadRequest,
                 timestamp: expect.any(String)
             })
         )
@@ -146,11 +146,11 @@ describe("Регистрация пользователя (с реальными
 
         await userController.createUser(mockRequest as Request, mockResponse as Response)
 
-        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.ERROR_BAD_REQUEST)
+        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.ErrorBadRequest)
         expect(responseJson).toHaveBeenCalledWith(
             expect.objectContaining({
                 message: expect.any(String),
-                statusCode: ResponseCode.ERROR_BAD_REQUEST,
+                statusCode: ResponseCode.ErrorBadRequest,
                 timestamp: expect.any(String)
             })
         )
@@ -186,11 +186,11 @@ describe("Регистрация пользователя (с реальными
         console.log("Пытаемся создать второго пользователя с тем же email")
         await userController.createUser(mockRequest as Request, mockResponse as Response)
 
-        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.ERROR_CONFLICT)
+        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.ErrorConflict)
         expect(responseJson).toHaveBeenCalledWith(
             expect.objectContaining({
                 message: expect.stringContaining("Unique constraint failed"),
-                statusCode: ResponseCode.ERROR_CONFLICT,
+                statusCode: ResponseCode.ErrorConflict,
                 timestamp: expect.any(String)
             })
         )
@@ -219,11 +219,11 @@ describe("Регистрация пользователя (с реальными
 
         await userController.createUser(mockRequest as Request, mockResponse as Response)
 
-        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.SERVER_ERROR)
+        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.ServerError)
         expect(responseJson).toHaveBeenCalledWith(
             expect.objectContaining({
                 message: "Ошибка в ORM.",
-                statusCode: ResponseCode.SERVER_ERROR,
+                statusCode: ResponseCode.ServerError,
                 timestamp: expect.any(String)
             })
         )

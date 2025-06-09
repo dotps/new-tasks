@@ -16,7 +16,7 @@ export class UserValidator extends Validator<UserData> {
     validateCreateDataOrThrow(): void {
         if (!this.data.name) this.errors.push(this.errorMessages?.nameIsRequired)
         if (!this.isValidEmail(this.data.email)) this.errors.push(this.errorMessages?.emailIsWrong)
-        this.throwValidationError(ValidationType.CREATE)
+        this.throwValidationError(ValidationType.Create)
     }
 
     private isValidEmail(email: string | undefined): boolean {

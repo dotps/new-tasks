@@ -33,7 +33,7 @@ model Task {
   projectId        Int
   dueAt            DateTime
   createdAt        DateTime?  @default(now())
-  status           TaskStatus @default(CREATED)
+  status           TaskStatus @default(Created)
   assignedToUserId Int?
   completedAt      DateTime?
   assignedTo       User?      @relation(fields: [assignedToUserId], references: [id])
@@ -41,7 +41,7 @@ model Task {
 }
 
 enum TaskStatus {
-  CREATED
-  PROCESS
-  COMPLETED
+  Created
+  Process
+  Completed
 }

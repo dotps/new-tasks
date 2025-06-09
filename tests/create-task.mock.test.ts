@@ -77,7 +77,7 @@ describe("Создание задачи: ", () => {
             description: "Описание тестовой задачи",
             projectId: 1,
             dueAt: taskDueDate,
-            status: TaskStatus.CREATED,
+            status: TaskStatus.Created,
             createdAt: new Date(),
             assignedToUserId: null,
             completedAt: null

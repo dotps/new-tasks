@@ -22,25 +22,25 @@ export class TaskValidator extends Validator<TaskData> {
         if (!this.data.title) this.errors.push(this.errorMessages?.titleRequired)
         if (!this.data.projectId) this.errors.push(this.errorMessages?.taskNotChainToProject)
         if (!this.isValidDue(this.data.dueAt)) this.errors.push(this.errorMessages?.dueWrong)
-        this.throwValidationError(ValidationType.CREATE)
+        this.throwValidationError(ValidationType.Create)
     }
 
     validateUpdateDataOrThrow(): void {
         this.validateExistId()
         this.validateExistDue()
-        this.throwValidationError(ValidationType.UPDATE)
+        this.throwValidationError(ValidationType.Update)
     }
 
     validateAssignSelfDataOrThrow(): void {
         this.validateExistId()
         this.validateExistAssignedUserId()
-        this.throwValidationError(ValidationType.UPDATE)
+        this.throwValidationError(ValidationType.Update)
     }
 
     validateUpdateStatusDataOrThrow(): void {
         this.validateExistId()
         this.validateExistStatus()
-        this.throwValidationError(ValidationType.UPDATE)
+        this.throwValidationError(ValidationType.Update)
     }
 
     canChangeStatusOrThrow(currentUserId: number): void {
@@ -48,12 +48,12 @@ export class TaskValidator extends Validator<TaskData> {
         if (this.data.assignedToUserId !== currentUserId) {
             this.errors.push(this.errorMessages?.changeStatusCanOnlySelf)
         }
-        this.throwValidationError(ValidationType.UPDATE)
+        this.throwValidationError(ValidationType.Update)
     }
 
     canAssignUserOrThrow(): void {
         this.validateExistId()
-        this.throwValidationError(ValidationType.UPDATE)
+        this.throwValidationError(ValidationType.Update)
     }
 
     private validateExistStatus(): boolean {

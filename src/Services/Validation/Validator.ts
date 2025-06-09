@@ -24,11 +24,11 @@ export class Validator<T extends DataWithId> {
     throwValidationError(type: ValidationType) {
         if (this.errors.length > 0) {
             switch (type) {
-                case ValidationType.CREATE:
+                case ValidationType.Create:
                     throw ValidationError.CreateData(this.title, this.errors)
-                case ValidationType.UPDATE:
+                case ValidationType.Update:
                     throw ValidationError.UpdateData(this.title, this.errors)
-                case ValidationType.NOT_FOUND:
+                case ValidationType.NotFound:
                     throw ValidationError.EntityNotFound(this.title, this.errors)
             }
         }

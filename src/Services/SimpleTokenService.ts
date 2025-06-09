@@ -20,9 +20,9 @@ export class SimpleTokenService implements ITokenService {
     }
 
     refreshAccessToken(refreshToken: string | undefined): string {
-        if (!refreshToken) throw new ValidationError("Неверный токен.", ResponseCode.ERROR_UNAUTHORIZED)
+        if (!refreshToken) throw new ValidationError("Неверный токен.", ResponseCode.ErrorUnauthorized)
         const tokenData = this.getTokenData(refreshToken)
-        if (tokenData.tokenType !== this.refreshTokenType) throw new ValidationError("Неверный токен.", ResponseCode.ERROR_UNAUTHORIZED)
+        if (tokenData.tokenType !== this.refreshTokenType) throw new ValidationError("Неверный токен.", ResponseCode.ErrorUnauthorized)
         return this.generateAccessToken(tokenData.userId)
     }
 
@@ -31,8 +31,8 @@ export class SimpleTokenService implements ITokenService {
         const [tokenType, id, expires] = this.decode(token).split(this.tokenSeparator)
         let expiresTimestamp = Number(expires) || nowTimestamp
         let userId = Number(id) || undefined
-        if (!userId || (tokenType !== this.accessTokenType && tokenType !== this.refreshTokenType)) throw new ValidationError("Неверный токен.", ResponseCode.ERROR_UNAUTHORIZED)
-        if (expiresTimestamp < nowTimestamp) throw new ValidationError("Срок действия токена завершен.", ResponseCode.ERROR_UNAUTHORIZED)
+        if (!userId || (tokenType !== this.accessTokenType && tokenType !== this.refreshTokenType)) throw new ValidationError("Неверный токен.", ResponseCode.ErrorUnauthorized)
+        if (expiresTimestamp < nowTimestamp) throw new ValidationError("Срок действия токена завершен.", ResponseCode.ErrorUnauthorized)
 
         return {
             tokenType: tokenType,

@@ -88,7 +88,7 @@ export class ApiRouter implements IRouter {
     }
 
     public handleRoute(req: Request, res: Response): void {
-        return ResponseError.sendError(res, "Маршрут не найден", ResponseCode.ERROR_NOT_FOUND)
+        return ResponseError.sendError(res, "Маршрут не найден", ResponseCode.ErrorNotFound)
     }
 
 }

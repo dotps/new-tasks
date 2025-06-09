@@ -74,7 +74,7 @@ describe("Обновление задачи (с реальными сервис�
                 title: "Тестовая задача",
                 description: "Описание тестовой задачи",
                 projectId: testProject.id,
-                status: TaskStatus.CREATED,
+                status: TaskStatus.Created,
                 dueAt: taskDueDate
             }
         })
@@ -98,7 +98,7 @@ describe("Обновление задачи (с реальными сервис�
                 description: "Обновленное описание задачи",
                 projectId: testProject.id,
                 dueAt: taskDueDate,
-                status: TaskStatus.PROCESS
+                status: TaskStatus.Process
             }
         }
 
@@ -148,11 +148,11 @@ describe("Обновление задачи (с реальными сервис�
 
         await taskController.updateTask(mockUpdateTaskRequest as Request, mockUpdateTaskResponse as Response)
 
-        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.ERROR_NOT_FOUND)
+        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.ErrorNotFound)
         expect(responseJson).toHaveBeenCalledWith(
             expect.objectContaining({
                 message: expect.any(String),
-                statusCode: ResponseCode.ERROR_NOT_FOUND,
+                statusCode: ResponseCode.ErrorNotFound,
                 timestamp: expect.any(String)
             })
         )
@@ -164,7 +164,7 @@ describe("Обновление задачи (с реальными сервис�
 
         await taskController.updateTask(mockUpdateTaskRequest as Request, mockUpdateTaskResponse as Response)
 
-        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.SUCCESS)
+        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.Success)
         expect(responseJson).toHaveBeenCalledWith(
             expect.objectContaining({
                 id: expect.any(Number),
@@ -180,10 +180,10 @@ describe("Обновление задачи (с реальными сервис�
 
         await taskController.updateTask(mockUpdateTaskRequest as Request, mockUpdateTaskResponse as Response)
 
-        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.ERROR_CONFLICT)
+        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.ErrorConflict)
         expect(responseJson).toHaveBeenCalledWith(
             expect.objectContaining({
-                statusCode: ResponseCode.ERROR_CONFLICT,
+                statusCode: ResponseCode.ErrorConflict,
             })
         )
     })
@@ -195,11 +195,11 @@ describe("Обновление задачи (с реальными сервис�
 
         await taskController.updateTask(mockUpdateTaskRequest as Request, mockUpdateTaskResponse as Response)
 
-        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.SERVER_ERROR)
+        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.ServerError)
         expect(responseJson).toHaveBeenCalledWith(
             expect.objectContaining({
                 message: "Ошибка в ORM.",
-                statusCode: ResponseCode.SERVER_ERROR,
+                statusCode: ResponseCode.ServerError,
                 timestamp: expect.any(String)
             })
         )

@@ -1,5 +1,6 @@
 import {PrismaClient, User as UserData, Project as ProjectData, Task as TaskData, Prisma} from "@prisma/client"
 import {DefaultArgs} from "@prisma/client/runtime/client"
+import {TaskStatus} from "@prisma/client"
 
 export type EntityData = UserData | ProjectData | TaskData
 
@@ -15,12 +16,6 @@ export type ProjectModelDelegate = Prisma.ProjectDelegate<DefaultArgs, Prisma.Pr
 
 export type ProjectWithTasks = Partial<ProjectData> & { tasks: Partial<TaskData>[] }
 
-export enum TaskStatus {
-    CREATED = "CREATED",
-    PROCESS = "PROCESS",
-    COMPLETED = "COMPLETED",
-}
-
 export function toTaskStatus(status: string | undefined): TaskStatus | undefined {
     if (Object.values(TaskStatus).includes(status as TaskStatus)) {
         return status as TaskStatus
@@ -33,9 +28,9 @@ export type ORM = PrismaClient & {
 }
 
 export enum ValidationType {
-    CREATE,
-    UPDATE,
-    NOT_FOUND,
+    Create,
+    Update,
+    NotFound,
 }
 
 export type DataWithId = {

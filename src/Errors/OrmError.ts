@@ -7,7 +7,7 @@ export class OrmError extends Error {
     error?: unknown
     prismaError?: PrismaClientKnownRequestError
 
-    constructor(error?: unknown, message: string = "Ошибка в ORM.", responseCode: ResponseCode = ResponseCode.SERVER_ERROR) {
+    constructor(error?: unknown, message: string = "Ошибка в ORM.", responseCode: ResponseCode = ResponseCode.ServerError) {
         super(message)
         this.responseCode = responseCode
         if (error instanceof PrismaClientKnownRequestError) this.prismaError = error

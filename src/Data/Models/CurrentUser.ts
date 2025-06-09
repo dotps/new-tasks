@@ -14,7 +14,7 @@ export class CurrentUser {
         if (!this.user) {
             throw new ValidationError(
                 "Авторизация не возможна. Пользователь не найден.",
-                ResponseCode.ERROR_UNAUTHORIZED
+                ResponseCode.ErrorUnauthorized
             )
         }
         return this.user

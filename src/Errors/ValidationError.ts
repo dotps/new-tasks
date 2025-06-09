@@ -16,7 +16,7 @@ export class ValidationError extends Error {
         const errorsText = errors ? errors?.join(" ") : ""
         return new ValidationError(
             `Сущность "${modelName}" не создана. Входные данные не валидны. ${errorsText}`,
-            ResponseCode.ERROR_BAD_REQUEST
+            ResponseCode.ErrorBadRequest
         )
     }
 
@@ -25,7 +25,7 @@ export class ValidationError extends Error {
         const errorsText = errors ? errors?.join(" ") : ""
         return new ValidationError(
             `Сущность "${modelName}" не обновлена. Входные данные не валидны. ${errorsText}`,
-            ResponseCode.ERROR_BAD_REQUEST
+            ResponseCode.ErrorBadRequest
         )
     }
 
@@ -34,7 +34,7 @@ export class ValidationError extends Error {
         const errorsText = errors ? errors?.join(" ") : ""
         return new ValidationError(
             `Запрашиваемая запись сущности "${modelName}" не найдена. ${errorsText}`,
-            ResponseCode.ERROR_NOT_FOUND
+            ResponseCode.ErrorNotFound
         )
     }
 
@@ -42,7 +42,7 @@ export class ValidationError extends Error {
         const errorsText = errors ? errors?.join(" ") : ""
         return new ValidationError(
             errorsText,
-            ResponseCode.ERROR_NOT_FOUND
+            ResponseCode.ErrorNotFound
         )
     }
 

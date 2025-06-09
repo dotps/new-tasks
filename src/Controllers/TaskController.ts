@@ -26,7 +26,7 @@ export class TaskController implements ITaskController {
             validator.validateCreateDataOrThrow()
 
             const taskData: TaskData = await this.taskService.create(normalizedData)
-            ResponseSuccess.send(res, taskData, ResponseCode.SUCCESS_CREATED)
+            ResponseSuccess.send(res, taskData, ResponseCode.SuccessCreated)
         } catch (error) {
             ResponseError.send(res, error)
         }
@@ -43,7 +43,7 @@ export class TaskController implements ITaskController {
             const validator = new TaskValidator(updateData)
             validator.validateUpdateDataOrThrow()
             const taskData: TaskData = await this.taskService.update(updateData)
-            ResponseSuccess.send(res, taskData, ResponseCode.SUCCESS)
+            ResponseSuccess.send(res, taskData, ResponseCode.Success)
         } catch (error) {
             ResponseError.send(res, error)
         }
@@ -64,12 +64,12 @@ export class TaskController implements ITaskController {
             const currentTaskValidator = new TaskValidator(currentTaskData)
 
             currentTaskValidator.canChangeStatusOrThrow(this.currentUser.getId())
-            if (updateStatusData.status === TaskStatus.COMPLETED) {
+            if (updateStatusData.status === TaskStatus.Completed) {
                 updateStatusData.completedAt = new Date()
             }
 
             const result: TaskData = await this.taskService.update(updateStatusData)
-            ResponseSuccess.send(res, result, ResponseCode.SUCCESS)
+            ResponseSuccess.send(res, result, ResponseCode.Success)
         } catch (error) {
             ResponseError.send(res, error)
         }
@@ -90,7 +90,7 @@ export class TaskController implements ITaskController {
             currentTaskValidator.canAssignUserOrThrow()
 
             const result: TaskData = await this.taskService.update(assignedUserTaskData)
-            ResponseSuccess.send(res, result, ResponseCode.SUCCESS)
+            ResponseSuccess.send(res, result, ResponseCode.Success)
         } catch (error) {
             ResponseError.send(res, error)
         }

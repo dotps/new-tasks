@@ -34,7 +34,7 @@ export class ProjectController implements IProjectController {
             validator.validateCreateDataOrThrow()
 
             const projectData: ProjectData = await this.projectService.create(createProjectData)
-            ResponseSuccess.send(res, projectData, ResponseCode.SUCCESS_CREATED)
+            ResponseSuccess.send(res, projectData, ResponseCode.SuccessCreated)
         }
         catch (error) {
             ResponseError.send(res, error)
@@ -44,7 +44,7 @@ export class ProjectController implements IProjectController {
     async getAll(req: Request, res: Response): Promise<void> {
         try {
             const result = await this.projectService.getProjectsWithTasks(this.currentUser.getId())
-            ResponseSuccess.send(res, result, ResponseCode.SUCCESS)
+            ResponseSuccess.send(res, result, ResponseCode.Success)
         }
         catch (error) {
             ResponseError.send(res, error)
@@ -57,7 +57,7 @@ export class ProjectController implements IProjectController {
                 id: Number(req.params.projectId) || undefined
             }
             const validator = new ProjectValidator(projectData)
-            if (!validator.validateExistId()) validator.throwValidationError(ValidationType.NOT_FOUND)
+            if (!validator.validateExistId()) validator.throwValidationError(ValidationType.NotFound)
 
             const projectsIds = projectData.id ? [projectData.id] : undefined
             const filter: CompletedTasksFilter = {
@@ -68,7 +68,7 @@ export class ProjectController implements IProjectController {
             }
 
             const result = await this.taskService.getWorkingTime(filter)
-            ResponseSuccess.send(res, result, ResponseCode.SUCCESS)
+            ResponseSuccess.send(res, result, ResponseCode.Success)
         }
         catch (error) {
             ResponseError.send(res, error)

@@ -111,7 +111,7 @@ describe("Создание задачи (с реальными сервисам�
                 title: mockCreateTaskRequest.body.title,
                 description: mockCreateTaskRequest.body.description,
                 projectId: mockCreateTaskRequest.body.projectId,
-                status: TaskStatus.CREATED
+                status: TaskStatus.Created
             })
         )
 
@@ -121,7 +121,7 @@ describe("Создание задачи (с реальными сервисам�
         expect(createdTask?.title).toBe(mockCreateTaskRequest.body.title)
         expect(createdTask?.description).toBe(mockCreateTaskRequest.body.description)
         expect(createdTask?.projectId).toBe(mockCreateTaskRequest.body.projectId)
-        expect(createdTask?.status).toBe(TaskStatus.CREATED)
+        expect(createdTask?.status).toBe(TaskStatus.Created)
     })
 
     it("ошибка валидации при отсутствии обязательных полей", async () => {
@@ -129,11 +129,11 @@ describe("Создание задачи (с реальными сервисам�
 
         await taskController.createTask(mockCreateTaskRequest as Request, mockCreateTaskResponse as Response)
 
-        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.ERROR_BAD_REQUEST)
+        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.ErrorBadRequest)
         expect(responseJson).toHaveBeenCalledWith(
             expect.objectContaining({
                 message: expect.any(String),
-                statusCode: ResponseCode.ERROR_BAD_REQUEST,
+                statusCode: ResponseCode.ErrorBadRequest,
                 timestamp: expect.any(String)
             })
         )
@@ -144,11 +144,11 @@ describe("Создание задачи (с реальными сервисам�
 
         await taskController.createTask(mockCreateTaskRequest as Request, mockCreateTaskResponse as Response)
 
-        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.ERROR_BAD_REQUEST)
+        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.ErrorBadRequest)
         expect(responseJson).toHaveBeenCalledWith(
             expect.objectContaining({
                 message: expect.any(String),
-                statusCode: ResponseCode.ERROR_BAD_REQUEST,
+                statusCode: ResponseCode.ErrorBadRequest,
                 timestamp: expect.any(String)
             })
         )
@@ -159,11 +159,11 @@ describe("Создание задачи (с реальными сервисам�
 
         await taskController.createTask(mockCreateTaskRequest as Request, mockCreateTaskResponse as Response)
 
-        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.ERROR_CONFLICT)
+        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.ErrorConflict)
         expect(responseJson).toHaveBeenCalledWith(
             expect.objectContaining({
                 message: expect.any(String),
-                statusCode: ResponseCode.ERROR_CONFLICT,
+                statusCode: ResponseCode.ErrorConflict,
                 timestamp: expect.any(String)
             })
         )
@@ -176,11 +176,11 @@ describe("Создание задачи (с реальными сервисам�
 
         await taskController.createTask(mockCreateTaskRequest as Request, mockCreateTaskResponse as Response)
 
-        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.SERVER_ERROR)
+        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.ServerError)
         expect(responseJson).toHaveBeenCalledWith(
             expect.objectContaining({
                 message: "Ошибка в ORM.",
-                statusCode: ResponseCode.SERVER_ERROR,
+                statusCode: ResponseCode.ServerError,
                 timestamp: expect.any(String)
             })
         )
