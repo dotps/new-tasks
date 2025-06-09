@@ -30,7 +30,7 @@ CREATE TABLE "Task" (
     "projectId" INTEGER NOT NULL,
     "dueAt" TIMESTAMP(3) NOT NULL,
     "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-    "status" "TaskStatus" NOT NULL DEFAULT 'CREATED',
+    "status" "TaskStatus" NOT NULL DEFAULT 'Created',
     "assignedToUserId" INTEGER,
     "completedAt" TIMESTAMP(3),
 
@@ -68,7 +68,7 @@ VALUES (
     1,
     '2025-10-14T21:13:21.000Z',
     '2025-05-15T12:42:50.191Z',
-    'COMPLETED',
+    'Completed',
     1,
     '2025-05-15T12:43:01.333Z'
 );

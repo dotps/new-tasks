@@ -1,13 +1,13 @@
 import {Request, Response} from "express"
-import {UserController} from "../src/Controllers/UserController"
-import {IUserService} from "../src/Services/IUserService"
-import {ITaskService} from "../src/Services/ITaskService"
-import {CurrentUser} from "../src/Data/Models/CurrentUser"
-import {ITokenService} from "../src/Services/ITokenService"
-import {UserData} from "../src/Data/Types"
-import {ResponseError} from "../src/Responses/ResponseError"
+import {IUserService} from "../src/services/user.service.interface"
+import {ITaskService} from "../src/services/task.service.interface"
+import {ITokenService} from "../src/services/token.service.interface"
+import {CurrentUser} from "../src/data/models/current-user"
+import {UserController} from "../src/controllers/user.controller"
+import {UserData} from "../src/data/types"
+import {ResponseError} from "../src/responses/response-error"
 
-jest.mock("../src/Services/Logger/Logger", () => ({
+jest.mock("../src/services/logger/logger", () => ({
     Logger: {
         error: jest.fn(),
         loggerService: {

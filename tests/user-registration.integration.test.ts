@@ -1,17 +1,16 @@
 import {Request, Response} from "express"
-import {UserController} from "../src/Controllers/UserController"
-import {UserService} from "../src/Services/UserService"
-import {TaskService} from "../src/Services/TaskService"
-import {CurrentUser} from "../src/Data/Models/CurrentUser"
-import {SimpleTokenService} from "../src/Services/SimpleTokenService"
+import {UserController} from "../src/controllers/user.controller"
+import {UserDAO} from "../src/data/dao/user.dao"
+import {TaskDAO} from "../src/data/dao/task.dao"
+import {UserService} from "../src/services/user.service"
+import {TaskService} from "../src/services/task.service"
+import {SimpleTokenService} from "../src/services/simple-token.service"
+import {CurrentUser} from "../src/data/models/current-user"
+import {ResponseError} from "../src/responses/response-error"
+import {ResponseCode} from "../src/responses/response-code"
 import {PrismaClient} from "@prisma/client"
-import {UserDAO} from "../src/Data/DAO/UserDAO"
-import {TaskDAO} from "../src/Data/DAO/TaskDAO"
-import {ResponseCode} from "../src/Responses/ResponseCode"
-import {TaskController} from "../src/Controllers/TaskController"
-import {ResponseError} from "../src/Responses/ResponseError"
 
-jest.mock("../src/Services/Logger/Logger", () => ({
+jest.mock("../src/services/logger/logger", () => ({
     Logger: {
         error: jest.fn(),
         loggerService: {

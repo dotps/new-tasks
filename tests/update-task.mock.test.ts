@@ -1,13 +1,13 @@
 import {Request, Response} from "express"
-import {TaskController} from "../src/Controllers/TaskController"
-import {ITaskService} from "../src/Services/ITaskService"
-import {CurrentUser} from "../src/Data/Models/CurrentUser"
-import {TaskData, TaskStatus, UserData} from "../src/Data/Types"
-import {User} from "../src/Data/Models/User"
-import {Task} from "../src/Data/Models/Task"
-import {ResponseError} from "../src/Responses/ResponseError"
+import {ITaskService} from "../src/services/task.service.interface"
+import {CurrentUser} from "../src/data/models/current-user"
+import {TaskController} from "../src/controllers/task.controller"
+import {TaskData, UserData} from "../src/data/types"
+import {User} from "../src/data/models/user"
+import {TaskStatus} from "@prisma/client"
+import {ResponseError} from "../src/responses/response-error"
 
-jest.mock("../src/Services/Logger/Logger", () => ({
+jest.mock("../src/services/logger/logger", () => ({
     Logger: {
         error: jest.fn(),
         loggerService: {

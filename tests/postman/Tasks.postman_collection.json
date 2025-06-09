@@ -211,7 +211,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"status\": \"COMPLETED\"\r\n}",
+					"raw": "{\r\n    \"status\": \"Completed\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
