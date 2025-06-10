@@ -20,30 +20,32 @@ export class AuthMiddleware {
     }
 
     async handle(req: Request, res: Response, next: NextFunction): Promise<void> {
-
         try {
             const authHeader = req.headers.authorization
+
             if (!authHeader) {
                 return ResponseError.sendError(res, "Токен авторизации отклонен.", ResponseCode.ErrorUnauthorized)
             }
 
             const [bearer, token] = authHeader.split(" ")
+
             if (bearer !== "Bearer" || !token) {
                 return ResponseError.sendError(res, "Неверный формат токена.", ResponseCode.ErrorUnauthorized)
             }
 
             const tokenData = this.tokenService.getTokenData(token)
+
             if (!tokenData.userId) {
                 return ResponseError.sendError(res, "Неверный токен.", ResponseCode.ErrorUnauthorized)
             }
 
             const userData: Partial<UserData> | null = await this.userService.getById(tokenData.userId)
+
             if (!userData) {
                 return ResponseError.sendError(res, "Авторизация не возможна. Пользователь не найден.", ResponseCode.ErrorUnauthorized)
             }
 
             this.currentUser.set(new User(userData))
-
             next()
         } catch (error) {
             ResponseError.send(res, error)
@@ -53,8 +55,8 @@ export class AuthMiddleware {
     refreshAccessToken(req: Request, res: Response): void {
         try {
             const refreshToken: string | undefined = req.body?.refreshToken?.toString() || undefined
-            console.log(refreshToken)
             const accessToken = this.tokenService.refreshAccessToken(refreshToken)
+
             ResponseSuccess.send(res, {accessToken: accessToken}, ResponseCode.Success)
         } catch (error) {
             ResponseError.send(res, error)
