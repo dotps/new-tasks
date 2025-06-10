@@ -7,37 +7,37 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        Int       @id @default(autoincrement())
-  name      String
-  email     String    @unique
-  createdAt DateTime? @default(now())
-  projects  Project[]
-  tasks     Task[]
+model user {
+  id         Int       @id @default(autoincrement())
+  name       String
+  email      String    @unique
+  created_at DateTime? @default(now())
+  projects   project[]
+  tasks      task[]
 }
 
-model Project {
+model project {
   id          Int       @id @default(autoincrement())
   title       String
   description String?
-  userId      Int
-  createdAt   DateTime? @default(now())
-  user        User      @relation(fields: [userId], references: [id])
-  tasks       Task[]
+  user_id     Int
+  created_at  DateTime? @default(now())
+  user        user      @relation(fields: [user_id], references: [id])
+  tasks       task[]
 }
 
-model Task {
-  id               Int        @id @default(autoincrement())
-  title            String
-  description      String?
-  projectId        Int
-  dueAt            DateTime
-  createdAt        DateTime?  @default(now())
-  status           TaskStatus @default(Created)
-  assignedToUserId Int?
-  completedAt      DateTime?
-  assignedTo       User?      @relation(fields: [assignedToUserId], references: [id])
-  project          Project    @relation(fields: [projectId], references: [id])
+model task {
+  id                  Int        @id @default(autoincrement())
+  title               String
+  description         String?
+  project_id          Int
+  due_at              DateTime
+  created_at          DateTime?  @default(now())
+  status              TaskStatus @default(Created)
+  assigned_to_user_id Int?
+  completed_at        DateTime?
+  assigned_to         user?      @relation(fields: [assigned_to_user_id], references: [id])
+  project             project    @relation(fields: [project_id], references: [id])
 }
 
 enum TaskStatus {
