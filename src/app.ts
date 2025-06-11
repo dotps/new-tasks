@@ -29,7 +29,20 @@ import {TokenRouter} from "./routes/token-router"
 
 export class App {
     private app: Application
-    private apiRouter: IRouter
+    private apiRouter!: IRouter
+    private orm: ORM
+    private userDAO!: IUserDAO
+    private projectDAO!: IProjectDAO
+    private taskDAO!: ITaskDAO
+    private tokenService!: ITokenService
+    private userService!: UserService
+    private projectService!: ProjectService
+    private taskService!: TaskService
+    private currentUser: CurrentUser
+    private authMiddleware!: AuthMiddleware
+    private userController!: UserController
+    private projectController!: ProjectController
+    private taskController!: TaskController
 
     constructor() {
         this.app = express()
@@ -37,34 +50,16 @@ export class App {
 
         Logger.init(new ConsoleLogger(true))
 
-        const orm: ORM = new PrismaClient()
+        this.orm = new PrismaClient()
 
-        const userDAO: IUserDAO = new UserDAO(orm.user)
-        const projectDAO: IProjectDAO = new ProjectDAO(orm.project)
-        const taskDAO: ITaskDAO = new TaskDAO(orm.task)
+        this.initDAO()
+        this.initServices()
 
-        const tokenService: ITokenService = new SimpleTokenService()
+        this.currentUser = new CurrentUser()
 
-        const userService = new UserService(userDAO)
-        const projectService = new ProjectService(projectDAO)
-        const taskService = new TaskService(taskDAO)
-
-        const currentUser = new CurrentUser()
-
-        const authMiddleware = new AuthMiddleware(userService, currentUser, tokenService)
-        const requestBodyMiddleware = new RequestBodyMiddleware()
-        this.app.use(requestBodyMiddleware.handleJson)
-
-        const userController = new UserController(userService, taskService, currentUser, tokenService)
-        const projectController = new ProjectController(projectService, taskService, currentUser)
-        const taskController = new TaskController(taskService, currentUser)
-
-        const userRouter = new UserRouter(userController, authMiddleware)
-        const projectRouter = new ProjectRouter(projectController, authMiddleware)
-        const taskRouter = new TaskRouter(taskController, authMiddleware)
-        const tokenRouter = new TokenRouter(authMiddleware)
-
-        this.apiRouter = new ApiRouter(userRouter, projectRouter, taskRouter, tokenRouter)
+        this.initMiddlewares()
+        this.initControllers()
+        this.initRouters()
         this.initRoutes()
     }
 
@@ -72,6 +67,40 @@ export class App {
         this.app.listen(port, () => {
             console.log(`Сервер запущен, порт: ${port}`)
         })
+    }
+
+    private initDAO() {
+        this.userDAO = new UserDAO(this.orm.user)
+        this.projectDAO = new ProjectDAO(this.orm.project)
+        this.taskDAO = new TaskDAO(this.orm.task)
+    }
+
+    private initServices() {
+        this.tokenService = new SimpleTokenService()
+        this.userService = new UserService(this.userDAO)
+        this.projectService = new ProjectService(this.projectDAO)
+        this.taskService = new TaskService(this.taskDAO)
+    }
+
+    private initMiddlewares() {
+        this.authMiddleware = new AuthMiddleware(this.userService, this.currentUser, this.tokenService)
+        const requestBodyMiddleware = new RequestBodyMiddleware()
+        this.app.use(requestBodyMiddleware.handleJson)
+    }
+
+    private initControllers() {
+        this.userController = new UserController(this.userService, this.taskService, this.currentUser, this.tokenService)
+        this.projectController = new ProjectController(this.projectService, this.taskService, this.currentUser)
+        this.taskController = new TaskController(this.taskService, this.currentUser)
+    }
+
+    private initRouters() {
+        const userRouter = new UserRouter(this.userController, this.authMiddleware)
+        const projectRouter = new ProjectRouter(this.projectController, this.authMiddleware)
+        const taskRouter = new TaskRouter(this.taskController, this.authMiddleware)
+        const tokenRouter = new TokenRouter(this.authMiddleware)
+
+        this.apiRouter = new ApiRouter(userRouter, projectRouter, taskRouter, tokenRouter)
     }
 
     private initRoutes(): void {
