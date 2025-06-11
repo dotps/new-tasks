@@ -1,16 +1,16 @@
 import {Request, Response, Router} from "express"
 import {IRouter} from "./router.interface"
+import {AuthMiddleware} from "../middlewares/auth.middleware"
 import {ResponseError} from "../responses/response-error"
 import {ResponseCode} from "../responses/response-code"
 
-export class ApiRouter implements IRouter {
+export class TokenRouter implements IRouter {
     private readonly router: Router
-    private readonly routers: IRouter[]
+    private readonly authMiddleware: AuthMiddleware
 
-    constructor(...routers: IRouter[]) {
-        this.routers = routers
+    constructor(authMiddleware: AuthMiddleware) {
+        this.authMiddleware = authMiddleware
         this.router = Router()
-        this.init()
     }
 
     public getRouter(): Router {
@@ -18,13 +18,13 @@ export class ApiRouter implements IRouter {
     }
 
     public init(): void {
-        this.routers.forEach(router => {
-            router.init()
-            this.router.use(router.getRouter())
-        })
+        this.router.post(
+            "/tokens/refresh",
+            this.authMiddleware.refreshAccessToken.bind(this.authMiddleware)
+        )
     }
 
     public handleRoute(req: Request, res: Response): void {
         return ResponseError.sendError(res, "Маршрут не найден", ResponseCode.ErrorNotFound)
     }
-}
+} 

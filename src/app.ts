@@ -22,6 +22,10 @@ import {UserController} from "./controllers/user.controller"
 import {ProjectController} from "./controllers/project.controller"
 import {TaskController} from "./controllers/task.controller"
 import {ApiRouter} from "./routes/api-router"
+import {UserRouter} from "./routes/user-router"
+import {ProjectRouter} from "./routes/project-router"
+import {TaskRouter} from "./routes/task-router"
+import {TokenRouter} from "./routes/token-router"
 
 export class App {
     private app: Application
@@ -55,7 +59,12 @@ export class App {
         const projectController = new ProjectController(projectService, taskService, currentUser)
         const taskController = new TaskController(taskService, currentUser)
 
-        this.apiRouter = new ApiRouter(userController, taskController, projectController, authMiddleware)
+        const userRouter = new UserRouter(userController, authMiddleware)
+        const projectRouter = new ProjectRouter(projectController, authMiddleware)
+        const taskRouter = new TaskRouter(taskController, authMiddleware)
+        const tokenRouter = new TokenRouter(authMiddleware)
+
+        this.apiRouter = new ApiRouter(userRouter, projectRouter, taskRouter, tokenRouter)
         this.initRoutes()
     }
 
