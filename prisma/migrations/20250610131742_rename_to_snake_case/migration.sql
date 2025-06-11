@@ -71,3 +71,25 @@ ALTER TABLE "task" ADD CONSTRAINT "task_assigned_to_user_id_fkey" FOREIGN KEY ("
 
 -- AddForeignKey
 ALTER TABLE "task" ADD CONSTRAINT "task_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "project"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- User
+INSERT INTO "user" ("id", "name", "email", "created_at")
+VALUES (1, 'First User', 'first@test.ru', '2025-05-15T17:41:48.682Z');
+
+-- Project
+INSERT INTO "project" ("id", "title", "description", "user_id", "created_at")
+VALUES (1, 'Заголовок проекта', 'Описание проекта', 1, '2025-05-15T12:42:46.414Z');
+
+-- Task
+INSERT INTO "task" ("id", "title", "description", "project_id", "due_at", "created_at", "status", "assigned_to_user_id", "completed_at")
+VALUES (
+           1,
+           'Первая задача - обновление',
+           'Описание задачи - обновление',
+           1,
+           '2025-10-14T21:13:21.000Z',
+           '2025-05-15T12:42:50.191Z',
+           'Completed',
+           1,
+           '2025-05-15T12:43:01.333Z'
+       );
