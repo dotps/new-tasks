@@ -11,33 +11,39 @@ model user {
   id         Int       @id @default(autoincrement())
   name       String
   email      String    @unique
-  created_at DateTime? @default(now())
+  createdAt  DateTime? @default(now()) @map("created_at")
   projects   project[]
   tasks      task[]
+
+  @@map("user")
 }
 
 model project {
   id          Int       @id @default(autoincrement())
   title       String
   description String?
-  user_id     Int
-  created_at  DateTime? @default(now())
-  user        user      @relation(fields: [user_id], references: [id])
+  userId      Int       @map("user_id")
+  createdAt   DateTime? @default(now()) @map("created_at")
+  user        user      @relation(fields: [userId], references: [id])
   tasks       task[]
+
+  @@map("project")
 }
 
 model task {
-  id                  Int        @id @default(autoincrement())
-  title               String
-  description         String?
-  project_id          Int
-  due_at              DateTime
-  created_at          DateTime?  @default(now())
-  status              TaskStatus @default(Created)
-  assigned_to_user_id Int?
-  completed_at        DateTime?
-  assigned_to         user?      @relation(fields: [assigned_to_user_id], references: [id])
-  project             project    @relation(fields: [project_id], references: [id])
+  id                Int        @id @default(autoincrement())
+  title             String
+  description       String?
+  projectId         Int        @map("project_id")
+  dueAt             DateTime   @map("due_at")
+  createdAt         DateTime?  @default(now()) @map("created_at")
+  status            TaskStatus @default(Created)
+  assignedToUserId  Int?       @map("assigned_to_user_id")
+  completedAt       DateTime?  @map("completed_at")
+  assignedTo        user?      @relation(fields: [assignedToUserId], references: [id])
+  project           project    @relation(fields: [projectId], references: [id])
+
+  @@map("task")
 }
 
 enum TaskStatus {
