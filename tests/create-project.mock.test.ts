@@ -56,7 +56,6 @@ describe("Создание проекта: ", () => {
 
         projectController = new ProjectController(
             mockProjectService,
-            mockTaskService,
             mockCurrentUser
         )
 

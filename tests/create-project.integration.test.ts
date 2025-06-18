@@ -62,11 +62,13 @@ describe("Создание проекта (с реальными сервиса�
         mockCurrentUser = new CurrentUser()
         mockCurrentUser.set(new User(testUser))
 
-        const projectDAO = new ProjectDAO(prisma.project)
-        const projectService = new ProjectService(projectDAO)
         const taskDAO = new TaskDAO(prisma.task)
         const taskService = new TaskService(taskDAO)
-        projectController = new ProjectController(projectService, taskService, mockCurrentUser)
+
+        const projectDAO = new ProjectDAO(prisma.project)
+        const projectService = new ProjectService(projectDAO, taskService)
+
+        projectController = new ProjectController(projectService, mockCurrentUser)
 
         responseJson = jest.fn()
         responseStatus = jest.fn().mockReturnValue({json: responseJson})
@@ -150,12 +152,13 @@ describe("Создание проекта (с реальными сервиса�
         )
     })
     it("ошибка при невозможности подключиться к БД", async () => {
-        const projectDAO = new ProjectDAO(invalidPrisma.project)
-        const projectService = new ProjectService(projectDAO)
         const taskDAO = new TaskDAO(invalidPrisma.task)
         const taskService = new TaskService(taskDAO)
-        const projectController = new ProjectController(projectService, taskService, mockCurrentUser)
 
+        const projectDAO = new ProjectDAO(invalidPrisma.project)
+        const projectService = new ProjectService(projectDAO, taskService)
+
+        const projectController = new ProjectController(projectService, mockCurrentUser)
         await projectController.createProject(mockCreateProjectRequest as Request, mockCreateProjectResponse as Response)
 
         expect(responseStatus).toHaveBeenCalledWith(ResponseCode.ServerError)

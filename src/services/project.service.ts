@@ -1,14 +1,18 @@
-import {ProjectData, ProjectWithTasks} from "../data/types"
+import {CompletedTasksFilter, ProjectData, ProjectWithTasks, ValidationType, WorkingTimeData} from "../data/types"
 import {IProjectService} from "./project.service.interface"
 import {IProjectDAO} from "../data/dao/project.dao.interface"
 import {Project} from "../data/models/project"
 import {ProjectValidator} from "./validation/project.validator"
+import {QueryHelper} from "../helpers/query-helper"
+import {ITaskService} from "./task.service.interface"
 
 export class ProjectService implements IProjectService {
 
-    private dao: IProjectDAO
+    private readonly dao: IProjectDAO
+    private readonly taskService: ITaskService
 
-    constructor(dao: IProjectDAO) {
+    constructor(dao: IProjectDAO, taskService: ITaskService) {
+        this.taskService = taskService
         this.dao = dao
     }
 
@@ -31,7 +35,25 @@ export class ProjectService implements IProjectService {
     async update(data: Partial<ProjectData>): Promise<ProjectData> {
         return await this.dao.update(data)
     }
+
     async getProjectsWithTasks(userId: number): Promise<ProjectWithTasks[]> {
         return await this.dao.getProjectsWithTasks(userId)
     }
+
+    async getWorkingTime(projectId?: number, startDate?: Date, endDate?: Date): Promise<WorkingTimeData> {
+        const projectData: Partial<ProjectData> = {id: projectId}
+
+        const validator = new ProjectValidator(projectData)
+        if (!validator.validateExistId()) validator.throwValidationError(ValidationType.NotFound)
+
+        const filter: CompletedTasksFilter = {
+            projectsIds: projectId ? [projectId] : undefined,
+            startDate: startDate,
+            endDate: endDate,
+            includeUser: true,
+        }
+
+        return this.taskService.getWorkingTime(filter)
+    }
+
 }

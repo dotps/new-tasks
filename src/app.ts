@@ -77,9 +77,9 @@ export class App {
 
     private initServices() {
         this.tokenService = new SimpleTokenService()
-        this.userService = new UserService(this.userDAO)
-        this.projectService = new ProjectService(this.projectDAO)
         this.taskService = new TaskService(this.taskDAO)
+        this.userService = new UserService(this.userDAO, this.taskService)
+        this.projectService = new ProjectService(this.projectDAO, this.taskService)
     }
 
     private initMiddlewares() {
@@ -89,8 +89,8 @@ export class App {
     }
 
     private initControllers() {
-        this.userController = new UserController(this.userService, this.taskService, this.currentUser, this.tokenService)
-        this.projectController = new ProjectController(this.projectService, this.taskService, this.currentUser)
+        this.userController = new UserController(this.userService, this.tokenService)
+        this.projectController = new ProjectController(this.projectService, this.currentUser)
         this.taskController = new TaskController(this.taskService, this.currentUser)
     }
 
