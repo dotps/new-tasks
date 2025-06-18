@@ -7,30 +7,30 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model user {
+model User {
   id         Int       @id @default(autoincrement())
   name       String
   email      String    @unique
   createdAt  DateTime? @default(now()) @map("created_at")
-  projects   project[]
-  tasks      task[]
+  projects   Project[]
+  tasks      Task[]
 
   @@map("user")
 }
 
-model project {
+model Project {
   id          Int       @id @default(autoincrement())
   title       String
   description String?
   userId      Int       @map("user_id")
   createdAt   DateTime? @default(now()) @map("created_at")
-  user        user      @relation(fields: [userId], references: [id])
-  tasks       task[]
+  user        User      @relation(fields: [userId], references: [id])
+  tasks       Task[]
 
   @@map("project")
 }
 
-model task {
+model Task {
   id                Int        @id @default(autoincrement())
   title             String
   description       String?
@@ -40,8 +40,8 @@ model task {
   status            TaskStatus @default(Created)
   assignedToUserId  Int?       @map("assigned_to_user_id")
   completedAt       DateTime?  @map("completed_at")
-  assignedTo        user?      @relation(fields: [assignedToUserId], references: [id])
-  project           project    @relation(fields: [projectId], references: [id])
+  assignedTo        User?      @relation(fields: [assignedToUserId], references: [id])
+  project           Project    @relation(fields: [projectId], references: [id])
 
   @@map("task")
 }
