@@ -24,17 +24,9 @@ export class ProjectController implements IProjectController {
 
     async createProject(req: Request, res: Response): Promise<void> {
         try {
-            const normalizedData: Partial<ProjectData> = new Project(req.body).toCreateData()
-            const createProjectData: Partial<ProjectData> = {
-                ...normalizedData,
-                userId: this.currentUser.getId()
-            }
-
-            const validator = new ProjectValidator(createProjectData)
-            validator.validateCreateDataOrThrow()
-
-            const projectData: ProjectData = await this.projectService.create(createProjectData)
-            ResponseSuccess.send(res, projectData, ResponseCode.SuccessCreated)
+            const projectData: Partial<ProjectData> = this.projectService.toCreateData(req.body)
+            const createdProjectData: ProjectData = await this.projectService.create(projectData, this.currentUser.getId())
+            ResponseSuccess.send(res, createdProjectData, ResponseCode.SuccessCreated)
         }
         catch (error) {
             ResponseError.send(res, error)
