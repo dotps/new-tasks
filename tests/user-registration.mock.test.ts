@@ -1,11 +1,11 @@
 import {Request, Response} from "express"
 import {IUserService} from "../src/services/user.service.interface"
-import {ITaskService} from "../src/services/task.service.interface"
 import {ITokenService} from "../src/services/token.service.interface"
 import {CurrentUser} from "../src/data/models/current-user"
 import {UserController} from "../src/controllers/user.controller"
 import {UserData} from "../src/data/types"
 import {ResponseError} from "../src/responses/response-error"
+import {ValidationError} from "../src/errors/validation-error"
 
 jest.mock("../src/services/logger/logger", () => ({
     Logger: {
@@ -18,7 +18,6 @@ jest.mock("../src/services/logger/logger", () => ({
 
 describe("Регистрация пользователя", () => {
     let mockUserService: jest.Mocked<IUserService>
-    let mockTaskService: jest.Mocked<ITaskService>
     let mockTokenService: jest.Mocked<ITokenService>
     let mockCurrentUser: CurrentUser
     let userController: UserController
@@ -35,16 +34,10 @@ describe("Регистрация пользователя", () => {
         mockUserService = {
             create: jest.fn(),
             update: jest.fn(),
-            getById: jest.fn()
-        } as jest.Mocked<IUserService>
-
-        mockTaskService = {
-            create: jest.fn(),
-            update: jest.fn(),
             getById: jest.fn(),
-            getCompletedTasks: jest.fn(),
+            toCreateData: jest.fn(data => data),
             getWorkingTime: jest.fn()
-        } as jest.Mocked<ITaskService>
+        } as jest.Mocked<IUserService>
 
         mockTokenService = {
             generateAccessToken: jest.fn(),
@@ -57,8 +50,6 @@ describe("Регистрация пользователя", () => {
 
         userController = new UserController(
             mockUserService,
-            mockTaskService,
-            mockCurrentUser,
             mockTokenService
         )
 
@@ -115,6 +106,7 @@ describe("Регистрация пользователя", () => {
     })
 
     it("ошибка валидации при отсутствии обязательных полей", async () => {
+        mockUserService.create.mockImplementation(() => { throw new ValidationError("Входные данные не валидны", 400) })
         delete mockRequest.body.email
 
         await userController.createUser(mockRequest as Request, mockResponse as Response)
@@ -130,6 +122,7 @@ describe("Регистрация пользователя", () => {
     })
 
     it("ошибка валидации при некорректном формате email", async () => {
+        mockUserService.create.mockImplementation(() => { throw new ValidationError("Входные данные не валидны", 400) })
         mockRequest.body.email = "email"
 
         await userController.createUser(mockRequest as Request, mockResponse as Response)

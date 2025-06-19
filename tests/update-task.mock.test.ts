@@ -35,7 +35,13 @@ describe("Обновление задачи: ", () => {
             update: jest.fn(),
             getById: jest.fn(),
             getCompletedTasks: jest.fn(),
-            getWorkingTime: jest.fn()
+            getWorkingTime: jest.fn(),
+            updateStatus: jest.fn(),
+            assignUser: jest.fn(),
+            toCreateData: jest.fn(),
+            toUpdateData: jest.fn(),
+            toUpdateStatusData: jest.fn(),
+            toUpdateAssignedUserData: jest.fn()
         } as jest.Mocked<ITaskService>
 
         mockCurrentUser = new CurrentUser()
@@ -86,6 +92,9 @@ describe("Обновление задачи: ", () => {
             assignedToUserId: null,
             completedAt: null
         }
+
+        mockTaskService.update.mockResolvedValue(mockTaskData)
+        mockTaskService.toUpdateData.mockImplementation((data, taskId) => ({ ...data, id: Number(taskId) }));
     })
 
     afterEach(async () => {

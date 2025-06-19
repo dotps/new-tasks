@@ -7,6 +7,7 @@ import {User} from "../src/data/models/user"
 import {TaskStatus} from "@prisma/client"
 import {ResponseError} from "../src/responses/response-error"
 import {Task} from "../src/data/models/task"
+import {ValidationError} from "../src/errors/validation-error"
 
 jest.mock("../src/services/logger/logger", () => ({
     Logger: {
@@ -36,7 +37,13 @@ describe("Создание задачи: ", () => {
             update: jest.fn(),
             getById: jest.fn(),
             getCompletedTasks: jest.fn(),
-            getWorkingTime: jest.fn()
+            getWorkingTime: jest.fn(),
+            updateStatus: jest.fn(),
+            assignUser: jest.fn(),
+            toCreateData: jest.fn(data => new Task(data).toCreateData()),
+            toUpdateData: jest.fn(),
+            toUpdateStatusData: jest.fn(),
+            toUpdateAssignedUserData: jest.fn()
         } as jest.Mocked<ITaskService>
 
         mockCurrentUser = new CurrentUser()
@@ -113,6 +120,7 @@ describe("Создание задачи: ", () => {
     })
 
     it("ошибка валидации при отсутствии обязательных полей", async () => {
+        mockTaskService.create.mockImplementation(() => { throw new ValidationError("Входные данные не валидны", 400) })
         delete mockRequest.body.title
 
         await taskController.createTask(mockRequest as Request, mockResponse as Response)
@@ -128,6 +136,7 @@ describe("Создание задачи: ", () => {
     })
 
     it("ошибка валидации при отсутствии projectId", async () => {
+        mockTaskService.create.mockImplementation(() => { throw new ValidationError("Входные данные не валидны", 400) })
         delete mockRequest.body.projectId
 
         await taskController.createTask(mockRequest as Request, mockResponse as Response)

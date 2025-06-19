@@ -6,6 +6,7 @@ import {ProjectController} from "../src/controllers/project.controller"
 import {ProjectData, UserData} from "../src/data/types"
 import {User} from "../src/data/models/user"
 import {ResponseError} from "../src/responses/response-error"
+import {ValidationError} from "../src/errors/validation-error"
 
 jest.mock("../src/services/logger/logger", () => ({
     Logger: {
@@ -34,7 +35,9 @@ describe("Создание проекта: ", () => {
         mockProjectService = {
             create: jest.fn(),
             update: jest.fn(),
-            getProjectsWithTasks: jest.fn()
+            getProjectsWithTasks: jest.fn(),
+            toCreateData: jest.fn(data => data),
+            getWorkingTime: jest.fn()
         } as jest.Mocked<IProjectService>
 
         mockTaskService = {
@@ -42,7 +45,13 @@ describe("Создание проекта: ", () => {
             update: jest.fn(),
             getById: jest.fn(),
             getCompletedTasks: jest.fn(),
-            getWorkingTime: jest.fn()
+            getWorkingTime: jest.fn(),
+            updateStatus: jest.fn(),
+            assignUser: jest.fn(),
+            toCreateData: jest.fn(),
+            toUpdateData: jest.fn(),
+            toUpdateStatusData: jest.fn(),
+            toUpdateAssignedUserData: jest.fn()
         } as jest.Mocked<ITaskService>
 
         mockCurrentUser = new CurrentUser()
@@ -96,12 +105,11 @@ describe("Создание проекта: ", () => {
 
         await projectController.createProject(mockRequest as Request, mockResponse as Response)
 
-        const expectedData = {
+        expect(mockProjectService.create.mock.calls[0][0]).toEqual({
             title: mockRequest.body.title,
             description: mockRequest.body.description,
             userId: mockRequest.body.userId
-        }
-        expect(mockProjectService.create).toHaveBeenCalledWith(expectedData)
+        })
 
         expect(responseStatus).toHaveBeenCalledWith(201)
         expect(responseJson).toHaveBeenCalledWith(
@@ -115,6 +123,7 @@ describe("Создание проекта: ", () => {
     })
 
     it("ошибка валидации при отсутствии обязательных полей", async () => {
+        mockProjectService.create.mockImplementation(() => { throw new ValidationError("Входные данные не валидны", 400) })
         delete mockRequest.body.title
 
         await projectController.createProject(mockRequest as Request, mockResponse as Response)

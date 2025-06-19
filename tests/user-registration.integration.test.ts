@@ -51,15 +51,13 @@ describe("Регистрация пользователя (с реальными
 
         const userDAO = new UserDAO(prisma.user)
         const taskDAO = new TaskDAO(prisma.task)
-        const userService = new UserService(userDAO)
         const taskService = new TaskService(taskDAO)
+        const userService = new UserService(userDAO, taskService)
         const tokenService = new SimpleTokenService()
         const currentUser = new CurrentUser()
 
         userController = new UserController(
             userService,
-            taskService,
-            currentUser,
             tokenService
         )
 
@@ -170,15 +168,12 @@ describe("Регистрация пользователя (с реальными
 
         const userDAO = new UserDAO(prisma.user)
         const taskDAO = new TaskDAO(prisma.task)
-        const userService = new UserService(userDAO)
         const taskService = new TaskService(taskDAO)
+        const userService = new UserService(userDAO, taskService)
         const tokenService = new SimpleTokenService()
-        const currentUser = new CurrentUser()
 
         userController = new UserController(
             userService,
-            taskService,
-            currentUser,
             tokenService
         )
 
@@ -204,15 +199,12 @@ describe("Регистрация пользователя (с реальными
     it("ошибка при невозможности подключиться к БД", async () => {
         const userDAO = new UserDAO(invalidPrisma.user)
         const taskDAO = new TaskDAO(invalidPrisma.task)
-        const userService = new UserService(userDAO)
         const taskService = new TaskService(taskDAO)
+        const userService = new UserService(userDAO, taskService)
         const tokenService = new SimpleTokenService()
-        const currentUser = new CurrentUser()
 
         userController = new UserController(
             userService,
-            taskService,
-            currentUser,
             tokenService
         )
 
