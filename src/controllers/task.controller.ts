@@ -5,11 +5,7 @@ import {CurrentUser} from "../data/models/current-user"
 import {ResponseSuccess} from "../responses/response-success"
 import {ResponseError} from "../responses/response-error"
 import {TaskData} from "../data/types"
-import {TaskValidator} from "../services/validation/task.validator"
 import {ResponseCode} from "../responses/response-code"
-import {TaskStatus} from "@prisma/client"
-import {Task} from "../data/models/task"
-
 
 export class TaskController implements ITaskController {
     private readonly taskService: ITaskService
@@ -22,13 +18,11 @@ export class TaskController implements ITaskController {
 
     async createTask(req: Request, res: Response): Promise<void> {
         try {
-            const normalizedData: Partial<TaskData> = new Task(req.body).toCreateData()
+            const requestData = req.body as Partial<TaskData>
+            const normalizedData: Partial<TaskData> = this.taskService.toCreateData(requestData)
+            const createdTaskData: TaskData = await this.taskService.create(normalizedData)
 
-            const validator = new TaskValidator(normalizedData)
-            validator.validateCreateDataOrThrow()
-
-            const taskData: TaskData = await this.taskService.create(normalizedData)
-            ResponseSuccess.send(res, taskData, ResponseCode.SuccessCreated)
+            ResponseSuccess.send(res, createdTaskData, ResponseCode.SuccessCreated)
         } catch (error) {
             ResponseError.send(res, error)
         }
@@ -36,16 +30,11 @@ export class TaskController implements ITaskController {
 
     async updateTask(req: Request, res: Response): Promise<void> {
         try {
-            const normalizedData: Partial<TaskData> = new Task(req.body).toUpdateData()
-            const updateData: Partial<TaskData> = {
-                ...normalizedData,
-                id: Number(req.params.taskId) || undefined,
-            }
+            const requestData = req.body as Partial<TaskData>
+            const normalizedData: Partial<TaskData> = this.taskService.toUpdateData(requestData, req.params.taskId)
+            const updatedTaskData: TaskData = await this.taskService.update(normalizedData)
 
-            const validator = new TaskValidator(updateData)
-            validator.validateUpdateDataOrThrow()
-            const taskData: TaskData = await this.taskService.update(updateData)
-            ResponseSuccess.send(res, taskData, ResponseCode.Success)
+            ResponseSuccess.send(res, updatedTaskData, ResponseCode.Success)
         } catch (error) {
             ResponseError.send(res, error)
         }
@@ -53,24 +42,10 @@ export class TaskController implements ITaskController {
 
     async updateStatus(req: Request, res: Response): Promise<void> {
         try {
-            const normalizedData: Partial<TaskData> = new Task(req.body).toUpdateData()
-            const updateStatusData: Partial<TaskData> = {
-                id: Number(req.params.taskId) || undefined,
-                status: normalizedData.status
-            }
+            const requestData = req.body as Partial<TaskData>
+            const updateStatusData: Partial<TaskData> = this.taskService.toUpdateStatusData(requestData, req.params.taskId)
+            const result: TaskData = await this.taskService.updateStatus(updateStatusData, this.currentUser.getId())
 
-            const validator = new TaskValidator(updateStatusData)
-            validator.validateUpdateStatusDataOrThrow()
-
-            const currentTaskData: TaskData | null = await this.taskService.getById(updateStatusData.id!)
-            const currentTaskValidator = new TaskValidator(currentTaskData)
-
-            currentTaskValidator.canChangeStatusOrThrow(this.currentUser.getId())
-            if (updateStatusData.status === TaskStatus.Completed) {
-                updateStatusData.completedAt = new Date()
-            }
-
-            const result: TaskData = await this.taskService.update(updateStatusData)
             ResponseSuccess.send(res, result, ResponseCode.Success)
         } catch (error) {
             ResponseError.send(res, error)
@@ -79,19 +54,10 @@ export class TaskController implements ITaskController {
 
     async assignUser(req: Request, res: Response): Promise<void> {
         try {
-            const assignedUserTaskData: Partial<TaskData> = {
-                id: Number(req.params.taskId) || undefined,
-                assignedToUserId: this.currentUser.getId()
-            }
+            const requestData = req.body as Partial<TaskData>
+            const normalizedTaskData: Partial<TaskData> = this.taskService.toUpdateData(requestData, req.params.taskId)
+            const result: TaskData = await this.taskService.assignUser(this.currentUser.getId(), normalizedTaskData.id)
 
-            const validator = new TaskValidator(assignedUserTaskData)
-            validator.validateAssignSelfDataOrThrow()
-
-            const currentTaskData: TaskData | null = await this.taskService.getById(assignedUserTaskData.id!)
-            const currentTaskValidator = new TaskValidator(currentTaskData)
-            currentTaskValidator.canAssignUserOrThrow()
-
-            const result: TaskData = await this.taskService.update(assignedUserTaskData)
             ResponseSuccess.send(res, result, ResponseCode.Success)
         } catch (error) {
             ResponseError.send(res, error)

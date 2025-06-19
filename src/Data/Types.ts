@@ -52,6 +52,7 @@ export type WorkingTimeData = {
 export type WorkingTimeParams = {
     userId?: number
     projectIds?: number[]
+    projectId?: number
     startDate?: Date
     endDate?: Date
 }

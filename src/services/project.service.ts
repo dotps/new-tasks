@@ -17,7 +17,7 @@ export class ProjectService implements IProjectService {
     }
 
     toCreateData(data: Partial<ProjectData>): Partial<ProjectData> {
-        return new Project(data as Partial<ProjectData>).toCreateData()
+        return new Project(data).toCreateData()
     }
 
     async create(data: Partial<ProjectData>, userId: number): Promise<ProjectData> {
