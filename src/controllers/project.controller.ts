@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {ProjectData, UserData} from "../data/types"
+import {ProjectData} from "../data/types"
 import {IProjectController} from "./project.controller.interface"
 import {IProjectService} from "../services/project.service.interface"
 import {CurrentUser} from "../data/models/current-user"
