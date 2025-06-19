@@ -6,8 +6,8 @@ import {UserData} from "../data/types"
 import {AuthDataGenerator} from "../data/auth-data-generator"
 import {ResponseSuccess} from "../responses/response-success"
 import {ResponseError} from "../responses/response-error"
-import {QueryHelper} from "../helpers/query-helper"
 import {ResponseCode} from "../responses/response-code"
+import {QueryHelper} from "../helpers/query-helper"
 
 export class UserController implements IUserController {
 
@@ -33,11 +33,7 @@ export class UserController implements IUserController {
 
     async getWorkingTime(req: Request, res: Response): Promise<void> {
         try {
-            const userId = Number(req.params.userId) || undefined
-            const projectIds =  QueryHelper.parseNumberList(req.query?.projects?.toString())
-            const startDate = QueryHelper.parseDate(req.query?.start_date?.toString())
-            const endDate = QueryHelper.parseDate(req.query?.end_date?.toString())
-
+            const {userId, projectIds, startDate, endDate} = QueryHelper.parseWorkingTimeParams(req)
             const result = await this.userService.getWorkingTime(userId, projectIds, startDate, endDate)
 
             ResponseSuccess.send(res, result, ResponseCode.Success)

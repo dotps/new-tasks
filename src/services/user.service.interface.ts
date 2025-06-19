@@ -1,4 +1,5 @@
 import {ProjectData, UserData, WorkingTimeData} from "../data/types"
+import {Request} from "express"
 
 export interface IUserService {
     create(data: Partial<UserData>): Promise<UserData>
@@ -6,4 +7,5 @@ export interface IUserService {
     getById(id: number): Promise<UserData | null>
     toCreateData(body: unknown): Partial<ProjectData>
     getWorkingTime(userId?: number, projectId?: number[], startDate?: Date, endDate?: Date): Promise<WorkingTimeData>
+    // getWorkingTimeFromRequest(req: Request): Promise<WorkingTimeData>
 }

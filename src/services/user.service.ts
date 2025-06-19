@@ -4,6 +4,8 @@ import {IUserDAO} from "../data/dao/user.dao.interface"
 import {User} from "../data/models/user"
 import {UserValidator} from "./validation/user.validator"
 import {ITaskService} from "./task.service.interface"
+import {Request} from "express"
+import {QueryHelper} from "../helpers/query-helper"
 
 export class UserService implements IUserService {
     private readonly dao: IUserDAO
