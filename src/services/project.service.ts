@@ -16,7 +16,7 @@ export class ProjectService implements IProjectService {
         this.dao = dao
     }
 
-    toCreateData(data: unknown): Partial<ProjectData> {
+    toCreateData(data: Partial<ProjectData>): Partial<ProjectData> {
         return new Project(data as Partial<ProjectData>).toCreateData()
     }
 

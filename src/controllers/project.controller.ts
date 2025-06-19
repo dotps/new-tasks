@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {ProjectData} from "../data/types"
+import {ProjectData, UserData} from "../data/types"
 import {IProjectController} from "./project.controller.interface"
 import {IProjectService} from "../services/project.service.interface"
 import {CurrentUser} from "../data/models/current-user"
@@ -19,8 +19,9 @@ export class ProjectController implements IProjectController {
 
     async createProject(req: Request, res: Response): Promise<void> {
         try {
-            const projectData: Partial<ProjectData> = this.projectService.toCreateData(req.body)
-            const createdProjectData: ProjectData = await this.projectService.create(projectData, this.currentUser.getId())
+            const projectData = req.body as Partial<ProjectData>
+            const normalizedProjectData: Partial<ProjectData> = this.projectService.toCreateData(projectData)
+            const createdProjectData: ProjectData = await this.projectService.create(normalizedProjectData, this.currentUser.getId())
             ResponseSuccess.send(res, createdProjectData, ResponseCode.SuccessCreated)
         }
         catch (error) {
@@ -40,10 +41,7 @@ export class ProjectController implements IProjectController {
 
     async getWorkingTime(req: Request, res: Response): Promise<void> {
         try {
-            const projectId = Number(req.params.projectId) || undefined
-            const startDate = QueryHelper.parseDate(req.query?.start_date?.toString())
-            const endDate = QueryHelper.parseDate(req.query?.end_date?.toString())
-
+            const {projectId, startDate, endDate} = QueryHelper.parseWorkingTimeParams(req)
             const result = await this.projectService.getWorkingTime(projectId, startDate, endDate)
 
             ResponseSuccess.send(res, result, ResponseCode.Success)
@@ -52,5 +50,4 @@ export class ProjectController implements IProjectController {
             ResponseError.send(res, error)
         }
     }
-
 }

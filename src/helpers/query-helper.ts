@@ -23,8 +23,9 @@ export class QueryHelper {
     static parseWorkingTimeParams(req: Request): WorkingTimeParams {
         const userId = Number(req.params.userId) || undefined
         const projectIds = QueryHelper.parseNumberList(String(req.query?.projects))
+        const projectId = Number(req.params.projectId) || undefined
         const startDate = QueryHelper.parseDate(String(req.query?.start_date))
         const endDate = QueryHelper.parseDate(String(req.query?.end_date))
-        return { userId, projectIds, startDate, endDate }
+        return { userId, projectIds, projectId, startDate, endDate }
     }
 }

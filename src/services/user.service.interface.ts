@@ -7,5 +7,4 @@ export interface IUserService {
     getById(id: number): Promise<UserData | null>
     toCreateData(body: Partial<UserData>): Partial<UserData>
     getWorkingTime(userId?: number, projectId?: number[], startDate?: Date, endDate?: Date): Promise<WorkingTimeData>
-    // getWorkingTimeFromRequest(req: Request): Promise<WorkingTimeData>
 }
