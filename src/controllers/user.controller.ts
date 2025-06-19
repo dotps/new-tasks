@@ -21,8 +21,9 @@ export class UserController implements IUserController {
 
     async createUser(req: Request, res: Response): Promise<void> {
         try {
-            const userData: Partial<UserData> = this.userService.toCreateData(req.body)
-            const createdUserData: UserData = await this.userService.create(userData)
+            const userData = req.body as Partial<UserData>
+            const normalizedUserData: Partial<UserData> = this.userService.toCreateData(userData)
+            const createdUserData: UserData = await this.userService.create(normalizedUserData)
             const authData = new AuthDataGenerator(createdUserData, this.tokenService)
 
             ResponseSuccess.send(res, authData.toData(), ResponseCode.SuccessCreated)

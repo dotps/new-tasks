@@ -48,3 +48,10 @@ export type CompletedTasksFilter = {
 export type WorkingTimeData = {
     totalSeconds: number,
 }
+
+export type WorkingTimeParams = {
+    userId?: number
+    projectIds?: number[]
+    startDate?: Date
+    endDate?: Date
+}

@@ -31,8 +31,8 @@ export class UserService implements IUserService {
         return await this.dao.getById(id)
     }
 
-    toCreateData(data: unknown): Partial<UserData> {
-        return new User(data as Partial<UserData>).toCreateData()
+    toCreateData(data: Partial<UserData>): Partial<UserData> {
+        return new User(data).toCreateData()
     }
 
     async getWorkingTime(userId?: number, projectIds?: number[], startDate?: Date, endDate?: Date): Promise<WorkingTimeData> {
