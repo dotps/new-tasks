@@ -33,5 +33,9 @@ export class Validator<T extends DataWithId> {
             }
         }
     }
+
+    validateExistIdOrThrow() {
+        if (!this.validateExistId()) this.throwValidationError(ValidationType.NotFound)
+    }
 }
 

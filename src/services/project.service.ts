@@ -44,7 +44,7 @@ export class ProjectService implements IProjectService {
         const projectData: Partial<ProjectData> = {id: projectId}
 
         const validator = new ProjectValidator(projectData)
-        if (!validator.validateExistId()) validator.throwValidationError(ValidationType.NotFound)
+        validator.validateExistIdOrThrow()
 
         const filter: CompletedTasksFilter = {
             projectsIds: projectId ? [projectId] : undefined,

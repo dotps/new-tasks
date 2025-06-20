@@ -39,7 +39,7 @@ export class UserService implements IUserService {
         const userData: Partial<UserData> = {id: userId}
 
         const validator = new UserValidator(userData)
-        if (!validator.validateExistId()) validator.throwValidationError(ValidationType.NotFound)
+        validator.validateExistIdOrThrow()
 
         const filter: CompletedTasksFilter = {
             userId: userId,
