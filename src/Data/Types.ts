@@ -1,6 +1,7 @@
 import {PrismaClient, User as UserData, Project as ProjectData, Task as TaskData, Prisma} from "@prisma/client"
 import {DefaultArgs} from "@prisma/client/runtime/client"
 import {TaskStatus} from "@prisma/client"
+import {User} from "./models/user"
 
 export type EntityData = UserData | ProjectData | TaskData
 

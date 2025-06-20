@@ -1,5 +1,4 @@
 import {NextFunction, Request, Response} from "express"
-import {CurrentUser} from "../data/models/current-user"
 import {ITokenService} from "../services/token.service.interface"
 import {IUserService} from "../services/user.service.interface"
 import {ResponseError} from "../responses/response-error"
@@ -11,11 +10,9 @@ import {ResponseSuccess} from "../responses/response-success"
 export class AuthMiddleware {
     private userService: IUserService
     private tokenService: ITokenService
-    private currentUser: CurrentUser
 
-    constructor(userService: IUserService, currentUser: CurrentUser, tokenService: ITokenService) {
+    constructor(userService: IUserService, tokenService: ITokenService) {
         this.tokenService = tokenService
-        this.currentUser = currentUser
         this.userService = userService
     }
 
@@ -45,7 +42,7 @@ export class AuthMiddleware {
                 return ResponseError.sendError(res, "Авторизация не возможна. Пользователь не найден.", ResponseCode.ErrorUnauthorized)
             }
 
-            this.currentUser.set(new User(userData))
+            req.currentUser = new User(userData)
             next()
         } catch (error) {
             ResponseError.send(res, error)

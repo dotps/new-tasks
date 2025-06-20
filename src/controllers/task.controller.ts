@@ -1,7 +1,6 @@
 import {Request, Response} from "express"
 import {ITaskController} from "./task.controller.interface"
 import {ITaskService} from "../services/task.service.interface"
-import {CurrentUser} from "../data/models/current-user"
 import {ResponseSuccess} from "../responses/response-success"
 import {ResponseError} from "../responses/response-error"
 import {TaskData} from "../data/types"
@@ -9,11 +8,9 @@ import {ResponseCode} from "../responses/response-code"
 
 export class TaskController implements ITaskController {
     private readonly taskService: ITaskService
-    private readonly currentUser: CurrentUser
 
-    constructor(taskService: ITaskService, currentUser: CurrentUser) {
+    constructor(taskService: ITaskService) {
         this.taskService = taskService
-        this.currentUser = currentUser
     }
 
     async createTask(req: Request, res: Response): Promise<void> {
@@ -44,7 +41,11 @@ export class TaskController implements ITaskController {
         try {
             const requestData = req.body as Partial<TaskData>
             const updateStatusData: Partial<TaskData> = this.taskService.toUpdateStatusData(requestData, req.params.taskId)
-            const result: TaskData = await this.taskService.updateStatus(updateStatusData, this.currentUser.getId())
+
+            const userId = req.currentUser?.getId()
+            if (!userId) return ResponseError.sendError(res, "Авторизация не возможна. Пользователь не найден.", ResponseCode.ErrorUnauthorized)
+
+            const result: TaskData = await this.taskService.updateStatus(updateStatusData, userId)
 
             ResponseSuccess.send(res, result, ResponseCode.Success)
         } catch (error) {
@@ -56,7 +57,11 @@ export class TaskController implements ITaskController {
         try {
             const requestData = req.body as Partial<TaskData>
             const normalizedTaskData: Partial<TaskData> = this.taskService.toUpdateData(requestData, req.params.taskId)
-            const result: TaskData = await this.taskService.assignUser(this.currentUser.getId(), normalizedTaskData.id)
+
+            const userId = req.currentUser?.getId()
+            if (!userId) return ResponseError.sendError(res, "Авторизация не возможна. Пользователь не найден.", ResponseCode.ErrorUnauthorized)
+
+            const result: TaskData = await this.taskService.assignUser(userId, normalizedTaskData.id)
 
             ResponseSuccess.send(res, result, ResponseCode.Success)
         } catch (error) {

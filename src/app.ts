@@ -15,7 +15,6 @@ import {ITokenService} from "./services/token.service.interface"
 import {SimpleTokenService} from "./services/simple-token.service"
 import {UserService} from "./services/user.service"
 import {ProjectService} from "./services/project.service"
-import {CurrentUser} from "./data/models/current-user"
 import {AuthMiddleware} from "./middlewares/auth.middleware"
 import {RequestBodyMiddleware} from "./middlewares/request-body.middleware"
 import {UserController} from "./controllers/user.controller"
@@ -38,7 +37,6 @@ export class App {
     private userService!: UserService
     private projectService!: ProjectService
     private taskService!: TaskService
-    private currentUser: CurrentUser
     private authMiddleware!: AuthMiddleware
     private userController!: UserController
     private projectController!: ProjectController
@@ -54,8 +52,6 @@ export class App {
 
         this.initDAO()
         this.initServices()
-
-        this.currentUser = new CurrentUser()
 
         this.initMiddlewares()
         this.initControllers()
@@ -83,15 +79,15 @@ export class App {
     }
 
     private initMiddlewares() {
-        this.authMiddleware = new AuthMiddleware(this.userService, this.currentUser, this.tokenService)
+        this.authMiddleware = new AuthMiddleware(this.userService, this.tokenService)
         const requestBodyMiddleware = new RequestBodyMiddleware()
         this.app.use(requestBodyMiddleware.handleJson)
     }
 
     private initControllers() {
         this.userController = new UserController(this.userService, this.tokenService)
-        this.projectController = new ProjectController(this.projectService, this.currentUser)
-        this.taskController = new TaskController(this.taskService, this.currentUser)
+        this.projectController = new ProjectController(this.projectService)
+        this.taskController = new TaskController(this.taskService)
     }
 
     private initRouters() {
