@@ -5,6 +5,7 @@ import {ResponseSuccess} from "../responses/response-success"
 import {ResponseError} from "../responses/response-error"
 import {TaskData} from "../data/types"
 import {ResponseCode} from "../responses/response-code"
+import {getUserId} from "../helpers/user-helper"
 
 export class TaskController implements ITaskController {
     private readonly taskService: ITaskService
@@ -42,9 +43,7 @@ export class TaskController implements ITaskController {
             const requestData = req.body as Partial<TaskData>
             const updateStatusData: Partial<TaskData> = this.taskService.toUpdateStatusData(requestData, req.params.taskId)
 
-            const userId = req.currentUser?.getId()
-            if (!userId) return ResponseError.sendError(res, "Авторизация не возможна. Пользователь не найден.", ResponseCode.ErrorUnauthorized)
-
+            const userId = getUserId(req.currentUser)
             const result: TaskData = await this.taskService.updateStatus(updateStatusData, userId)
 
             ResponseSuccess.send(res, result, ResponseCode.Success)
@@ -58,9 +57,7 @@ export class TaskController implements ITaskController {
             const requestData = req.body as Partial<TaskData>
             const normalizedTaskData: Partial<TaskData> = this.taskService.toUpdateData(requestData, req.params.taskId)
 
-            const userId = req.currentUser?.getId()
-            if (!userId) return ResponseError.sendError(res, "Авторизация не возможна. Пользователь не найден.", ResponseCode.ErrorUnauthorized)
-
+            const userId = getUserId(req.currentUser)
             const result: TaskData = await this.taskService.assignUser(userId, normalizedTaskData.id)
 
             ResponseSuccess.send(res, result, ResponseCode.Success)

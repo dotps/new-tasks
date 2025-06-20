@@ -6,6 +6,7 @@ import {ResponseSuccess} from "../responses/response-success"
 import {ResponseCode} from "../responses/response-code"
 import {ResponseError} from "../responses/response-error"
 import {QueryHelper} from "../helpers/query-helper"
+import {getUserId} from "../helpers/user-helper"
 
 export class ProjectController implements IProjectController {
     private readonly projectService: IProjectService
@@ -19,9 +20,7 @@ export class ProjectController implements IProjectController {
             const projectData = req.body as Partial<ProjectData>
             const normalizedProjectData: Partial<ProjectData> = this.projectService.toCreateData(projectData)
 
-            const userId = req.currentUser?.getId()
-            if (!userId) return ResponseError.sendError(res, "Авторизация не возможна. Пользователь не найден.", ResponseCode.ErrorUnauthorized)
-
+            const userId = getUserId(req.currentUser)
             const createdProjectData: ProjectData = await this.projectService.create(normalizedProjectData, userId)
 
             ResponseSuccess.send(res, createdProjectData, ResponseCode.SuccessCreated)
@@ -32,9 +31,7 @@ export class ProjectController implements IProjectController {
 
     async getAll(req: Request, res: Response): Promise<void> {
         try {
-            const userId = req.currentUser?.getId()
-            if (!userId) return ResponseError.sendError(res, "Авторизация не возможна. Пользователь не найден.", ResponseCode.ErrorUnauthorized)
-
+            const userId = getUserId(req.currentUser)
             const result = await this.projectService.getProjectsWithTasks(userId)
 
             ResponseSuccess.send(res, result, ResponseCode.Success)
