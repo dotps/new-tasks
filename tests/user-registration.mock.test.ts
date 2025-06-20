@@ -1,7 +1,6 @@
 import {Request, Response} from "express"
 import {IUserService} from "../src/services/user.service.interface"
 import {ITokenService} from "../src/services/token.service.interface"
-import {CurrentUser} from "../src/data/models/current-user"
 import {UserController} from "../src/controllers/user.controller"
 import {UserData} from "../src/data/types"
 import {ResponseError} from "../src/responses/response-error"
@@ -19,7 +18,6 @@ jest.mock("../src/services/logger/logger", () => ({
 describe("Регистрация пользователя", () => {
     let mockUserService: jest.Mocked<IUserService>
     let mockTokenService: jest.Mocked<ITokenService>
-    let mockCurrentUser: CurrentUser
     let userController: UserController
     let mockRequest: Partial<Request>
     let mockResponse: Partial<Response>
@@ -45,8 +43,6 @@ describe("Регистрация пользователя", () => {
             getTokenData: jest.fn(),
             refreshAccessToken: jest.fn()
         } as jest.Mocked<ITokenService>
-
-        mockCurrentUser = new CurrentUser()
 
         userController = new UserController(
             mockUserService,

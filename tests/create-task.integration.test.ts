@@ -1,6 +1,5 @@
 import {PrismaClient, TaskStatus} from "@prisma/client"
 import {Request, Response} from "express"
-import {CurrentUser} from "../src/data/models/current-user"
 import {TaskController} from "../src/controllers/task.controller"
 import {UserData} from "../src/data/types"
 import {User} from "../src/data/models/user"
@@ -28,7 +27,6 @@ describe("Создание задачи (с реальными сервисам�
     let responseStatus: jest.Mock
     let testUser: UserData
     let testProject: { id: number }
-    let mockCurrentUser: CurrentUser
 
     beforeAll(async () => {
         prisma = new PrismaClient()
@@ -66,12 +64,9 @@ describe("Создание задачи (с реальными сервисам�
             }
         })
 
-        mockCurrentUser = new CurrentUser()
-        mockCurrentUser.set(new User(testUser))
-
         const taskDAO = new TaskDAO(prisma.task)
         const taskService = new TaskService(taskDAO)
-        taskController = new TaskController(taskService, mockCurrentUser)
+        taskController = new TaskController(taskService)
 
         responseJson = jest.fn()
         responseStatus = jest.fn().mockReturnValue({json: responseJson})
@@ -171,7 +166,7 @@ describe("Создание задачи (с реальными сервисам�
     it("ошибка при невозможности подключиться к БД", async () => {
         const taskDAO = new TaskDAO(invalidPrisma.task)
         const taskService = new TaskService(taskDAO)
-        const taskController = new TaskController(taskService, mockCurrentUser)
+        const taskController = new TaskController(taskService)
 
         await taskController.createTask(mockCreateTaskRequest as Request, mockCreateTaskResponse as Response)
 

@@ -1,6 +1,5 @@
 import {Request, Response} from "express"
 import {ITaskService} from "../src/services/task.service.interface"
-import {CurrentUser} from "../src/data/models/current-user"
 import {TaskController} from "../src/controllers/task.controller"
 import {TaskData, UserData} from "../src/data/types"
 import {User} from "../src/data/models/user"
@@ -20,7 +19,6 @@ jest.mock("../src/services/logger/logger", () => ({
 
 describe("Создание задачи: ", () => {
     let mockTaskService: jest.Mocked<ITaskService>
-    let mockCurrentUser: CurrentUser
     let taskController: TaskController
     let mockRequest: Partial<Request>
     let mockResponse: Partial<Response>
@@ -46,18 +44,15 @@ describe("Создание задачи: ", () => {
             toUpdateAssignedUserData: jest.fn()
         } as jest.Mocked<ITaskService>
 
-        mockCurrentUser = new CurrentUser()
         const mockUserData: UserData = {
             id: 1,
             name: "Иван Иваныч",
             email: "test@test.ru",
             createdAt: new Date()
         }
-        mockCurrentUser.set(new User(mockUserData))
 
         taskController = new TaskController(
-            mockTaskService,
-            mockCurrentUser
+            mockTaskService
         )
 
         responseJson = jest.fn()

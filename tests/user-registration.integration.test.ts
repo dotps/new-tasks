@@ -5,7 +5,6 @@ import {TaskDAO} from "../src/data/dao/task.dao"
 import {UserService} from "../src/services/user.service"
 import {TaskService} from "../src/services/task.service"
 import {SimpleTokenService} from "../src/services/simple-token.service"
-import {CurrentUser} from "../src/data/models/current-user"
 import {ResponseError} from "../src/responses/response-error"
 import {ResponseCode} from "../src/responses/response-code"
 import {PrismaClient} from "@prisma/client"
@@ -54,7 +53,6 @@ describe("Регистрация пользователя (с реальными
         const taskService = new TaskService(taskDAO)
         const userService = new UserService(userDAO, taskService)
         const tokenService = new SimpleTokenService()
-        const currentUser = new CurrentUser()
 
         userController = new UserController(
             userService,

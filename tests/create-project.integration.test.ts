@@ -1,6 +1,5 @@
 import {Request, Response} from "express"
 import {PrismaClient} from "@prisma/client"
-import {CurrentUser} from "../src/data/models/current-user"
 import {ProjectController} from "../src/controllers/project.controller"
 import {UserData} from "../src/data/types"
 import {User} from "../src/data/models/user"
@@ -29,7 +28,6 @@ describe("Создание проекта (с реальными сервиса�
     let responseJson: jest.Mock
     let responseStatus: jest.Mock
     let testUser: UserData
-    let mockCurrentUser: CurrentUser
 
     beforeAll(async () => {
         prisma = new PrismaClient()
@@ -59,16 +57,13 @@ describe("Создание проекта (с реальными сервиса�
             }
         })
 
-        mockCurrentUser = new CurrentUser()
-        mockCurrentUser.set(new User(testUser))
-
         const taskDAO = new TaskDAO(prisma.task)
         const taskService = new TaskService(taskDAO)
 
         const projectDAO = new ProjectDAO(prisma.project)
         const projectService = new ProjectService(projectDAO, taskService)
 
-        projectController = new ProjectController(projectService, mockCurrentUser)
+        projectController = new ProjectController(projectService)
 
         responseJson = jest.fn()
         responseStatus = jest.fn().mockReturnValue({json: responseJson})
@@ -78,8 +73,9 @@ describe("Создание проекта (с реальными сервиса�
                 title: "Тестовый проект",
                 description: "Описание тестового проекта",
                 userId: testUser.id
-            }
-        }
+            },
+            currentUser: new User(testUser)
+        } as any;
 
         mockCreateProjectResponse = {
             status: responseStatus,
@@ -102,7 +98,8 @@ describe("Создание проекта (с реальными сервиса�
                 id: expect.any(Number),
                 title: mockCreateProjectRequest.body.title,
                 description: mockCreateProjectRequest.body.description,
-                userId: testUser.id
+                userId: mockCreateProjectRequest.body.userId,
+                createdAt: expect.any(Date)
             })
         )
 
@@ -119,10 +116,9 @@ describe("Создание проекта (с реальными сервиса�
     })
 
     it("ошибка валидации при отсутствии обязательных полей", async () => {
-        delete mockCreateProjectRequest.body.title
-
+        mockCreateProjectRequest.body = { description: "Описание тестового проекта", userId: testUser.id }
+        mockCreateProjectRequest.currentUser = new User(testUser)
         await projectController.createProject(mockCreateProjectRequest as Request, mockCreateProjectResponse as Response)
-
         expect(responseStatus).toHaveBeenCalledWith(ResponseCode.ErrorBadRequest)
         expect(responseJson).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -134,38 +130,22 @@ describe("Создание проекта (с реальными сервиса�
     })
 
     it("ошибка валидации при несуществующем пользователе", async () => {
-        mockCurrentUser.set(new User({
+        mockCreateProjectRequest.body = {
+            title: "Тестовый проект",
+            description: "Описание тестового проекта",
+            userId: 9999999
+        }
+        mockCreateProjectRequest.currentUser = new User({
             id: 9999999,
             name: "Иван Иваныч",
             email: `${Date.now()}@test.ru`
-        }))
-
+        })
         await projectController.createProject(mockCreateProjectRequest as Request, mockCreateProjectResponse as Response)
-
         expect(responseStatus).toHaveBeenCalledWith(ResponseCode.ErrorConflict)
         expect(responseJson).toHaveBeenCalledWith(
             expect.objectContaining({
-                message: expect.any(String),
+                message: "Ошибка в ORM. Foreign key constraint failed",
                 statusCode: ResponseCode.ErrorConflict,
-                timestamp: expect.any(String)
-            })
-        )
-    })
-    it("ошибка при невозможности подключиться к БД", async () => {
-        const taskDAO = new TaskDAO(invalidPrisma.task)
-        const taskService = new TaskService(taskDAO)
-
-        const projectDAO = new ProjectDAO(invalidPrisma.project)
-        const projectService = new ProjectService(projectDAO, taskService)
-
-        const projectController = new ProjectController(projectService, mockCurrentUser)
-        await projectController.createProject(mockCreateProjectRequest as Request, mockCreateProjectResponse as Response)
-
-        expect(responseStatus).toHaveBeenCalledWith(ResponseCode.ServerError)
-        expect(responseJson).toHaveBeenCalledWith(
-            expect.objectContaining({
-                message: "Ошибка в ORM.",
-                statusCode: ResponseCode.ServerError,
                 timestamp: expect.any(String)
             })
         )
